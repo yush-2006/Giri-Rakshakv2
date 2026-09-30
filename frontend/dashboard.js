@@ -3714,7 +3714,7 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
 
   // Initialize globe first
   const globe = Globe()(globeElement)
-    .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
+    .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
 .backgroundColor("#b8e6ff")
 
    .showAtmosphere(true)
@@ -3826,6 +3826,210 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
       console.log("India state boundaries loaded:", stateLines.length);
     } catch (error) {
       console.error("India state boundaries failed to load:", error);
+    }
+  })();
+
+
+  // BRICS admin-1 + India district AQI polygons
+  (async function loadBricsAQIRegions() {
+    const files = {
+      BRA: "Brazil",
+      CHN: "China",
+      EGY: "Egypt",
+      ETH: "Ethiopia",
+      IDN: "Indonesia",
+      IRN: "Iran",
+      RUS: "Russia",
+      SAU: "Saudi Arabia",
+      ZAF: "South Africa",
+      ARE: "United Arab Emirates"
+    };
+
+    const baselines = {
+      IND: 145,
+      CHN: 175,
+      BRA: 105,
+      RUS: 90,
+      ZAF: 130,
+      EGY: 155,
+      ETH: 95,
+      IDN: 145,
+      IRN: 165,
+      SAU: 125,
+      ARE: 110
+    };
+
+    function hashText(value) {
+      let hash = 0;
+      for (let i = 0; i < value.length; i++) {
+        hash = ((hash * 31) + value.charCodeAt(i)) >>> 0;
+      }
+      return hash;
+    }
+
+    function demoAQI(countryCode, regionName) {
+      const hash = hashText(`${countryCode}:${regionName}`);
+      let value = baselines[countryCode] + (hash % 191);
+
+      // Keep some clearly critical demo hotspots.
+      if (hash % 37 === 0) value = 410 + (hash % 41);
+
+      return Math.min(value, 450);
+    }
+
+    function aqiColor(aqi) {
+      if (aqi <= 50) return "#ffffff";
+      if (aqi <= 100) return "#ede9fe";
+      if (aqi <= 150) return "#c4b5fd";
+      if (aqi <= 200) return "#8b5cf6";
+      if (aqi <= 300) return "#6d28d9";
+      if (aqi <= 400) return "#4c1d95";
+      return "#2e1065";
+    }
+
+    function aqiLevel(aqi) {
+      if (aqi <= 100) return "Good";
+      if (aqi <= 200) return "Moderate";
+      if (aqi <= 300) return "Poor";
+      if (aqi <= 400) return "Very Poor";
+      return "Severe / Critical";
+    }
+
+    try {
+      const worldResponse = await fetch(
+        "https://unpkg.com/world-atlas@2/countries-110m.json"
+      );
+      if (!worldResponse.ok) throw new Error("World boundary data unavailable");
+
+      const worldTopology = await worldResponse.json();
+      const worldCountries = topojson.feature(
+        worldTopology,
+        worldTopology.objects.countries
+      ).features;
+
+      const bricsResults = await Promise.all(
+        Object.keys(files).map(async code => {
+          const response = await fetch(`./data/brics/${code}_1.json`);
+          if (!response.ok) {
+            throw new Error(`${code} admin boundary request failed: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          return data.features.map(feature => {
+            const props = { ...(feature.properties || {}) };
+            const regionName = props.NAME_1 || "Unknown region";
+            const aqi = demoAQI(code, regionName);
+
+            props.__aqi = aqi;
+            props.__aqiLevel = aqiLevel(aqi);
+            props.__admin1 = true;
+            props.__countryCode = code;
+            props.__countryName = files[code];
+            props.__regionName = regionName;
+
+            return {
+              ...feature,
+              properties: props
+            };
+          });
+        })
+      );
+
+      const indiaResponse = await fetch("./data/india_districts.geojson");
+      if (!indiaResponse.ok) {
+        throw new Error(`India district boundary request failed: ${indiaResponse.status}`);
+      }
+
+      const indiaData = await indiaResponse.json();
+
+      const indiaDistricts = indiaData.features.map(feature => {
+        const props = { ...(feature.properties || {}) };
+        const districtName = props.NAME_2 || "Unknown district";
+        const stateName = props.NAME_1 || "India";
+        const aqi = demoAQI("IND", `${stateName}:${districtName}`);
+
+        props.__aqi = aqi;
+        props.__aqiLevel = aqiLevel(aqi);
+        props.__admin1 = true;
+        props.__indiaDistrict = true;
+        props.__countryCode = "IND";
+        props.__countryName = "India";
+        props.__regionName = districtName;
+
+        return {
+          ...feature,
+          properties: props
+        };
+      });
+
+      const adminRegions = [
+        ...bricsResults.flat(),
+        ...indiaDistricts
+      ];
+
+      globe
+        .polygonsData([...worldCountries, ...adminRegions])
+        .polygonCapColor(feature => {
+          const props = feature.properties || {};
+
+          if (!props.__admin1) {
+            return "rgba(30, 110, 170, 0.10)";
+          }
+
+          return aqiColor(Number(props.__aqi || 0));
+        })
+        .polygonSideColor(feature => {
+          const props = feature.properties || {};
+
+          if (!props.__admin1) {
+            return "rgba(30, 120, 180, 0.10)";
+          }
+
+          return "rgba(15, 23, 42, 0.28)";
+        })
+        .polygonStrokeColor(feature => {
+          const props = feature.properties || {};
+          return props.__admin1 ? "#ffffff" : "rgba(255,255,255,0.45)";
+        })
+        .polygonAltitude(feature => {
+          const props = feature.properties || {};
+          return props.__admin1 ? 0.015 : 0.004;
+        })
+        .onPolygonClick((feature, event, coordinates) => {
+          if (!coordinates) return;
+
+          globe.pointOfView({
+            lat: coordinates.lat,
+            lng: coordinates.lng,
+            altitude: 1.15
+          }, 900);
+        })
+        .polygonLabel(feature => {
+          const props = feature.properties || {};
+
+          if (!props.__admin1) {
+            return "Country boundary";
+          }
+
+          const aqi = Number(props.__aqi || 0);
+          const critical = aqi >= 301;
+
+          return `
+            <strong>${props.__regionName}</strong><br/>
+            ${props.__countryName}<br/>
+            AQI: <strong>${aqi}</strong><br/>
+            Status: <strong>${critical ? "CRITICAL" : props.__aqiLevel}</strong><br/>
+            <small>Synthetic demo AQI — not official/live</small>
+          `;
+        });
+
+      console.log(
+        `BRICS AQI regions loaded: ${adminRegions.length} `
+        + `(India districts: ${indiaDistricts.length})`
+      );
+    } catch (error) {
+      console.error("BRICS AQI region layer failed:", error);
     }
   })();
 
