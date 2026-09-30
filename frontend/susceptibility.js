@@ -209,20 +209,19 @@
     const legend = document.querySelector(".map-legend");
     if (!legend) return;
 
-    if (!susState.active) {
-      legend.innerHTML = `
-        <h4>Landslide Hazard Scale</h4>
-        <div class="legend-item"><span class="dot watch"></span> Moderate (Orange)</div>
-        <div class="legend-item"><span class="dot high"></span> High Hazard (Deep Orange)</div>
-        <div class="legend-item"><span class="dot very-high"></span> Very High (Red)</div>
-        <div class="legend-item"><span class="dot extreme"></span> Critical / Immediate Risk (Dark Red)</div>
-        <hr />
-        <div class="legend-item"><span class="dot sensor"></span> <b>Aizawl ESP32 Edge Station</b> (Demo Node)</div>
-        <div class="legend-item"><span class="dot citizen"></span> Ground Incident Pin</div>
-        <div class="legend-note">Other districts display regional meteorological risk models.</div>
-      `;
-      return;
-    }
+  if (!susState.active) {
+    legend.innerHTML = `
+      <h4>Air Quality Index (AQI) Scale</h4>
+      <div class="legend-item"><span class="dot watch" style="background:#f97316;"></span> Moderate (101 – 200)</div>
+      <div class="legend-item"><span class="dot high" style="background:#ea580c;"></span> Poor (201 – 300)</div>
+      <div class="legend-item"><span class="dot very-high" style="background:#dc2626;"></span> Very Poor (301 – 400)</div>
+      <div class="legend-item"><span class="dot extreme" style="background:#991b1b;"></span> Severe / Critical (401+)</div>
+      <hr />
+      <div class="legend-item"><span class="dot citizen"></span> Ground Air Incident Pin</div>
+      <div class="legend-note">Regions display real-time ambient PM2.5, PM10 & NO2 telemetry models.</div>
+    `;
+    return;
+  }
 
     legend.innerHTML = `
       <h4>Static Susceptibility</h4>
