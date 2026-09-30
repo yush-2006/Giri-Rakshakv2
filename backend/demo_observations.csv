@@ -1,0 +1,5 @@
+location_name,lat,lon,pollutant,value,unit,observed_at,source
+Delhi Import Zone,28.6139,77.2090,PM2.5,92.4,µg/m³,2026-09-30T10:00:00Z,demo
+Noida Import Zone,28.5355,77.3910,PM10,135.8,µg/m³,2026-09-30T10:00:00Z,demo
+Ghaziabad Import Zone,28.6692,77.4538,NO2,61.2,µg/m³,2026-09-30T10:00:00Z,demo
+Gurugram Import Zone,28.4595,77.0266,CO,1.6,mg/m³,2026-09-30T10:00:00Z,demo

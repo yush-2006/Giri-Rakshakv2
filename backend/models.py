@@ -171,3 +171,61 @@ class DeviceToken(Base):
     token = Column(String(512), unique=True, nullable=False, index=True)
     role = Column(String(20), nullable=False, default="official", index=True)
     created_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
+    # ============================================================
+# POLLUTION / CLIMATE PLATFORM MODELS
+# ============================================================
+
+class EnvironmentalObservation(Base):
+    __tablename__ = "environmental_observations"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    location_name = Column(String(120), nullable=True, index=True)
+    lat = Column(Float, nullable=False, index=True)
+    lon = Column(Float, nullable=False, index=True)
+
+    pollutant = Column(String(30), nullable=False, index=True)
+    value = Column(Float, nullable=True)
+    unit = Column(String(30), nullable=False)
+
+    observed_at = Column(DateTime(timezone=True), nullable=False, index=True)
+    source = Column(String(50), nullable=False, default="demo", index=True)
+
+    created_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
+
+
+class Hotspot(Base):
+    __tablename__ = "hotspots"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(120), nullable=False)
+    lat = Column(Float, nullable=False)
+    lon = Column(Float, nullable=False)
+
+    pollutant = Column(String(30), nullable=False, index=True)
+    intensity = Column(Float, nullable=True)
+    severity = Column(String(20), nullable=False, default="medium", index=True)
+
+    detected_at = Column(DateTime(timezone=True), nullable=False, index=True)
+    source = Column(String(50), nullable=False, default="demo")
+
+
+class ForecastRun(Base):
+    __tablename__ = "forecast_runs"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    location_name = Column(String(120), nullable=True, index=True)
+    lat = Column(Float, nullable=False)
+    lon = Column(Float, nullable=False)
+
+    pollutant = Column(String(30), nullable=False, index=True)
+
+    forecast_value = Column(Float, nullable=True)
+    unit = Column(String(30), nullable=False)
+
+    forecast_for = Column(DateTime(timezone=True), nullable=False, index=True)
+    generated_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
+
+    model_name = Column(String(100), nullable=True)

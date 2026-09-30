@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from routes.air_quality import router as air_quality_router
 from config import CORS_ORIGINS, UPLOAD_DIR
 from database import Base, engine
+from routes.pollution import router as pollution_router
 import models
 
 from routes.alerts import router as alerts_router
@@ -115,6 +116,7 @@ app.include_router(susceptibility_router)
 app.include_router(risk_router)
 app.include_router(alerts_router)
 app.include_router(devices_router)
+app.include_router(pollution_router)
 app.include_router(air_quality_router)
 @app.get("/")
 def root():
