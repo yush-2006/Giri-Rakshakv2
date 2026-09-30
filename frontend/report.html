@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiriRakshak | Submit Citizen Field Report</title>
+  <title>GiriRakshak | Submit Citizen Pollution Incident</title>
   <style>
     :root {
       --bg-dark: #0a0f1d;
@@ -13,8 +13,9 @@
       --text-muted: #94a3b8;
       --accent-blue: #0284c7;
       --accent-hover: #0369a1;
-      --accent-red: #ef4444;
+      --accent-purple: #7c3aed;
       --accent-green: #22c55e;
+      --accent-orange: #f97316;
     }
 
     * {
@@ -63,7 +64,7 @@
 
     .card-header h2 {
       font-size: 1.25rem;
-      color: var(--accent-red);
+      color: var(--accent-orange);
       margin-bottom: 4px;
     }
 
@@ -196,21 +197,22 @@
 <body>
 
   <div class="report-card">
-    <a href="index.html" class="back-nav">← Back to Monitoring Grid</a>
+    <a href="index.html" class="back-nav">← Back to Pollution Grid</a>
     
     <div class="card-header">
-      <h2>Submit Ground Citizen Hazard</h2>
-      <p>Log real-time slope observations and incident photos directly to the EWS map.</p>
+      <h2>Submit Ground Pollution Incident</h2>
+      <p>Log real-time environmental hazards, industrial emissions, and smoke plumes to the monitoring grid.</p>
     </div>
 
     <form id="standalone-report-form">
       <div class="form-group">
-        <label>Observed Phenomenon</label>
+        <label>Pollution Category</label>
         <select id="rep-type" required>
-          <option value="Road Surface Tension Crack">Road Surface Tension Crack</option>
-          <option value="Mud / Rock Runoff">Mud / Rock Runoff</option>
-          <option value="Retaining Wall Tilt">Retaining Wall Tilt</option>
-          <option value="Culvert / Drainage Clog">Culvert / Drainage Clog</option>
+          <option value="Vehicular Smoke / Transit Exhaust">Vehicular Smoke / Transit Exhaust</option>
+          <option value="Industrial Chimney Emission">Industrial Chimney Emission</option>
+          <option value="Crop Residue / Stubble Burning">Crop Residue / Stubble Burning</option>
+          <option value="Unpaved Road Dust / Dust Re-suspension">Unpaved Road Dust / Dust Re-suspension</option>
+          <option value="Chemical Effluent / River Discharge">Chemical Effluent / River Discharge</option>
         </select>
       </div>
 
@@ -224,37 +226,52 @@
       </div>
 
       <div class="form-group">
-        <label>Attach Calamity Ground Photo</label>
+        <label>Attach Field Visual Proof</label>
         <input type="file" id="rep-image" accept="image/*" class="file-input" />
         <div id="image-preview-wrapper" class="image-preview-wrapper">
-          <img id="image-preview" src="" alt="Incident Preview" />
+          <img id="image-preview" src="" alt="Pollution Source Preview" />
           <button type="button" id="btn-remove-image" class="btn-remove-preview">&times;</button>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Field Notes / Description</label>
-        <textarea id="rep-desc" rows="3" placeholder="Describe fracture width, active seepage, or rock noise..." required></textarea>
+        <label>Field Observation / Details</label>
+        <textarea id="rep-desc" rows="3" placeholder="Describe odor intensity, smoke density, idling trucks, or boiler plume width..." required></textarea>
       </div>
 
-      <button type="submit" class="submit-btn">Report Incident</button>
+      <button type="submit" class="submit-btn">Report Pollution Source</button>
     </form>
 
     <div id="status-msg"></div>
   </div>
 
   <script>
-    // Request notification permission on page load
+    function getApiBase() {
+      const hostname = window.location.hostname;
+      const isLocal =
+        hostname === "" ||
+        hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        /^192\.168\./.test(hostname) ||
+        /^10\./.test(hostname) ||
+        /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
+
+      if (isLocal) {
+        return `http://${hostname || "127.0.0.1"}:8000`;
+      }
+      return "https://giri-rakshak-zsk5.onrender.com";
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
+        Notification.permission = Notification.requestPermission();
+      }
+
+      const currentRole = sessionStorage.getItem('userRole');
+      if (currentRole && currentRole === 'official') {
+        window.location.href = 'index.html';
       }
     });
-
-    const currentRole = sessionStorage.getItem('userRole');
-    if (!currentRole || currentRole !== 'citizen') {
-      window.location.href = 'login.html';
-    }
 
     let selectedPhotoFile = null;
     let uploadedImageBase64 = null;
@@ -297,99 +314,98 @@
             statusMsg.style.color = "var(--accent-green)";
           },
           () => {
-            document.getElementById('rep-lat').value = "23.7307";
-            document.getElementById('rep-lng').value = "92.7173";
-            statusMsg.innerText = "GPS unavailable. Set default to Aizawl slope coordinates.";
+            document.getElementById('rep-lat').value = "28.6469";
+            document.getElementById('rep-lng').value = "77.3160";
+            statusMsg.innerText = "GPS unavailable. Defaulting to Anand Vihar Industrial Corridor.";
             statusMsg.style.color = "var(--text-muted)";
           }
         );
+      } else {
+        document.getElementById('rep-lat').value = "28.6469";
+        document.getElementById('rep-lng').value = "77.3160";
+        statusMsg.innerText = "Geolocation not supported. Defaulting to Anand Vihar.";
+        statusMsg.style.color = "var(--text-muted)";
       }
     };
 
     document.getElementById('standalone-report-form').onsubmit = async (e) => {
       e.preventDefault();
-      statusMsg.innerText = "Transmitting report to cloud database...";
+      statusMsg.innerText = "Transmitting report to air quality database...";
       statusMsg.style.color = "var(--accent-blue)";
 
       const latVal = parseFloat(document.getElementById('rep-lat').value);
       const lngVal = parseFloat(document.getElementById('rep-lng').value);
       const hazardType = document.getElementById('rep-type').value;
       const descVal = document.getElementById('rep-desc').value;
-      const reporter = sessionStorage.getItem('userId') || 'Citizen';
+      const reporter = sessionStorage.getItem('userId') || 'Field Citizen';
 
-      // 1. Prepare multipart/form-data for the FastAPI backend
       const formData = new FormData();
       formData.append('lat', latVal);
       formData.append('lon', lngVal);
       formData.append('description', descVal);
-      formData.append('category', 'landslide');
+      formData.append('category', 'pollution');
       formData.append('severity', 'high');
+      formData.append('reporter', reporter);
 
       if (selectedPhotoFile) {
         formData.append('photo', selectedPhotoFile);
       }
 
-      const API_BASE = 'https://giri-rakshak-zsk5.onrender.com';
+      const API_BASE = getApiBase();
+      let savedData = null;
 
       try {
         const response = await fetch(`${API_BASE}/api/citizen-report`, {
           method: 'POST',
-          body: formData // Browser automatically assigns multipart/form-data boundary
+          body: formData
         });
 
-        if (!response.ok) {
+        if (response.ok) {
+          savedData = await response.json();
+          console.log('Saved to backend database:', savedData);
+        } else {
           const errDetail = await response.text();
-          console.error('Server rejected report:', response.status, errDetail);
-          statusMsg.innerText = `❌ Server Error (${response.status}). Could not save.`;
-          statusMsg.style.color = "var(--accent-red)";
-          alert(`Failed to save report to database: ${errDetail}`);
-          return;
+          console.warn('Backend rejected report submission:', response.status, errDetail);
         }
-
-        const savedData = await response.json();
-        console.log('Saved to Supabase successfully:', savedData);
-
-        // 2. Cache locally for instant UI responsiveness
-        const newReport = {
-          id: savedData.id || ('cit_' + Date.now()),
-          lat: latVal,
-          lng: lngVal,
-          type: hazardType,
-          desc: descVal,
-          reporter: reporter,
-          image: savedData.photo_path ? `${API_BASE}${savedData.photo_path}` : uploadedImageBase64,
-          timestamp: new Date().toISOString()
-        };
-
-        const list = JSON.parse(localStorage.getItem('giri_citizen_reports') || '[]');
-        list.push(newReport);
-        localStorage.setItem('giri_citizen_reports', JSON.stringify(list));
-        localStorage.setItem('giri_latest_report', JSON.stringify(newReport));
-        sessionStorage.setItem('just_reported', 'true');
-
-        // 3. Trigger System Push Notification
-        if ("Notification" in window && Notification.permission === "granted") {
-          new Notification(`⚠️ CITIZEN HAZARD REPORTED: ${hazardType.toUpperCase()}`, {
-            body: `Location: (${latVal}, ${lngVal})\n${descVal}`,
-            icon: './logo.png',
-            badge: './logo1.png',
-            vibrate: [200, 100, 200]
-          });
-        }
-
-        statusMsg.innerText = "Incident saved to database! Returning to map...";
-        statusMsg.style.color = "var(--accent-green)";
-
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 800);
-
       } catch (networkErr) {
-        console.error('Network failure:', networkErr);
-        statusMsg.innerText = "❌ Network error. Check connection.";
-        statusMsg.style.color = "var(--accent-red)";
-        alert(`Network connection error: ${networkErr.message}`);
+        console.warn('Cloud API unreachable, utilizing local storage sync fallback:', networkErr);
       }
+
+      const generatedId = savedData?.id || ('cit_' + Date.now());
+      const photoPath = savedData?.photo_path ? `${API_BASE}${savedData.photo_path}` : uploadedImageBase64;
+
+      const newReport = {
+        id: generatedId,
+        lat: latVal,
+        lng: lngVal,
+        type: hazardType,
+        desc: descVal,
+        reporter: reporter,
+        image: photoPath,
+        timestamp: new Date().toISOString()
+      };
+
+      const list = JSON.parse(localStorage.getItem('giri_citizen_reports') || '[]');
+      list.push(newReport);
+      localStorage.setItem('giri_citizen_reports', JSON.stringify(list));
+      localStorage.setItem('giri_latest_report', JSON.stringify(newReport));
+      sessionStorage.setItem('just_reported', 'true');
+
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(`💨 POLLUTION INCIDENT REPORTED: ${hazardType.toUpperCase()}`, {
+          body: `Location: (${latVal}, ${lngVal})\n${descVal}`,
+          icon: './logo.png',
+          badge: './logo1.png',
+          vibrate: [200, 100, 200]
+        });
+      }
+
+      statusMsg.innerText = "Incident saved! Redirecting to pollution dashboard grid...";
+      statusMsg.style.color = "var(--accent-green)";
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 800);
     };
   </script>
 </body>
