@@ -1,0 +1,16 @@
+{
+  "task": "next_hour_pm25_forecast",
+  "data_source": "synthetic_demo",
+  "unit": "ug/m3",
+  "train_rows": 1716,
+  "test_rows": 432,
+  "model_mae": 8.62771468121556,
+  "model_rmse": 11.02592157134375,
+  "persistence_baseline_mae": 12.181504629629629,
+  "persistence_baseline_rmse": 15.028130035407303,
+  "limitations": [
+    "Trained only on synthetic demo data.",
+    "Metrics do not represent real-world forecasting performance.",
+    "Not an official AQI or regulatory prediction."
+  ]
+}
