@@ -1,9 +1,10 @@
-import os
+﻿import os
 from sqlalchemy import inspect, text
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from routes.air_quality import router as air_quality_router
+from routes.geo import router as geo_router
 from config import CORS_ORIGINS, UPLOAD_DIR
 from database import Base, engine
 from routes.pollution import router as pollution_router
@@ -118,6 +119,7 @@ app.include_router(alerts_router)
 app.include_router(devices_router)
 app.include_router(pollution_router)
 app.include_router(air_quality_router)
+app.include_router(geo_router)
 @app.get("/")
 def root():
     return {"status": "online", "message": "GiriRakshak API v2 is running"}
@@ -126,3 +128,4 @@ def root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "database": "configured"}
+

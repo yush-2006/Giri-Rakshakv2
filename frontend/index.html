@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -28,7 +28,7 @@
     <!-- Search Bar -->
     <div class="nav-search-container">
       <div class="search-input-wrapper">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon">ðŸ”</span>
         <input type="text" id="global-search-input" placeholder="Search city, corridor, or monitoring zone..."
           autocomplete="off" />
         <button id="search-clear-btn" class="search-clear-btn hidden">&times;</button>
@@ -44,7 +44,7 @@
       </div>
 
       <button id="theme-toggle-btn" class="btn btn-outline" aria-label="Toggle Theme">
-        <span id="theme-icon">🌙</span>
+        <span id="theme-icon">ðŸŒ™</span>
         <span id="theme-label">Dark</span>
       </button>
 
@@ -68,7 +68,7 @@
 
       <div class="region-filter-card">
         <div class="filter-header">
-          <span class="filter-icon">🌐</span>
+          <span class="filter-icon">ðŸŒ</span>
           <div>
             <strong>Air Quality Platform</strong>
             <small id="current-forecast-date">National AQI &amp; Emission Telemetry</small>
@@ -77,48 +77,7 @@
 
         <div class="filter-controls">
           <div class="control-group">
-            <label for="state-select">Select State / UT</label>
-            <select id="state-select" class="custom-select">
-              <option value="">-- All States & UTs --</option>
-              <!-- States -->
-              <option value="andhra_pradesh">Andhra Pradesh</option>
-              <option value="arunachal_pradesh">Arunachal Pradesh</option>
-              <option value="assam">Assam</option>
-              <option value="bihar">Bihar</option>
-              <option value="chhattisgarh">Chhattisgarh</option>
-              <option value="goa">Goa</option>
-              <option value="gujarat">Gujarat</option>
-              <option value="haryana">Haryana</option>
-              <option value="himachal_pradesh">Himachal Pradesh</option>
-              <option value="jharkhand">Jharkhand</option>
-              <option value="karnataka">Karnataka</option>
-              <option value="kerala">Kerala</option>
-              <option value="madhya_pradesh">Madhya Pradesh</option>
-              <option value="maharashtra">Maharashtra</option>
-              <option value="manipur">Manipur</option>
-              <option value="meghalaya">Meghalaya</option>
-              <option value="mizoram">Mizoram</option>
-              <option value="nagaland">Nagaland</option>
-              <option value="odisha">Odisha</option>
-              <option value="punjab">Punjab</option>
-              <option value="rajasthan">Rajasthan</option>
-              <option value="sikkim">Sikkim</option>
-              <option value="tamil_nadu">Tamil Nadu</option>
-              <option value="telangana">Telangana</option>
-              <option value="tripura">Tripura</option>
-              <option value="uttar_pradesh">Uttar Pradesh</option>
-              <option value="uttarakhand">Uttarakhand</option>
-              <option value="west_bengal">West Bengal</option>
-              <!-- Union Territories -->
-              <option value="andaman_nicobar">Andaman and Nicobar Islands</option>
-              <option value="chandigarh">Chandigarh</option>
-              <option value="dadra_nagar_haveli_daman_diu">Dadra and Nagar Haveli and Daman and Diu</option>
-              <option value="delhi">Delhi NCR</option>
-              <option value="jammu_kashmir">Jammu and Kashmir</option>
-              <option value="ladakh">Ladakh</option>
-              <option value="lakshadweep">Lakshadweep</option>
-              <option value="puducherry">Puducherry</option>
-            </select>
+            <label>SELECT COUNTRY</label><select id="state-select"><option value="">-- Select BRICS Country --</option><option value="IND">India</option><option value="BRA">Brazil</option><option value="RUS">Russia</option><option value="CHN">China</option><option value="ZAF">South Africa</option><option value="EGY">Egypt</option><option value="ETH">Ethiopia</option><option value="IDN">Indonesia</option><option value="IRN">Iran</option><option value="SAU">Saudi Arabia</option><option value="ARE">United Arab Emirates</option></select><small style="display:block;margin-top:8px;color:#64748b;font-size:12px;">Select a country from dropdown to see pollution hotspots</small>
           </div>
 
           <div class="control-group">
@@ -127,15 +86,15 @@
               <option value="">-- Select District / Corridor --</option>
             </select>
           </div>
-          <button class="btn btn-primary btn-sm" id="btn-reset-view">↺ Reset Map View </button>
+          <button class="btn btn-primary btn-sm" id="btn-reset-view">â†º Reset Map View </button>
         </div>
       </div>
 
       <div class="map-legend">
         <h4>Air Quality Index (AQI) Scale</h4>
-        <div class="legend-item"><span class="dot watch" style="background:#ede9fe;"></span> Moderate (101 – 200)</div>
-        <div class="legend-item"><span class="dot high" style="background:#c4b5fd;"></span> Poor (201 – 300)</div>
-        <div class="legend-item"><span class="dot very-high" style="background:#8b5cf6;"></span> Very Poor (301 – 400)</div>
+        <div class="legend-item"><span class="dot watch" style="background:#ede9fe;"></span> Moderate (101 â€“ 200)</div>
+        <div class="legend-item"><span class="dot high" style="background:#c4b5fd;"></span> Poor (201 â€“ 300)</div>
+        <div class="legend-item"><span class="dot very-high" style="background:#8b5cf6;"></span> Very Poor (301 â€“ 400)</div>
         <div class="legend-item"><span class="dot extreme" style="background:#991b1b;"></span> Severe / Critical (401+)</div>
         <hr />
         <div class="legend-item"><span class="dot citizen"></span> Ground Air Incident Pin</div>
@@ -157,27 +116,27 @@
             <span class="source-tag">DEMO</span>
           </div>
           <p style="font-size:11px;color:#b45309;background:#fffbeb;padding:8px;border-radius:6px;">
-            Synthetic prototype data only — not live or official AQI.
+            Synthetic prototype data only â€” not live or official AQI.
           </p>
           <div id="brics-city-list" style="display:grid;gap:8px;">
-            <p style="font-size:12px;color:#64748b;">Loading demo city signals…</p>
+            <p style="font-size:12px;color:#64748b;">Loading demo city signalsâ€¦</p>
           </div>
           <div style="margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px;">
             <strong style="font-size:12px;">Illustrative Hotspot Signals</strong>
             <div style="font-size:11px;color:#b45309;margin:4px 0 8px;">
-              Simulated scenarios — not verified detections
+              Simulated scenarios â€” not verified detections
             </div>
             <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;margin-bottom:6px;">
               <strong>Industrial corridor</strong><br>
-              Demo signal · Elevated particulate concentration
+              Demo signal Â· Elevated particulate concentration
             </div>
             <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;margin-bottom:6px;">
               <strong>Agricultural burning</strong><br>
-              Demo scenario · Potential regional smoke transport
+              Demo scenario Â· Potential regional smoke transport
             </div>
             <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;">
               <strong>Cross-border haze</strong><br>
-              Demo scenario · Coordinated monitoring needed
+              Demo scenario Â· Coordinated monitoring needed
             </div>
           </div>
           <div id="brics-federated-status" style="font-size:12px;margin-top:10px;">
@@ -246,7 +205,7 @@
             <div
               style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
               <div>
-                <strong style="color: #0f172a; font-size: 13px; display: block;">NH-29 (Dimapur–Kohima)</strong>
+                <strong style="color: #0f172a; font-size: 13px; display: block;">NH-29 (Dimapurâ€“Kohima)</strong>
                 <span style="font-size: 11px; color: #64748b;">Heavy Freight &amp; Diesel Emission Zone</span>
               </div>
               <span
@@ -257,7 +216,7 @@
             <div
               style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
               <div>
-                <strong style="color: #0f172a; font-size: 13px; display: block;">NH-06 (Shillong–Silchar)</strong>
+                <strong style="color: #0f172a; font-size: 13px; display: block;">NH-06 (Shillongâ€“Silchar)</strong>
                 <span style="font-size: 11px; color: #64748b;">Industrial Quarry Transit Sector</span>
               </div>
               <span
@@ -267,7 +226,7 @@
             <div
               style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
               <div>
-                <strong style="color: #0f172a; font-size: 13px; display: block;">NH-10 (Siliguri–Gangtok)</strong>
+                <strong style="color: #0f172a; font-size: 13px; display: block;">NH-10 (Siliguriâ€“Gangtok)</strong>
                 <span style="font-size: 11px; color: #64748b;">Mountain Eco-Corridor Transit</span>
               </div>
               <span
@@ -421,16 +380,16 @@
 
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0;">
             <div style="background: #0f172a; padding: 8px 4px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 10px; color: #94a3b8;">PM2.5 (µg/m³)</div>
-              <strong id="val-tilt" style="font-size: 14px; color: #ea580c;">—</strong>
+              <div style="font-size: 10px; color: #94a3b8;">PM2.5 (Âµg/mÂ³)</div>
+              <strong id="val-tilt" style="font-size: 14px; color: #ea580c;">â€”</strong>
             </div>
             <div style="background: #0f172a; padding: 8px 4px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 10px; color: #94a3b8;">PM10 (µg/m³)</div>
-              <strong id="val-moisture" style="font-size: 14px; color: #0284c7;">—</strong>
+              <div style="font-size: 10px; color: #94a3b8;">PM10 (Âµg/mÂ³)</div>
+              <strong id="val-moisture" style="font-size: 14px; color: #0284c7;">â€”</strong>
             </div>
             <div style="background: #0f172a; padding: 8px 4px; border-radius: 4px; text-align: center;">
               <div style="font-size: 10px; color: #94a3b8;">NO2 Conc. (ppb)</div>
-              <strong id="val-rain" style="font-size: 14px; color: #10b981;">—</strong>
+              <strong id="val-rain" style="font-size: 14px; color: #10b981;">â€”</strong>
             </div>
           </div>
 
@@ -459,46 +418,46 @@
             <div id="full-esp32-grid" style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px;">
 
               <!-- STATE -->
-              <div class="esp32-full-cell"><span>Sensor ID</span><strong id="full-sensor-id">—</strong></div>
-              <div class="esp32-full-cell"><span>Alert Level</span><strong id="full-alert-level">—</strong></div>
-              <div class="esp32-full-cell"><span>System State</span><strong id="full-system-state">—</strong></div>
+              <div class="esp32-full-cell"><span>Sensor ID</span><strong id="full-sensor-id">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Alert Level</span><strong id="full-alert-level">â€”</strong></div>
+              <div class="esp32-full-cell"><span>System State</span><strong id="full-system-state">â€”</strong></div>
 
               <!-- LOCATION -->
-              <div class="esp32-full-cell"><span>Latitude</span><strong id="full-lat">—</strong></div>
-              <div class="esp32-full-cell"><span>Longitude</span><strong id="full-lon">—</strong></div>
-              <div class="esp32-full-cell"><span>Updated</span><strong id="full-updated">—</strong></div>
+              <div class="esp32-full-cell"><span>Latitude</span><strong id="full-lat">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Longitude</span><strong id="full-lon">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Updated</span><strong id="full-updated">â€”</strong></div>
 
               <!-- PARTICULATE METRICS -->
-              <div class="esp32-full-cell"><span>PM2.5 Conc.</span><strong id="full-tilt">—</strong></div>
-              <div class="esp32-full-cell"><span>PM2.5 Delta</span><strong id="full-tilt-change">—</strong></div>
-              <div class="esp32-full-cell"><span>PM2.5 Rate</span><strong id="full-tilt-rate">—</strong></div>
-              <div class="esp32-full-cell"><span>PM2.5 10s Avg</span><strong id="full-tilt-10s">—</strong></div>
+              <div class="esp32-full-cell"><span>PM2.5 Conc.</span><strong id="full-tilt">â€”</strong></div>
+              <div class="esp32-full-cell"><span>PM2.5 Delta</span><strong id="full-tilt-change">â€”</strong></div>
+              <div class="esp32-full-cell"><span>PM2.5 Rate</span><strong id="full-tilt-rate">â€”</strong></div>
+              <div class="esp32-full-cell"><span>PM2.5 10s Avg</span><strong id="full-tilt-10s">â€”</strong></div>
 
               <!-- GAS & SENSOR DATA -->
-              <div class="esp32-full-cell"><span>NO2 Density</span><strong id="full-accel-x">—</strong></div>
-              <div class="esp32-full-cell"><span>CO Level</span><strong id="full-accel-y">—</strong></div>
-              <div class="esp32-full-cell"><span>O3 Conc.</span><strong id="full-accel-z">—</strong></div>
-              <div class="esp32-full-cell"><span>AQI Index</span><strong id="full-accel-mag">—</strong></div>
-              <div class="esp32-full-cell"><span>Spike Jump</span><strong id="full-accel-jump">—</strong></div>
-              <div class="esp32-full-cell"><span>Particulate RMS</span><strong id="full-vibration">—</strong></div>
-              <div class="esp32-full-cell"><span>Air Flow Ratio</span><strong id="full-movement">—</strong></div>
+              <div class="esp32-full-cell"><span>NO2 Density</span><strong id="full-accel-x">â€”</strong></div>
+              <div class="esp32-full-cell"><span>CO Level</span><strong id="full-accel-y">â€”</strong></div>
+              <div class="esp32-full-cell"><span>O3 Conc.</span><strong id="full-accel-z">â€”</strong></div>
+              <div class="esp32-full-cell"><span>AQI Index</span><strong id="full-accel-mag">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Spike Jump</span><strong id="full-accel-jump">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Particulate RMS</span><strong id="full-vibration">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Air Flow Ratio</span><strong id="full-movement">â€”</strong></div>
 
               <!-- METEOROLOGICAL -->
-              <div class="esp32-full-cell"><span>VOC Index</span><strong id="full-soil">—</strong></div>
-              <div class="esp32-full-cell"><span>VOC Delta</span><strong id="full-soil-change">—</strong></div>
-              <div class="esp32-full-cell"><span>VOC Rate</span><strong id="full-soil-rate">—</strong></div>
+              <div class="esp32-full-cell"><span>VOC Index</span><strong id="full-soil">â€”</strong></div>
+              <div class="esp32-full-cell"><span>VOC Delta</span><strong id="full-soil-change">â€”</strong></div>
+              <div class="esp32-full-cell"><span>VOC Rate</span><strong id="full-soil-rate">â€”</strong></div>
 
               <!-- OPTICAL / LASER COUNTER -->
-              <div class="esp32-full-cell"><span>Laser Counter</span><strong id="full-distance">—</strong></div>
-              <div class="esp32-full-cell"><span>Particle Change</span><strong id="full-distance-change">—</strong></div>
-              <div class="esp32-full-cell"><span>Flow Rate</span><strong id="full-distance-rate">—</strong></div>
-              <div class="esp32-full-cell"><span>Displacement</span><strong id="full-displacement">—</strong></div>
+              <div class="esp32-full-cell"><span>Laser Counter</span><strong id="full-distance">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Particle Change</span><strong id="full-distance-change">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Flow Rate</span><strong id="full-distance-rate">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Displacement</span><strong id="full-displacement">â€”</strong></div>
 
               <!-- ENVIRONMENT -->
-              <div class="esp32-full-cell"><span>BMP Pressure</span><strong id="full-pressure">—</strong></div>
-              <div class="esp32-full-cell"><span>Ambient Temp</span><strong id="full-temperature">—</strong></div>
-              <div class="esp32-full-cell"><span>Humidity</span><strong id="full-humidity">—</strong></div>
-              <div class="esp32-full-cell"><span>Rainfall</span><strong id="full-rainfall">—</strong></div>
+              <div class="esp32-full-cell"><span>BMP Pressure</span><strong id="full-pressure">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Ambient Temp</span><strong id="full-temperature">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Humidity</span><strong id="full-humidity">â€”</strong></div>
+              <div class="esp32-full-cell"><span>Rainfall</span><strong id="full-rainfall">â€”</strong></div>
 
             </div>
 
@@ -593,9 +552,9 @@
               style="width: 100%; margin-bottom: 8px; padding: 7px 10px; font-size: 12px;">
               <option value="en">English Broadcast</option>
               <option value="mz">Mizo (Duhlian)</option>
-              <option value="as">Assamese (অসমীয়া)</option>
-              <option value="bn">Bengali (বাংলা)</option>
-              <option value="hi">Hindi (हिन्दी)</option>
+              <option value="as">Assamese (à¦…à¦¸à¦®à§€à¦¯à¦¼à¦¾)</option>
+              <option value="bn">Bengali (à¦¬à¦¾à¦‚à¦²à¦¾)</option>
+              <option value="hi">Hindi (à¤¹à¤¿à¤¨à¥à¤¦à¥€)</option>
             </select>
 
             <div id="alert-preview-text"
@@ -605,7 +564,7 @@
 
             <button id="btn-trigger-alert" class="submit-btn"
               style="width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #ffffff; background: linear-gradient(135deg, #e11d48, #be123c); border: none; border-radius: 6px; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;">
-              <span>📢</span> Transmit Cell Broadcast
+              <span>ðŸ“¢</span> Transmit Cell Broadcast
             </button>
           </div>
         </section>
@@ -637,7 +596,7 @@
           style="width: 100%; box-sizing: border-box; padding: 10px 12px; margin: 6px 0 14px 0; background: #0f172a; border: 1px solid #334155; color: #ffffff; border-radius: 6px; font-size: 13px; outline: none;">
 
         <label style="display: block; font-size: 12px; color: #94a3b8; font-weight: 500;">Password</label>
-        <input type="password" id="login-pwd-input" required placeholder="••••••••"
+        <input type="password" id="login-pwd-input" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
           style="width: 100%; box-sizing: border-box; padding: 10px 12px; margin: 6px 0 18px 0; background: #0f172a; border: 1px solid #334155; color: #ffffff; border-radius: 6px; font-size: 13px; outline: none;">
 
         <button type="submit"
@@ -686,3 +645,5 @@
   }
 }
 </style>
+
+

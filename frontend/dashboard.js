@@ -1,4 +1,4 @@
-// =========================================================================
+﻿// =========================================================================
 // GiriRakshak SIH Early Warning System Engine
 // Complete Live Regional Open-Meteo Ingestion + Dynamic AI Heatmap Engine
 // Real-time ESP32 Pipeline + Overpass Highway Network 1 km Avoidance Corridors
@@ -26,7 +26,7 @@ L.control.zoom({ position: 'bottomright' }).addTo(map);
 // Google Maps Terrain/Roads Layer
 L.tileLayer('https://mt1.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}', {
   maxZoom: 18,
-  attribution: '© Google Maps | GiriRakshak EWS SIH'
+  attribution: 'Â© Google Maps | GiriRakshak EWS SIH'
 }).addTo(map);
 
 // Layer Groups
@@ -56,7 +56,7 @@ const indiaData = {
         riskLevel: "extreme",
         riskScore: 94.2,
         alertTitle: "CRITICAL AQI SPIKE: Urban Transit Corridor",
-        alertText: "Live physical ESP32 telemetry confirms severe particulate matter spikes (PM2.5: 182 µg/m³) driven by diesel exhaust stagnation.",
+        alertText: "Live physical ESP32 telemetry confirms severe particulate matter spikes (PM2.5: 182 Âµg/mÂ³) driven by diesel exhaust stagnation.",
         telemetry: { tilt: 182, moisture: 240, rain: 89 },
         zones: [{
           name: "Aizawl Urban Air Monitoring Corridor",
@@ -306,7 +306,7 @@ const indiaData = {
         riskLevel: "extreme",
         riskScore: 98.2,
         alertTitle: "CRITICAL EMERGENCY: Severe Industrial & Bus Hub AQI",
-        alertText: "Severe PM2.5 levels exceeding 420 µg/m³. Public health advisory active.",
+        alertText: "Severe PM2.5 levels exceeding 420 Âµg/mÂ³. Public health advisory active.",
         telemetry: { tilt: 420, moisture: 510, rain: 145 },
         zones: [{
           name: "Anand Vihar Transit Hub",
@@ -1084,8 +1084,8 @@ const indiaData = {
 const translations = {
   en: "Warning: High landslide hazard detected on slope cuts. Evacuate immediately.",
   mz: "Fimkhurna: He laiah hian leimin hlauhawm a awm. Kham bul atangin inthiarfihlim vat rawh u.",
-  as: "সাৱধান: পাহাৰীয়া অঞ্চলত ভূমিস্খলনৰ প্ৰৱল আশংকা। অবিলম্বে সুৰক্ষিত স্থানলৈ যাওক।",
-  bn: "সতর্কতা: বিপজ্জনক পাহাড়ী ঢালে ভূমিধসের সম্ভাবনা। দ্রুত নিরাপদ আশ্রয়ে যান."
+  as: "à¦¸à¦¾à§±à¦§à¦¾à¦¨: à¦ªà¦¾à¦¹à¦¾à§°à§€à¦¯à¦¼à¦¾ à¦…à¦žà§à¦šà¦²à¦¤ à¦­à§‚à¦®à¦¿à¦¸à§à¦–à¦²à¦¨à§° à¦ªà§à§°à§±à¦² à¦†à¦¶à¦‚à¦•à¦¾à¥¤ à¦…à¦¬à¦¿à¦²à¦®à§à¦¬à§‡ à¦¸à§à§°à¦•à§à¦·à¦¿à¦¤ à¦¸à§à¦¥à¦¾à¦¨à¦²à§ˆ à¦¯à¦¾à¦“à¦•à¥¤",
+  bn: "à¦¸à¦¤à¦°à§à¦•à¦¤à¦¾: à¦¬à¦¿à¦ªà¦œà§à¦œà¦¨à¦• à¦ªà¦¾à¦¹à¦¾à¦¡à¦¼à§€ à¦¢à¦¾à¦²à§‡ à¦­à§‚à¦®à¦¿à¦§à¦¸à§‡à¦° à¦¸à¦®à§à¦­à¦¾à¦¬à¦¨à¦¾à¥¤ à¦¦à§à¦°à§à¦¤ à¦¨à¦¿à¦°à¦¾à¦ªà¦¦ à¦†à¦¶à§à¦°à¦¯à¦¼à§‡ à¦¯à¦¾à¦¨."
 };
 
 function getHazardColor(scoreOrLevel) {
@@ -1125,7 +1125,7 @@ function initChart() {
       labels: ['-20s', '-16s', '-12s', '-8s', '-4s', 'Now'],
       datasets: [
         {
-          label: 'Tilt (°)',
+          label: 'Tilt (Â°)',
           data: [5.0, 8.0, 11.0, 14.0, 16.0, 18.2],
           borderColor: '#ea580c',
           backgroundColor: 'rgba(234, 88, 12, 0.1)',
@@ -1301,15 +1301,15 @@ async function loadLatestSensorTelemetryForZone(zoneId) {
     const moistEl = document.getElementById('val-moisture');
     const rainEl = document.getElementById('val-rain');
 
-    if (titleEl) titleEl.innerText = `${zoneId} — Sensor Telemetry`;
-    if (descEl) descEl.innerText = `Data Source: Sensor Simulation / ESP32 Pipeline • Updated ${formatSensorTime(reading.timestamp)}`;
+    if (titleEl) titleEl.innerText = `${zoneId} â€” Sensor Telemetry`;
+    if (descEl) descEl.innerText = `Data Source: Sensor Simulation / ESP32 Pipeline â€¢ Updated ${formatSensorTime(reading.timestamp)}`;
     if (badgeEl) {
       badgeEl.className = 'badge blue';
       badgeEl.innerText = 'SENSOR DATA';
     }
-    if (tiltEl) tiltEl.innerText = Number.isFinite(tilt) ? `${tilt.toFixed(1)}°` : '—';
-    if (moistEl) moistEl.innerText = Number.isFinite(moisture) ? `${moisture.toFixed(1)}%` : '—';
-    if (rainEl) rainEl.innerText = '—';
+    if (tiltEl) tiltEl.innerText = Number.isFinite(tilt) ? `${tilt.toFixed(1)}Â°` : 'â€”';
+    if (moistEl) moistEl.innerText = Number.isFinite(moisture) ? `${moisture.toFixed(1)}%` : 'â€”';
+    if (rainEl) rainEl.innerText = 'â€”';
 
     if (telemetryChart && telemetryChart.data && telemetryChart.data.datasets.length >= 2) {
       const tiltData = telemetryChart.data.datasets[0].data;
@@ -1337,13 +1337,13 @@ function updateFullEsp32Telemetry(reading) {
     if (!el) return;
 
     if (value === null || value === undefined || value === "") {
-      el.textContent = "—";
+      el.textContent = "â€”";
       return;
     }
 
     const n = Number(value);
     if (!Number.isFinite(n)) {
-      el.textContent = "—";
+      el.textContent = "â€”";
       return;
     }
 
@@ -1353,21 +1353,21 @@ function updateFullEsp32Telemetry(reading) {
   function setText(id, value) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.textContent = (value === null || value === undefined || value === "") ? "—" : String(value);
+    el.textContent = (value === null || value === undefined || value === "") ? "â€”" : String(value);
   }
 
   setText("full-sensor-id", reading.sensor_id);
   setText("full-alert-level", reading.alert_level);
   setText("full-system-state", reading.system_state);
-  setText("full-updated", reading.timestamp ? new Date(reading.timestamp).toLocaleTimeString() : "—");
+  setText("full-updated", reading.timestamp ? new Date(reading.timestamp).toLocaleTimeString() : "â€”");
 
   set("full-lat", reading.lat, 6);
   set("full-lon", reading.lon, 6);
 
-  set("full-tilt", reading.tilt_deg, 3, "°");
-  set("full-tilt-change", reading.tilt_change_deg, 3, "°");
-  set("full-tilt-rate", reading.tilt_rate_dph, 3, "°/h");
-  set("full-tilt-10s", reading.tilt_sudden_change_10s_deg, 3, "°");
+  set("full-tilt", reading.tilt_deg, 3, "Â°");
+  set("full-tilt-change", reading.tilt_change_deg, 3, "Â°");
+  set("full-tilt-rate", reading.tilt_rate_dph, 3, "Â°/h");
+  set("full-tilt-10s", reading.tilt_sudden_change_10s_deg, 3, "Â°");
 
   set("full-accel-x", reading.accel_x_g, 4, "g");
   set("full-accel-y", reading.accel_y_g, 4, "g");
@@ -1387,13 +1387,13 @@ function updateFullEsp32Telemetry(reading) {
   set("full-displacement", reading.displacement_cm, 3, "cm");
 
   set("full-pressure", reading.pressure_hpa, 2, "hPa");
-  set("full-temperature", reading.temperature_c, 2, "°C");
+  set("full-temperature", reading.temperature_c, 2, "Â°C");
   set("full-humidity", reading.humidity_pct, 2, "%");
   set("full-rainfall", reading.rainfall_mm, 2, "mm");
 
   const status = document.getElementById("full-esp32-status");
   if (status) {
-    status.textContent = "Live ESP32 hardware • Updated " + new Date().toLocaleTimeString();
+    status.textContent = "Live ESP32 hardware â€¢ Updated " + new Date().toLocaleTimeString();
     status.style.color = "#86efac";
   }
 
@@ -1433,15 +1433,15 @@ async function loadLatestSensorTelemetryBySensorId(sensorId) {
     const moistEl = document.getElementById('val-moisture');
     const rainEl = document.getElementById('val-rain');
 
-    if (titleEl) titleEl.innerText = `${sensorId} — ESP32 Edge Telemetry`;
-    if (descEl) descEl.innerText = `Data Source: Physical ESP32 Sensor • Updated ${formatSensorTime(reading.timestamp)}`;
+    if (titleEl) titleEl.innerText = `${sensorId} â€” ESP32 Edge Telemetry`;
+    if (descEl) descEl.innerText = `Data Source: Physical ESP32 Sensor â€¢ Updated ${formatSensorTime(reading.timestamp)}`;
     if (badgeEl) {
       badgeEl.className = 'badge purple';
       badgeEl.innerText = 'LIVE HARDWARE';
     }
-    if (tiltEl) tiltEl.innerText = Number.isFinite(tilt) ? `${tilt.toFixed(1)}°` : '—';
-    if (moistEl) moistEl.innerText = Number.isFinite(moisture) ? `${moisture.toFixed(1)}%` : '—';
-    if (rainEl) rainEl.innerText = '—';
+    if (tiltEl) tiltEl.innerText = Number.isFinite(tilt) ? `${tilt.toFixed(1)}Â°` : 'â€”';
+    if (moistEl) moistEl.innerText = Number.isFinite(moisture) ? `${moisture.toFixed(1)}%` : 'â€”';
+    if (rainEl) rainEl.innerText = 'â€”';
 
     if (telemetryChart && telemetryChart.data && telemetryChart.data.datasets.length >= 2) {
       telemetryChart.data.datasets[0].data = [tilt, tilt, tilt, tilt, tilt, tilt];
@@ -1558,7 +1558,7 @@ async function renderDendriticRidgeHeatmap() {
           <strong>${districtName}</strong><br>
           State: ${stateName}<br>
           Demo AQI: <strong>${aqi}</strong><br>
-          <small>Synthetic demo data — not official/live AQI</small>
+          <small>Synthetic demo data â€” not official/live AQI</small>
         `);
       }
     }).addTo(map);
@@ -1663,9 +1663,9 @@ function resetOverviewSidebar() {
   const elMoist = document.getElementById('val-moisture');
   const elRain = document.getElementById('val-rain');
 
-  if (elTilt) elTilt.innerText = '—';
-  if (elMoist) elMoist.innerText = '—';
-  if (elRain) elRain.innerText = '—';
+  if (elTilt) elTilt.innerText = 'â€”';
+  if (elMoist) elMoist.innerText = 'â€”';
+  if (elRain) elRain.innerText = 'â€”';
 }
 
 function updateBackendZoneView(zone) {
@@ -1686,7 +1686,7 @@ function updateBackendZoneView(zone) {
     sourceTag.innerText = 'LIVE ML BACKEND';
     sourceTag.classList.remove('hardware');
   }
-  if (cardTitle) cardTitle.innerText = `${zone.zone_id} — ML Risk Zone`;
+  if (cardTitle) cardTitle.innerText = `${zone.zone_id} â€” ML Risk Zone`;
   if (sourceDesc) sourceDesc.innerText = 'Data Source: FastAPI + Validated ML Fusion Pipeline';
   if (hwBadge) {
     hwBadge.className = 'badge blue';
@@ -1734,7 +1734,7 @@ async function updateDistrictView(stateKey, distKey) {
       sourceTag.innerText = "LIVE ESP32 DEPLOYMENT";
       sourceTag.classList.add('hardware');
     }
-    if (cardTitle) cardTitle.innerText = "Aizawl — ESP32 Edge Station";
+    if (cardTitle) cardTitle.innerText = "Aizawl â€” ESP32 Edge Station";
     if (sourceDesc) sourceDesc.innerText = "Waiting for physical ESP32 telemetry...";
     if (hwBadge) {
       hwBadge.className = 'badge purple';
@@ -1745,7 +1745,7 @@ async function updateDistrictView(stateKey, distKey) {
       sourceTag.innerText = "LIVE OPEN-METEO & GIS MODEL";
       sourceTag.classList.remove('hardware');
     }
-    if (cardTitle) cardTitle.innerText = `${dist.name} — Live Feeds`;
+    if (cardTitle) cardTitle.innerText = `${dist.name} â€” Live Feeds`;
     if (sourceDesc) sourceDesc.innerText = "Data Source: Live IMD/Open-Meteo Satellite Precipitation";
     if (hwBadge) {
       hwBadge.className = 'badge gray';
@@ -1758,11 +1758,11 @@ async function updateDistrictView(stateKey, distKey) {
   const elRain = document.getElementById('val-rain');
 
   if (isHardware) {
-    if (elTilt) elTilt.innerText = '—';
-    if (elMoist) elMoist.innerText = '—';
-    if (elRain) elRain.innerText = '—';
+    if (elTilt) elTilt.innerText = 'â€”';
+    if (elMoist) elMoist.innerText = 'â€”';
+    if (elRain) elRain.innerText = 'â€”';
   } else {
-    if (elTilt) elTilt.innerText = `${dist.telemetry.tilt}°`;
+    if (elTilt) elTilt.innerText = `${dist.telemetry.tilt}Â°`;
     if (elMoist) elMoist.innerText = `${dist.telemetry.moisture}%`;
     if (elRain) elRain.innerText = `${dist.telemetry.rain} mm`;
   }
@@ -2243,7 +2243,7 @@ function renderCitizenReportsSidebarList() {
               <div style="font-size: 11px; color: #cbd5e1; margin-top: 1px;">Location: ${r.location || 'Field Zone'}</div>
               <div style="font-size: 11px; color: #94a3b8; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">${r.desc || 'No description'}</div>
             </div>
-            <button type="button" onclick="window.deleteCitizenReport('${r.id}')" style="background: #ef4444; color: #fff; border: none; border-radius: 4px; padding: 3px 6px; font-size: 11px; font-weight: bold; cursor: pointer;">✕</button>
+            <button type="button" onclick="window.deleteCitizenReport('${r.id}')" style="background: #ef4444; color: #fff; border: none; border-radius: 4px; padding: 3px 6px; font-size: 11px; font-weight: bold; cursor: pointer;">âœ•</button>
           </div>
         `
           )
@@ -2270,7 +2270,7 @@ function renderCitizenReportsSidebarList() {
           </div>
           <button type="button" onclick="window.deleteCitizenReport('${r.id}')" 
             style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 5px; padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
-            ✕ Delete
+            âœ• Delete
           </button>
         </div>
       `
@@ -2626,7 +2626,7 @@ function ensureLiveSensorAlertUI() {
   alertBox.id = 'live-sensor-alert';
   alertBox.className = 'live-sensor-alert hidden';
   alertBox.innerHTML = `
-    <div class="live-alert-icon">⚠️</div>
+    <div class="live-alert-icon">âš ï¸</div>
     <div class="live-alert-content">
       <div class="live-alert-title">LIVE SENSOR ALERT</div>
       <div id="live-alert-zone" class="live-alert-zone">ESP32 Edge Node</div>
@@ -2634,7 +2634,7 @@ function ensureLiveSensorAlertUI() {
       <div id="live-alert-reading" class="live-alert-reading"></div>
       <div id="live-alert-time" class="live-alert-time">Detected just now</div>
     </div>
-    <button id="live-alert-close" class="live-alert-close" aria-label="Close alert">×</button>
+    <button id="live-alert-close" class="live-alert-close" aria-label="Close alert">Ã—</button>
   `;
 
   document.body.appendChild(alertBox);
@@ -2653,7 +2653,7 @@ function showLiveSensorAlert(alert, reading = null) {
   if (!alertBox || !zoneEl || !messageEl || !readingEl || !timeEl) return;
 
   const zoneId = alert.zone_id || alert.sensor_id || 'ESP32 Edge Node';
-  zoneEl.innerText = `${zoneId} — Reactive Safety Alert`;
+  zoneEl.innerText = `${zoneId} â€” Reactive Safety Alert`;
   messageEl.innerText = alert.message || 'Reactive safety threshold exceeded.';
 
   if (reading) {
@@ -2661,10 +2661,10 @@ function showLiveSensorAlert(alert, reading = null) {
     const moisture = Number(reading.moisture_pct);
     const parts = [];
 
-    if (Number.isFinite(tilt)) parts.push(`Tilt ${tilt.toFixed(1)}°`);
+    if (Number.isFinite(tilt)) parts.push(`Tilt ${tilt.toFixed(1)}Â°`);
     if (Number.isFinite(moisture)) parts.push(`Moisture ${moisture.toFixed(1)}%`);
 
-    readingEl.innerText = parts.length ? parts.join('  •  ') : '';
+    readingEl.innerText = parts.length ? parts.join('  â€¢  ') : '';
     latestSensorReading = reading;
 
     if (zoneId === 'ESP32_01') {
@@ -2683,15 +2683,15 @@ function showLiveSensorAlert(alert, reading = null) {
         sourceTag.innerText = 'LIVE ESP32 DEPLOYMENT';
         sourceTag.classList.add('hardware');
       }
-      if (cardTitle) cardTitle.innerText = 'ESP32_01 — ESP32 Edge Telemetry';
-      if (sourceDesc) sourceDesc.innerText = `Data Source: Physical ESP32 Sensor • Updated ${formatSensorTime(reading.timestamp)}`;
+      if (cardTitle) cardTitle.innerText = 'ESP32_01 â€” ESP32 Edge Telemetry';
+      if (sourceDesc) sourceDesc.innerText = `Data Source: Physical ESP32 Sensor â€¢ Updated ${formatSensorTime(reading.timestamp)}`;
       if (hwBadge) {
         hwBadge.className = 'badge purple';
         hwBadge.innerText = 'LIVE HARDWARE';
       }
-      if (elTilt) elTilt.innerText = Number.isFinite(tilt) ? `${tilt.toFixed(1)}°` : '—';
-      if (elMoist) elMoist.innerText = Number.isFinite(moisture) ? `${moisture.toFixed(1)}%` : '—';
-      if (elRain) elRain.innerText = '—';
+      if (elTilt) elTilt.innerText = Number.isFinite(tilt) ? `${tilt.toFixed(1)}Â°` : 'â€”';
+      if (elMoist) elMoist.innerText = Number.isFinite(moisture) ? `${moisture.toFixed(1)}%` : 'â€”';
+      if (elRain) elRain.innerText = 'â€”';
     }
   } else {
     readingEl.innerText = '';
@@ -2912,7 +2912,7 @@ async function renderAlertsFeed() {
                 ? `
               <button type="button" onclick="window.deleteAlert('${a.id}')" title="Delete Alert" 
                 style="background: #ef4444; color: #ffffff; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; padding: 3px 8px; display: inline-flex; align-items: center; line-height: 1;">
-                ✕ Delete
+                âœ• Delete
               </button>`
                 : ''
             }
@@ -3182,13 +3182,13 @@ function showSensorAlertPopup(alert, reading = null) {
 
   if (level === "critical") {
     accent = "#ef4444";
-    title = "🚨 CRITICAL SENSOR ALERT";
+    title = "ðŸš¨ CRITICAL SENSOR ALERT";
   } else if (level === "watch") {
     accent = "#eab308";
-    title = "⚠ SENSOR WATCH";
+    title = "âš  SENSOR WATCH";
   } else if (level === "very_high") {
     accent = "#dc2626";
-    title = "🚨 VERY HIGH SENSOR ALERT";
+    title = "ðŸš¨ VERY HIGH SENSOR ALERT";
   }
 
   const overlay = document.createElement("div");
@@ -3235,7 +3235,7 @@ function showSensorAlertPopup(alert, reading = null) {
   heading.style.fontSize = "18px";
 
   const close = document.createElement("button");
-  close.textContent = "×";
+  close.textContent = "Ã—";
   Object.assign(close.style, {
     border: "none",
     background: "rgba(255,255,255,0.2)",
@@ -3274,10 +3274,10 @@ function showSensorAlertPopup(alert, reading = null) {
     });
 
     const fields = [
-      ["Tilt", reading.tilt_deg, "°"],
-      ["Tilt Change", reading.tilt_change_deg, "°"],
-      ["Tilt Rate", reading.tilt_rate_dph, "°/h"],
-      ["10s Tilt", reading.tilt_sudden_change_10s_deg, "°"],
+      ["Tilt", reading.tilt_deg, "Â°"],
+      ["Tilt Change", reading.tilt_change_deg, "Â°"],
+      ["Tilt Rate", reading.tilt_rate_dph, "Â°/h"],
+      ["10s Tilt", reading.tilt_sudden_change_10s_deg, "Â°"],
       ["Soil", reading.moisture_pct, "%"],
       ["Distance", reading.distance_cm, " cm"],
       ["Distance Change", reading.distance_change_cm, " cm"],
@@ -3368,9 +3368,9 @@ if (!document.getElementById("giri-sensor-popup-style")) {
   }
 
   function fmt(value, digits = 2, unit = "") {
-    if (value === null || value === undefined || value === "") return "—";
+    if (value === null || value === undefined || value === "") return "â€”";
     const n = Number(value);
-    if (!Number.isFinite(n)) return "—";
+    if (!Number.isFinite(n)) return "â€”";
     return n.toFixed(digits) + (unit ? ` ${unit}` : "");
   }
 
@@ -3396,7 +3396,7 @@ if (!document.getElementById("giri-sensor-popup-style")) {
     labelNode.textContent = label;
     const valueNode = document.createElement("div");
     valueNode.className = "giri-full-esp32-value";
-    valueNode.textContent = (value === null || value === undefined || value === "") ? "—" : String(value);
+    valueNode.textContent = (value === null || value === undefined || value === "") ? "â€”" : String(value);
     box.appendChild(labelNode);
     box.appendChild(valueNode);
     grid.appendChild(box);
@@ -3467,10 +3467,10 @@ if (!document.getElementById("giri-sensor-popup-style")) {
     addField(grid, "Latitude", reading.lat, 6);
     addField(grid, "Longitude", reading.lon, 6);
 
-    addField(grid, "Tilt Angle", reading.tilt_deg, 3, "°");
-    addField(grid, "Tilt Change", reading.tilt_change_deg, 3, "°");
-    addField(grid, "Tilt Rate", reading.tilt_rate_dph, 3, "°/h");
-    addField(grid, "Tilt 10s Change", reading.tilt_sudden_change_10s_deg, 3, "°");
+    addField(grid, "Tilt Angle", reading.tilt_deg, 3, "Â°");
+    addField(grid, "Tilt Change", reading.tilt_change_deg, 3, "Â°");
+    addField(grid, "Tilt Rate", reading.tilt_rate_dph, 3, "Â°/h");
+    addField(grid, "Tilt 10s Change", reading.tilt_sudden_change_10s_deg, 3, "Â°");
 
     addField(grid, "Accel X", reading.accel_x_g, 4, "g");
     addField(grid, "Accel Y", reading.accel_y_g, 4, "g");
@@ -3490,12 +3490,12 @@ if (!document.getElementById("giri-sensor-popup-style")) {
     addField(grid, "Displacement", reading.displacement_cm, 3, "cm");
 
     addField(grid, "BMP Pressure", reading.pressure_hpa, 2, "hPa");
-    addField(grid, "BMP Temperature", reading.temperature_c, 2, "°C");
+    addField(grid, "BMP Temperature", reading.temperature_c, 2, "Â°C");
     addField(grid, "DHT Humidity", reading.humidity_pct, 2, "%");
     addField(grid, "Rainfall", reading.rainfall_mm, 2, "mm");
 
     if (status) {
-      status.textContent = "LIVE • ESP32 • Updated " + new Date().toLocaleTimeString();
+      status.textContent = "LIVE â€¢ ESP32 â€¢ Updated " + new Date().toLocaleTimeString();
       status.style.color = "#86efac";
     }
   }
@@ -3622,7 +3622,7 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('DOMContentLoaded', applyRoleUI);
-// BRICS Air Quality Watch — backend predictions + illustrative demo nodes
+// BRICS Air Quality Watch â€” backend predictions + illustrative demo nodes
 (async function renderBricsAirQualityDemo() {
   const container = document.getElementById("brics-city-list");
   const status = document.getElementById("brics-federated-status");
@@ -3631,13 +3631,13 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
 
   const demoCities = [
     { country: "China", city: "Beijing", pm25: 82.6, source: "Illustrative demo" },
-    { country: "Brazil", city: "São Paulo", pm25: 34.2, source: "Illustrative demo" },
+    { country: "Brazil", city: "SÃ£o Paulo", pm25: 34.2, source: "Illustrative demo" },
     { country: "Russia", city: "Moscow", pm25: 28.7, source: "Illustrative demo" },
     { country: "South Africa", city: "Johannesburg", pm25: 41.3, source: "Illustrative demo" }
   ];
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/air-quality/predictions");
+    const response = await fetch("http://127.0.0.1:8001/api/air-quality/predictions");
     if (!response.ok) throw new Error(`API returned ${response.status}`);
 
     const result = await response.json();
@@ -3658,27 +3658,27 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
         <div>
           <strong style="font-size:12px;">${item.city}</strong>
           <div style="font-size:11px;color:#64748b;">
-  ${item.country} · ${item.source}
-  ${Number(item.pm25) >= 75 ? " · Elevated PM2.5 demo signal" : ""}
+  ${item.country} Â· ${item.source}
+  ${Number(item.pm25) >= 75 ? " Â· Elevated PM2.5 demo signal" : ""}
 </div>
         </div>
         <div style="text-align:right;">
           <strong style="font-size:14px;">${Number(item.pm25).toFixed(2)}</strong>
-          <div style="font-size:10px;color:#64748b;">PM2.5 µg/m³</div>
+          <div style="font-size:10px;color:#64748b;">PM2.5 Âµg/mÂ³</div>
         </div>
       </div>
     `).join("");
 
     status.textContent =
-      "Federated coordination: simulated · 5 BRICS country nodes · no live model exchange";
+      "Federated coordination: simulated Â· 5 BRICS country nodes Â· no live model exchange";
   } catch (error) {
     console.error("BRICS air-quality API error:", error);
     container.innerHTML =
       '<p style="font-size:12px;color:#b91c1c;">Delhi forecast API unavailable. Check that the backend is running.</p>' +
       demoCities.map(item => `
         <div style="padding:9px;border:1px solid #e2e8f0;border-radius:8px;">
-          <strong>${item.city}</strong> · ${item.country}
-          <div style="font-size:11px;color:#64748b;">Illustrative demo only · PM2.5 ${item.pm25} µg/m³</div>
+          <strong>${item.city}</strong> Â· ${item.country}
+          <div style="font-size:11px;color:#64748b;">Illustrative demo only Â· PM2.5 ${item.pm25} Âµg/mÂ³</div>
         </div>
       `).join("");
   }
@@ -3696,7 +3696,7 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
     countElement.textContent = "Citizen report count unavailable";
   }
 })();
-// BRICS 3D rotating globe with illustrative PM2.5 signals
+// BRICS 3D rotating globe — lightweight lazy AQI state/province loading
 (function initBricsGlobe() {
   const globeElement = document.getElementById("globeViz");
   if (!globeElement || typeof Globe !== "function") return;
@@ -3709,15 +3709,70 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
     { city: "Johannesburg", country: "South Africa", lat: -26.2041, lng: 28.0473, pm25: 41.3 }
   ];
 
-  const colorFor = value =>
-    value >= 75 ? "#ef4444" : value >= 50 ? "#f59e0b" : "#22c55e";
+  const bricsByWorldId = {
+    "076": "BRA",
+    "156": "CHN",
+    "818": "EGY",
+    "231": "ETH",
+    "360": "IDN",
+    "364": "IRN",
+    "643": "RUS",
+    "682": "SAU",
+    "710": "ZAF",
+    "784": "ARE"
+  };
 
-  // Initialize globe first
-  const globe = Globe()(globeElement)
+  const countryNames = {
+    BRA: "Brazil",
+    CHN: "China",
+    EGY: "Egypt",
+    ETH: "Ethiopia",
+    IDN: "Indonesia",
+    IRN: "Iran",
+    RUS: "Russia",
+    SAU: "Saudi Arabia",
+    ZAF: "South Africa",
+    ARE: "United Arab Emirates"
+  };
+
+  const aqiColor = value => {
+    if (value <= 50) return "#ffffff";
+    if (value <= 100) return "#ede9fe";
+    if (value <= 150) return "#c4b5fd";
+    if (value <= 200) return "#8b5cf6";
+    if (value <= 300) return "#6d28d9";
+    if (value <= 400) return "#4c1d95";
+    return "#2e1065";
+  };
+
+  const aqiLevel = value => {
+    if (value <= 50) return "Good";
+    if (value <= 100) return "Moderate";
+    if (value <= 150) return "Unhealthy for Sensitive Groups";
+    if (value <= 200) return "Poor";
+    if (value <= 300) return "Very Poor";
+    if (value <= 400) return "Severe";
+    return "CRITICAL";
+  };
+
+  const demoAQI = (country, region) => {
+    let hash = 0;
+    const text = `${country}:${region}`;
+    for (let i = 0; i < text.length; i++) {
+      hash = ((hash * 31) + text.charCodeAt(i)) >>> 0;
+    }
+    return 40 + (hash % 381);
+  };
+
+  const pointColor = value =>
+    value >= 75 ? "#6d28d9" :
+    value >= 50 ? "#8b5cf6" :
+    "#c4b5fd";
+
+  const globe = window.aeroGlobe = Globe()(globeElement)
     .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
-.backgroundColor("#b8e6ff")
-
-   .showAtmosphere(true)
+    .backgroundColor("#b8e6ff")
+    .showAtmosphere(true)
     .atmosphereColor("#d8f3ff")
     .atmosphereAltitude(0.18)
     .pointsData(citySignals)
@@ -3725,14 +3780,12 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
     .pointLng("lng")
     .pointAltitude(d => 0.025 + Math.min(d.pm25 / 3000, 0.05))
     .pointRadius(d => 0.35 + Math.min(d.pm25 / 300, 0.25))
-    .pointColor(d => colorFor(d.pm25))
-    .pointLabel(d =>
-      `${d.city}, ${d.country}<br/>Illustrative PM2.5: ${d.pm25} µg/m³<br/>Synthetic demo data`
-    )
+    .pointColor(d => pointColor(d.pm25))
+    .pointLabel(d => `${d.city}, ${d.country}<br/>Illustrative PM2.5: ${d.pm25} µg/m³<br/>Synthetic demo data`)
     .ringsData(citySignals)
     .ringLat("lat")
     .ringLng("lng")
-    .ringColor(d => colorFor(d.pm25))
+    .ringColor(d => pointColor(d.pm25))
     .ringMaxRadius(d => 2 + d.pm25 / 35)
     .ringPropagationSpeed(1.5)
     .ringRepeatPeriod(1800)
@@ -3742,294 +3795,128 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
     .labelText("city")
     .labelSize(1.2)
     .labelDotRadius(0.25)
-    .labelColor(() => "#e2e8f0")
+    .labelColor(() => "#ffffff")
     .labelResolution(2);
 
   globe.controls().autoRotate = true;
   globe.controls().autoRotateSpeed = 0.45;
   globe.controls().enableZoom = true;
 
-  // Load country boundaries
-  (async function loadCountryBoundaries() {
-    try {
-      const response = await fetch(
-        "https://unpkg.com/world-atlas@2/countries-110m.json"
-      );
-      if (!response.ok) throw new Error("Country boundary data unavailable");
+  let worldCountries = [];
+  const loadedRegions = new Map();
 
-      const topology = await response.json();
-      const countries = topojson.feature(
-        topology,
-        topology.objects.countries
-      ).features;
+  function configurePolygons(regions = []) {
+    globe
+      .polygonsData([...worldCountries, ...regions])
+      .polygonCapColor(feature => {
+        const props = feature.properties || {};
+        return props.__aqi != null
+          ? aqiColor(Number(props.__aqi))
+          : "rgba(20, 100, 160, 0.10)";
+      })
+      .polygonSideColor(feature => {
+        const props = feature.properties || {};
+        return props.__aqi != null
+          ? "rgba(76, 29, 149, 0.28)"
+          : "rgba(30, 120, 180, 0.15)";
+      })
+      .polygonStrokeColor(() => "#ffffff")
+      .polygonCapCurvatureResolution(2)
+      .polygonSideCurvatureResolution(2)
+      .polygonAltitude(feature => {
+        const props = feature.properties || {};
+        return props.__aqi != null ? 0.018 : 0.008;
+      })
+      .polygonLabel(feature => {
+        const props = feature.properties || {};
+        if (props.__aqi != null) {
+          const aqi = Number(props.__aqi);
+          return `<strong>${props.__regionName}</strong><br/>
+                  ${props.__countryName}<br/>
+                  AQI: <strong>${aqi}</strong><br/>
+                  Status: <strong>${aqi >= 301 ? "CRITICAL" : props.__aqiLevel}</strong><br/>
+                  <small>Synthetic demo data</small>`;
+        }
+        const code = String(feature.id ?? "").padStart(3, "0");
+        const country = bricsByWorldId[code];
+        return country
+          ? `<strong>${countryNames[country]}</strong><br/>Click to load state/province AQI`
+          : `Country ID: ${feature.id}<br/>Click to focus`;
+      })
+      .onPolygonClick(async (feature, event, coordinates) => {
+        if (!coordinates) return;
 
-      globe
-        .polygonsData(countries)
-        .polygonCapColor(() => "rgba(20, 100, 160, 0.10)")
-        .polygonSideColor(() => "rgba(30, 120, 180, 0.15)")
-        .polygonStrokeColor(() => "#ffffff")
-        .polygonAltitude(0.008)
-        .onPolygonClick((feature, event, coordinates) => {
-          if (!coordinates) return;
-          globe.pointOfView({
-            lat: coordinates.lat,
-            lng: coordinates.lng,
-            altitude: 1.1
-          }, 1200);
-        })
-        .polygonLabel(feature =>
-          `Country ID: ${feature.id}<br/>Click to focus`
-        );
+        globe.pointOfView({
+          lat: coordinates.lat,
+          lng: coordinates.lng,
+          altitude: 1.1
+        }, 900);
 
-      console.log("World country boundaries loaded:", countries.length);
-    } catch (error) {
-      console.error("Country boundaries failed to load:", error);
-    }
-  })();
+        const code = bricsByWorldId[String(feature.id ?? "").padStart(3, "0")];
+        if (!code) return;
 
-  // Load India state and union-territory boundaries
-  (async function loadIndiaStateBoundaries() {
-    try {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/AbhinavSwami28/india-official-geojson/main/india-states-simplified.geojson"
-      );
-      if (!response.ok) throw new Error("India state boundary data unavailable");
+        if (loadedRegions.has(code)) {
+          configurePolygons(loadedRegions.get(code));
+          return;
+        }
 
-      const geojson = await response.json();
+        try {
+          console.log(`Loading ${countryNames[code]} state/province AQI...`);
 
-      const stateLines = geojson.features.flatMap(feature => {
-        const geometry = feature.geometry;
-        if (!geometry) return [];
+          const response = await fetch(
+            `http://127.0.0.1:8001/api/air-quality/regions/${code}`
+          );
 
-        const polygons =
-          geometry.type === "Polygon"
-            ? [geometry.coordinates]
-            : geometry.type === "MultiPolygon"
-              ? geometry.coordinates
-              : [];
+          if (!response.ok) throw new Error(`API ${response.status}`);
 
-        return polygons.flatMap(polygon =>
-          polygon.map(ring => ring)
-        );
-      });
+          const result = await response.json();
 
-      globe
-        .pathsData(stateLines)
-        .pathPoints(points => points)
-        .pathPointLat(point => point[1])
-        .pathPointLng(point => point[0])
-        .pathColor(() => "#ffffff")
-        .pathStroke(0.75)
-        .pathAltitude(0.012)
-        .pathTransitionDuration(0);
-
-      console.log("India state boundaries loaded:", stateLines.length);
-    } catch (error) {
-      console.error("India state boundaries failed to load:", error);
-    }
-  })();
-
-
-  // BRICS admin-1 + India district AQI polygons
-  (async function loadBricsAQIRegions() {
-    const files = {
-      BRA: "Brazil",
-      CHN: "China",
-      EGY: "Egypt",
-      ETH: "Ethiopia",
-      IDN: "Indonesia",
-      IRN: "Iran",
-      RUS: "Russia",
-      SAU: "Saudi Arabia",
-      ZAF: "South Africa",
-      ARE: "United Arab Emirates"
-    };
-
-    const baselines = {
-      IND: 145,
-      CHN: 175,
-      BRA: 105,
-      RUS: 90,
-      ZAF: 130,
-      EGY: 155,
-      ETH: 95,
-      IDN: 145,
-      IRN: 165,
-      SAU: 125,
-      ARE: 110
-    };
-
-    function hashText(value) {
-      let hash = 0;
-      for (let i = 0; i < value.length; i++) {
-        hash = ((hash * 31) + value.charCodeAt(i)) >>> 0;
-      }
-      return hash;
-    }
-
-    function demoAQI(countryCode, regionName) {
-      const hash = hashText(`${countryCode}:${regionName}`);
-      let value = baselines[countryCode] + (hash % 191);
-
-      // Keep some clearly critical demo hotspots.
-      if (hash % 37 === 0) value = 410 + (hash % 41);
-
-      return Math.min(value, 450);
-    }
-
-    function aqiColor(aqi) {
-      if (aqi <= 50) return "#ffffff";
-      if (aqi <= 100) return "#ede9fe";
-      if (aqi <= 150) return "#c4b5fd";
-      if (aqi <= 200) return "#8b5cf6";
-      if (aqi <= 300) return "#6d28d9";
-      if (aqi <= 400) return "#4c1d95";
-      return "#2e1065";
-    }
-
-    function aqiLevel(aqi) {
-      if (aqi <= 100) return "Good";
-      if (aqi <= 200) return "Moderate";
-      if (aqi <= 300) return "Poor";
-      if (aqi <= 400) return "Very Poor";
-      return "Severe / Critical";
-    }
-
-    try {
-      const worldResponse = await fetch(
-        "https://unpkg.com/world-atlas@2/countries-110m.json"
-      );
-      if (!worldResponse.ok) throw new Error("World boundary data unavailable");
-
-      const worldTopology = await worldResponse.json();
-      const worldCountries = topojson.feature(
-        worldTopology,
-        worldTopology.objects.countries
-      ).features;
-
-      const bricsResults = await Promise.all(
-        Object.keys(files).map(async code => {
-          const response = await fetch(`./data/brics/${code}_1.json`);
-          if (!response.ok) {
-            throw new Error(`${code} admin boundary request failed: ${response.status}`);
-          }
-
-          const data = await response.json();
-
-          return data.features.map(feature => {
+          const regions = (result.features || []).map(feature => {
             const props = { ...(feature.properties || {}) };
-            const regionName = props.NAME_1 || "Unknown region";
+            const regionName = props.NAME_1 || "Unknown Region";
             const aqi = demoAQI(code, regionName);
 
             props.__aqi = aqi;
             props.__aqiLevel = aqiLevel(aqi);
-            props.__admin1 = true;
-            props.__countryCode = code;
-            props.__countryName = files[code];
             props.__regionName = regionName;
+            props.__countryName = countryNames[code];
 
-            return {
-              ...feature,
-              properties: props
-            };
+            return { ...feature, properties: props };
           });
-        })
-      );
 
-      const indiaResponse = await fetch("./data/india_districts.geojson");
-      if (!indiaResponse.ok) {
-        throw new Error(`India district boundary request failed: ${indiaResponse.status}`);
-      }
+          loadedRegions.set(code, regions);
+          configurePolygons(regions);
 
-      const indiaData = await indiaResponse.json();
-
-      const indiaDistricts = indiaData.features.map(feature => {
-        const props = { ...(feature.properties || {}) };
-        const districtName = props.NAME_2 || "Unknown district";
-        const stateName = props.NAME_1 || "India";
-        const aqi = demoAQI("IND", `${stateName}:${districtName}`);
-
-        props.__aqi = aqi;
-        props.__aqiLevel = aqiLevel(aqi);
-        props.__admin1 = true;
-        props.__indiaDistrict = true;
-        props.__countryCode = "IND";
-        props.__countryName = "India";
-        props.__regionName = districtName;
-
-        return {
-          ...feature,
-          properties: props
-        };
+          console.log(
+            `${countryNames[code]} loaded: ${regions.length} state/province regions`
+          );
+        } catch (error) {
+          console.error(`Failed to load ${countryNames[code]} AQI:`, error);
+        }
       });
+  }
 
-      const adminRegions = [
-        ...bricsResults.flat(),
-        ...indiaDistricts
-      ];
+  (async function loadWorldCountries() {
+    try {
+      const response = await fetch(
+        "https://unpkg.com/world-atlas@2/countries-110m.json"
+      );
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      globe
-        .polygonsData([...worldCountries, ...adminRegions])
-        .polygonCapColor(feature => {
-          const props = feature.properties || {};
+      const topology = await response.json();
 
-          if (!props.__admin1) {
-            return "rgba(30, 110, 170, 0.10)";
-          }
+      worldCountries = topojson.feature(
+        topology,
+        topology.objects.countries
+      ).features;
 
-          return aqiColor(Number(props.__aqi || 0));
-        })
-        .polygonSideColor(feature => {
-          const props = feature.properties || {};
-
-          if (!props.__admin1) {
-            return "rgba(30, 120, 180, 0.10)";
-          }
-
-          return "rgba(15, 23, 42, 0.28)";
-        })
-        .polygonStrokeColor(feature => {
-          const props = feature.properties || {};
-          return props.__admin1 ? "#ffffff" : "rgba(255,255,255,0.45)";
-        })
-        .polygonAltitude(feature => {
-          const props = feature.properties || {};
-          return props.__admin1 ? 0.015 : 0.004;
-        })
-        .onPolygonClick((feature, event, coordinates) => {
-          if (!coordinates) return;
-
-          globe.pointOfView({
-            lat: coordinates.lat,
-            lng: coordinates.lng,
-            altitude: 1.15
-          }, 900);
-        })
-        .polygonLabel(feature => {
-          const props = feature.properties || {};
-
-          if (!props.__admin1) {
-            return "Country boundary";
-          }
-
-          const aqi = Number(props.__aqi || 0);
-          const critical = aqi >= 301;
-
-          return `
-            <strong>${props.__regionName}</strong><br/>
-            ${props.__countryName}<br/>
-            AQI: <strong>${aqi}</strong><br/>
-            Status: <strong>${critical ? "CRITICAL" : props.__aqiLevel}</strong><br/>
-            <small>Synthetic demo AQI — not official/live</small>
-          `;
-        });
+      configurePolygons();
 
       console.log(
-        `BRICS AQI regions loaded: ${adminRegions.length} `
-        + `(India districts: ${indiaDistricts.length})`
+        "Lightweight globe ready. Click a BRICS country to load state/province AQI."
       );
     } catch (error) {
-      console.error("BRICS AQI region layer failed:", error);
+      console.error("World boundaries failed to load:", error);
     }
   })();
 
@@ -4041,3 +3928,208 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
   resizeGlobe();
   window.addEventListener("resize", resizeGlobe);
 })();
+
+
+
+
+
+
+
+
+/* BRICS country dropdown -> globe pollution hotspots */
+(function wireBricsCountryDropdown() {
+  const select = document.getElementById("state-select");
+  if (!select || !window.aeroGlobe) return;
+
+  const names = {
+    IND:"India", BRA:"Brazil", RUS:"Russia", CHN:"China", ZAF:"South Africa",,
+    EGY:"Egypt", ETH:"Ethiopia", IDN:"Indonesia", IRN:"Iran",
+    SAU:"Saudi Arabia", ARE:"United Arab Emirates"
+  };
+
+  const centers = {
+   IND:[22.9,79.0], BRA:[-14.2,-51.9], RUS:[61.5,105.3], CHN:[35.9,104.2],
+    ZAF:[-30.6,22.9], EGY:[26.8,30.8], ETH:[9.1,40.5],
+    IDN:[-2.5,118.0], IRN:[32.4,53.7], SAU:[23.9,45.1],
+    ARE:[24.4,54.4]
+  };
+
+  const cache = {};
+
+  function color(aqi) {
+    if (aqi <= 50) return "#ffffff";
+    if (aqi <= 100) return "#ede9fe";
+    if (aqi <= 150) return "#c4b5fd";
+    if (aqi <= 200) return "#8b5cf6";
+    if (aqi <= 300) return "#6d28d9";
+    if (aqi <= 400) return "#4c1d95";
+    return "#2e1065";
+  }
+
+  function aqi(name, code) {
+    let h = 0, t = code + ":" + name;
+    for (let i = 0; i < t.length; i++) h = ((h * 31) + t.charCodeAt(i)) >>> 0;
+    return 40 + (h % 381);
+  }
+
+  async function load(code) {
+    if (!names[code]) return;
+
+    const c = centers[code];
+    if (c) window.aeroGlobe.pointOfView({lat:c[0],lng:c[1],altitude:1.25},900);
+
+    let regions = cache[code];
+
+    if (!regions) {
+      const r = await fetch("http://127.0.0.1:8001/api/air-quality/regions/" + code);
+      if (!r.ok) throw new Error("API " + r.status);
+      const data = await r.json();
+
+      regions = (data.features || []).map(f => {
+        const p = {...(f.properties || {})};
+        const region = p.NAME_1 || "Unknown";
+        const value = aqi(region, code);
+        p.__aqi = value;
+        p.__regionName = region;
+        p.__countryName = names[code];
+        p.__aqiLevel = value >= 301 ? "CRITICAL" : value >= 201 ? "Very Poor" : value >= 151 ? "Poor" : value >= 101 ? "Moderate" : "Good";
+        return {...f, properties:p};
+      });
+
+      cache[code] = regions;
+    }
+
+    window.aeroGlobe
+      .polygonsData(regions)
+      .polygonCapColor(f => color(Number(f.properties?.__aqi || 0)))
+      .polygonSideColor(() => "rgba(76,29,149,0.30)")
+      .polygonStrokeColor(() => "#ffffff")
+      .polygonAltitude(() => 0.018)
+      .polygonLabel(f => {
+        const p = f.properties || {};
+        const a = Number(p.__aqi || 0);
+        return "<strong>" + p.__regionName + "</strong><br/>" +
+          p.__countryName + "<br/>AQI: <strong>" + a + "</strong><br/>" +
+          "Status: <strong>" + p.__aqiLevel + "</strong><br/>" +
+          "<small>Synthetic demo AQI</small>";
+      });
+
+    console.log(names[code] + " hotspots loaded:", regions.length);
+  }
+
+  select.addEventListener("change", e => {
+    const code = e.target.value;
+    if (!names[code]) return;
+    load(code).catch(err => console.error("BRICS hotspot load failed:", err));
+  });
+
+  window.loadBricsCountry = load;
+})();
+
+/* BRICS dropdown hotspot connector */
+(function connectBricsCountryDropdown() {
+  const selector = document.getElementById("state-select");
+  if (!selector) return;
+
+  const bricsCodes = new Set([
+    "BRA","RUS","CHN","ZAF","EGY","ETH","IDN","IRN","SAU","ARE"
+  ]);
+
+  selector.addEventListener("change", () => {
+    const code = selector.value;
+
+    if (!bricsCodes.has(code)) return;
+    if (typeof window.loadBricsCountry !== "function") return;
+
+    const districtSelector = document.getElementById("district-select");
+    if (districtSelector) {
+      districtSelector.innerHTML =
+        '<option value="">-- Select District / State --</option>';
+      districtSelector.disabled = true;
+    }
+
+    window.loadBricsCountry(code);
+  });
+})();
+
+/* FINAL BRICS DROPDOWN -> GLOBE AQI */
+window.addEventListener("DOMContentLoaded", () => {
+  const sel = document.getElementById("state-select");
+  if (!sel) return;
+
+  sel.addEventListener("change", async () => {
+    const code = sel.value;
+    if (!["IND","BRA","RUS","CHN","ZAF","EGY","ETH","IDN","IRN","SAU","ARE"].includes(code)) return;
+
+    try {
+      const r = await fetch("http://127.0.0.1:8001/api/air-quality/regions/" + code);
+      const data = await r.json();
+
+      if (window.aeroGlobe && Array.isArray(data.features)) {
+        const features = data.features.map((f, i) => {
+          f.properties = f.properties || {};
+          f.properties.__admin1 = true;
+          f.properties.__aqi = 80 + ((i * 37 + code.charCodeAt(0)) % 321);
+          return f;
+        });
+
+        window.aeroGlobe.polygonsData(features);
+        window.aeroGlobe.polygonCapColor(f => {
+          const aqi = f.properties?.__aqi || 0;
+          if (aqi <= 50) return "#ffffff";
+          if (aqi <= 100) return "#ede9fe";
+          if (aqi <= 150) return "#c4b5fd";
+          if (aqi <= 200) return "#8b5cf6";
+          if (aqi <= 300) return "#6d28d9";
+          if (aqi <= 400) return "#4c1d95";
+          return "#2e1065";
+        });
+      }
+
+      console.log("BRICS AQI loaded:", code, data.features?.length);
+    } catch (e) {
+      console.error("BRICS AQI load failed:", e);
+    }
+  });
+});
+
+/* FINAL BRICS DROPDOWN -> GLOBE AQI */
+window.addEventListener("DOMContentLoaded", () => {
+  const sel = document.getElementById("state-select");
+  if (!sel) return;
+
+  sel.addEventListener("change", async () => {
+    const code = sel.value;
+    if (!["IND","BRA","RUS","CHN","ZAF","EGY","ETH","IDN","IRN","SAU","ARE"].includes(code)) return;
+
+    try {
+      const r = await fetch("http://127.0.0.1:8001/api/air-quality/regions/" + code);
+      const data = await r.json();
+
+      if (window.aeroGlobe && Array.isArray(data.features)) {
+        const features = data.features.map((f, i) => {
+          f.properties = f.properties || {};
+          f.properties.__admin1 = true;
+          f.properties.__aqi = 80 + ((i * 37 + code.charCodeAt(0)) % 321);
+          return f;
+        });
+
+        window.aeroGlobe.polygonsData(features);
+        window.aeroGlobe.polygonCapColor(f => {
+          const aqi = f.properties?.__aqi || 0;
+          if (aqi <= 50) return "#ffffff";
+          if (aqi <= 100) return "#ede9fe";
+          if (aqi <= 150) return "#c4b5fd";
+          if (aqi <= 200) return "#8b5cf6";
+          if (aqi <= 300) return "#6d28d9";
+          if (aqi <= 400) return "#4c1d95";
+          return "#2e1065";
+        });
+      }
+
+      console.log("BRICS AQI loaded:", code, data.features?.length);
+    } catch (e) {
+      console.error("BRICS AQI load failed:", e);
+    }
+  });
+});
