@@ -40,11 +40,11 @@
 
       <div class="sus-toggle">
         <button type="button" id="ner-mode-btn" class="sus-btn active">
-          NER EWS
+          Real-Time AQI
         </button>
 
         <button type="button" id="sus-mode-btn" class="sus-btn">
-          Susceptibility
+          Pollution Hotspots
         </button>
       </div>
     `;
