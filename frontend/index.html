@@ -4,11 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>GiriRakshak | NER Landslide Early Warning System</title>
+  <title>AeroTrace | Air Quality & Climate Action Platform</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="https://unpkg.com/globe.gl"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -18,14 +20,16 @@
   <header class="navbar">
     <!-- Brand Logo -->
     <div class="logo-group">
-      <img src="logo1.png" alt="GiriRakshak Logo" class="brand-logo" />
+
+    <img src="logo1.png" alt="GiriRakshak Logo" class="brand-logo" />
+
     </div>
 
     <!-- Search Bar -->
     <div class="nav-search-container">
       <div class="search-input-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" id="global-search-input" placeholder="Search NER city, district, or slope zone..."
+        <input type="text" id="global-search-input" placeholder="Search city, corridor, or monitoring zone..."
           autocomplete="off" />
         <button id="search-clear-btn" class="search-clear-btn hidden">&times;</button>
       </div>
@@ -34,10 +38,9 @@
 
     <!-- Actions (Status Pill, Theme, Report, Auth) -->
     <div class="header-actions">
-      <!-- Status Pill (Right side on desktop, jumps beside logo on mobile) -->
       <div class="system-status-pill">
         <span class="status-dot"></span>
-        <span class="status-text">NER Early Warning: Online</span>
+        <span class="status-text">AQI Monitoring: Active</span>
       </div>
 
       <button id="theme-toggle-btn" class="btn btn-outline" aria-label="Toggle Theme">
@@ -61,52 +64,82 @@
 
     <section class="map-container">
       <div id="map"></div>
+<div id="globeViz" aria-label="Rotating 3D BRICS air quality globe"></div>
 
       <div class="region-filter-card">
         <div class="filter-header">
           <span class="filter-icon">🌐</span>
           <div>
-            <strong>Landslide Warning System</strong>
-            <small id="current-forecast-date">National EWS & IoT Telemetry</small>
+            <strong>Air Quality Platform</strong>
+            <small id="current-forecast-date">National AQI &amp; Emission Telemetry</small>
           </div>
         </div>
 
         <div class="filter-controls">
           <div class="control-group">
-            <label for="state-select">Select State</label>
+            <label for="state-select">Select State / UT</label>
             <select id="state-select" class="custom-select">
-              <option value="">-- All 8 NER States --</option>
+              <option value="">-- All States & UTs --</option>
+              <!-- States -->
+              <option value="andhra_pradesh">Andhra Pradesh</option>
+              <option value="arunachal_pradesh">Arunachal Pradesh</option>
+              <option value="assam">Assam</option>
+              <option value="bihar">Bihar</option>
+              <option value="chhattisgarh">Chhattisgarh</option>
+              <option value="goa">Goa</option>
+              <option value="gujarat">Gujarat</option>
+              <option value="haryana">Haryana</option>
+              <option value="himachal_pradesh">Himachal Pradesh</option>
+              <option value="jharkhand">Jharkhand</option>
+              <option value="karnataka">Karnataka</option>
+              <option value="kerala">Kerala</option>
+              <option value="madhya_pradesh">Madhya Pradesh</option>
+              <option value="maharashtra">Maharashtra</option>
+              <option value="manipur">Manipur</option>
+              <option value="meghalaya">Meghalaya</option>
               <option value="mizoram">Mizoram</option>
               <option value="nagaland">Nagaland</option>
+              <option value="odisha">Odisha</option>
+              <option value="punjab">Punjab</option>
+              <option value="rajasthan">Rajasthan</option>
               <option value="sikkim">Sikkim</option>
-              <option value="assam">Assam</option>
-              <option value="meghalaya">Meghalaya</option>
-              <option value="manipur">Manipur</option>
-              <option value="arunachal">Arunachal Pradesh</option>
+              <option value="tamil_nadu">Tamil Nadu</option>
+              <option value="telangana">Telangana</option>
               <option value="tripura">Tripura</option>
+              <option value="uttar_pradesh">Uttar Pradesh</option>
+              <option value="uttarakhand">Uttarakhand</option>
+              <option value="west_bengal">West Bengal</option>
+              <!-- Union Territories -->
+              <option value="andaman_nicobar">Andaman and Nicobar Islands</option>
+              <option value="chandigarh">Chandigarh</option>
+              <option value="dadra_nagar_haveli_daman_diu">Dadra and Nagar Haveli and Daman and Diu</option>
+              <option value="delhi">Delhi NCR</option>
+              <option value="jammu_kashmir">Jammu and Kashmir</option>
+              <option value="ladakh">Ladakh</option>
+              <option value="lakshadweep">Lakshadweep</option>
+              <option value="puducherry">Puducherry</option>
             </select>
           </div>
 
           <div class="control-group">
-            <label for="district-select">Select District</label>
+            <label for="district-select">Select District / Corridor</label>
             <select id="district-select" class="custom-select" disabled>
-              <option value="">-- Select District --</option>
+              <option value="">-- Select District / Corridor --</option>
             </select>
           </div>
-          <button class="btn btn-primary btn-sm" id="btn-reset-view">↺ Reset to All NER</button>
+          <button class="btn btn-primary btn-sm" id="btn-reset-view">↺ Reset Map View </button>
         </div>
       </div>
 
       <div class="map-legend">
-        <h4>Landslide Hazard Scale</h4>
-        <div class="legend-item"><span class="dot watch"></span> Moderate (Orange)</div>
-        <div class="legend-item"><span class="dot high"></span> High Hazard (Deep Orange)</div>
-        <div class="legend-item"><span class="dot very-high"></span> Very High (Red)</div>
-        <div class="legend-item"><span class="dot extreme"></span> Critical / Immediate Risk (Dark Red)</div>
+        <h4>Air Quality Index (AQI) Scale</h4>
+        <div class="legend-item"><span class="dot watch" style="background:#ede9fe;"></span> Moderate (101 – 200)</div>
+        <div class="legend-item"><span class="dot high" style="background:#c4b5fd;"></span> Poor (201 – 300)</div>
+        <div class="legend-item"><span class="dot very-high" style="background:#8b5cf6;"></span> Very Poor (301 – 400)</div>
+        <div class="legend-item"><span class="dot extreme" style="background:#991b1b;"></span> Severe / Critical (401+)</div>
         <hr />
-        <!-- <div class="legend-item"><span class="dot sensor"></span> <b>Aizawl ESP32 Edge Station</b> (Demo Node)</div> -->
-        <div class="legend-item"><span class="dot citizen"></span> Ground Incident Pin</div>
-        <div class="legend-note">Other districts display regional meteorological risk models.</div>
+        <div class="legend-item"><span class="dot citizen"></span> Ground Air Incident Pin</div>
+        <div class="legend-note">Regions display real-time ambient PM2.5, PM10 &amp; NO2 telemetry models.</div>
       </div>
     </section>
 
@@ -114,8 +147,47 @@
 
       <!-- ================= PUBLIC / GUEST VIEW (Default) ================= -->
       <div id="public-view-container">
-
-        <!-- ROUTES TO AVOID (PUBLIC & CITIZEN SAFETY) -->
+        <!-- BRICS AIR QUALITY PROTOTYPE -->
+        <section class="card" id="brics-overview-card" style="margin-top:14px;">
+          <div class="card-header">
+            <div>
+              <h3>BRICS Air Quality Watch</h3>
+              <small>Cross-city pollution signals &amp; forecast</small>
+            </div>
+            <span class="source-tag">DEMO</span>
+          </div>
+          <p style="font-size:11px;color:#b45309;background:#fffbeb;padding:8px;border-radius:6px;">
+            Synthetic prototype data only — not live or official AQI.
+          </p>
+          <div id="brics-city-list" style="display:grid;gap:8px;">
+            <p style="font-size:12px;color:#64748b;">Loading demo city signals…</p>
+          </div>
+          <div style="margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px;">
+            <strong style="font-size:12px;">Illustrative Hotspot Signals</strong>
+            <div style="font-size:11px;color:#b45309;margin:4px 0 8px;">
+              Simulated scenarios — not verified detections
+            </div>
+            <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;margin-bottom:6px;">
+              <strong>Industrial corridor</strong><br>
+              Demo signal · Elevated particulate concentration
+            </div>
+            <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;margin-bottom:6px;">
+              <strong>Agricultural burning</strong><br>
+              Demo scenario · Potential regional smoke transport
+            </div>
+            <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;">
+              <strong>Cross-border haze</strong><br>
+              Demo scenario · Coordinated monitoring needed
+            </div>
+          </div>
+          <div id="brics-federated-status" style="font-size:12px;margin-top:10px;">
+            Federated model coordination: simulated demo status
+          </div>
+<div id="brics-citizen-count" style="font-size:12px;margin-top:6px;">
+  Citizen reports saved in this browser: 0
+</div>
+        </section>
+        <!-- HIGH-EMISSION CORRIDORS (PUBLIC & CITIZEN SAFETY) -->
         <section class="card" id="routes-avoid-card"
           style="border: 1px solid var(--panel-border); margin-top: 14px; margin-bottom: 14px;">
           <div class="card-header"
@@ -123,11 +195,11 @@
             <div class="header-with-tag" style="display: flex; align-items: center; gap: 8px;">
               <h3
                 style="font-size: 13px; font-weight: 800; letter-spacing: 0.3px; margin: 0; text-transform: uppercase;">
-                Routes to Avoid
+                High-Emission Corridors
               </h3>
               <span class="source-tag"
                 style="background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">
-                1 KM EXCLUSION
+                SPIKE ALERT
               </span>
             </div>
             <span id="avoid-corridors-count"
@@ -137,13 +209,13 @@
           </div>
 
           <p style="font-size: 11px; color: var(--text-dim); margin-top: 0; margin-bottom: 10px; line-height: 1.4;">
-            Active road segments within 1,000 meters of reported slope fissures or debris flow incidents:
+            Active transit corridors exceeding severe PM2.5 and NO2 safety thresholds:
           </p>
 
           <div id="avoid-routes-list"
             style="display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto;">
             <p style="color: #94a3b8; font-size: 12px; margin: 0; padding: 4px;">
-              All primary arterial corridors are currently open and clear.
+              All primary transit corridors are currently within ambient safety limits.
             </p>
           </div>
         </section>
@@ -152,14 +224,14 @@
         <section class="card" id="public-alerts-card">
           <div class="card-header">
             <div class="header-with-tag">
-              <h3>Public Safety Advisories</h3>
-              <span class="source-tag">NER EWS</span>
+              <h3>Public Health & Air Advisories</h3>
+              <span class="source-tag">AQI ALERTS</span>
             </div>
             <span class="badge blue" id="public-alert-count">0 ACTIVE</span>
           </div>
           <div id="public-alerts-feed"
             style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px 0;">
-            <p style="color: #64748b; font-size: 13px; margin: 0;">No active regional advisories issued.</p>
+            <p style="color: #64748b; font-size: 13px; margin: 0;">No active air pollution advisories issued.</p>
           </div>
         </section>
 
@@ -175,69 +247,68 @@
               style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
               <div>
                 <strong style="color: #0f172a; font-size: 13px; display: block;">NH-29 (Dimapur–Kohima)</strong>
-                <span style="font-size: 11px; color: #64748b;">Paglapahar Gorge corridor</span>
+                <span style="font-size: 11px; color: #64748b;">Heavy Freight &amp; Diesel Emission Zone</span>
               </div>
               <span
                 style="font-size: 11px; font-weight: 700; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 3px 8px; border-radius: 6px;">HIGH
-                RISK</span>
+                AQI</span>
             </div>
 
             <div
               style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
               <div>
                 <strong style="color: #0f172a; font-size: 13px; display: block;">NH-06 (Shillong–Silchar)</strong>
-                <span style="font-size: 11px; color: #64748b;">East Jaintia Hills section</span>
+                <span style="font-size: 11px; color: #64748b;">Industrial Quarry Transit Sector</span>
               </div>
               <span
-                style="font-size: 11px; font-weight: 700; color: #d97706; background: #fffbeb; border: 1px solid #fde68a; padding: 3px 8px; border-radius: 6px;">MONITORING</span>
+                style="font-size: 11px; font-weight: 700; color: #d97706; background: #fffbeb; border: 1px solid #fde68a; padding: 3px 8px; border-radius: 6px;">MODERATE</span>
             </div>
 
             <div
               style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
               <div>
                 <strong style="color: #0f172a; font-size: 13px; display: block;">NH-10 (Siliguri–Gangtok)</strong>
-                <span style="font-size: 11px; color: #64748b;">Sevoke–Teesta transit link</span>
+                <span style="font-size: 11px; color: #64748b;">Mountain Eco-Corridor Transit</span>
               </div>
               <span
-                style="font-size: 11px; font-weight: 700; color: #d97706; background: #fffbeb; border: 1px solid #fde68a; padding: 3px 8px; border-radius: 6px;">SLOPE
-                WATCH</span>
+                style="font-size: 11px; font-weight: 700; color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 3px 8px; border-radius: 6px;">GOOD</span>
             </div>
 
             <div
               style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
               <div>
-                <strong style="color: #0f172a; font-size: 13px; display: block;">Aizawl Bypass Arteries</strong>
-                <span style="font-size: 11px; color: #64748b;">Ramhlun & Laipuitlang cuts</span>
+                <strong style="color: #0f172a; font-size: 13px; display: block;">Delhi Outer Ring Road</strong>
+                <span style="font-size: 11px; color: #64748b;">Urban Traffic &amp; Dust Hotspot</span>
               </div>
               <span
-                style="font-size: 11px; font-weight: 700; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 3px 8px; border-radius: 6px;">ELEVATED</span>
+                style="font-size: 11px; font-weight: 700; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 3px 8px; border-radius: 6px;">SEVERE</span>
             </div>
 
           </div>
         </section>
 
-        <!-- Emergency Helpline Directory -->
+        <!-- Emergency & Pollution Control Directory -->
         <section class="card" style="margin-top: 14px;">
           <div class="card-header">
-            <h3>Emergency Helplines</h3>
+            <h3>Environmental Emergency Helplines</h3>
             <span class="badge green" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;">24x7
               TOLL-FREE</span>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px;">
-              <div style="color: #64748b; font-size: 11px; font-weight: 600;">NDRF Control</div>
-              <strong style="color: #0284c7; font-size: 16px; font-weight: 700;">1078</strong>
+              <div style="color: #64748b; font-size: 11px; font-weight: 600;">CPCB Control Room</div>
+              <strong style="color: #0284c7; font-size: 16px; font-weight: 700;">1800-11-0007</strong>
             </div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px;">
-              <div style="color: #64748b; font-size: 11px; font-weight: 600;">State Disaster (SDMA)</div>
+              <div style="color: #64748b; font-size: 11px; font-weight: 600;">State PCB Helpline</div>
               <strong style="color: #0284c7; font-size: 16px; font-weight: 700;">1070</strong>
             </div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px;">
-              <div style="color: #64748b; font-size: 11px; font-weight: 600;">Police Helpline</div>
+              <div style="color: #64748b; font-size: 11px; font-weight: 600;">Civic Incident Desk</div>
               <strong style="color: #0284c7; font-size: 16px; font-weight: 700;">112</strong>
             </div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px;">
-              <div style="color: #64748b; font-size: 11px; font-weight: 600;">Ambulance / Medical</div>
+              <div style="color: #64748b; font-size: 11px; font-weight: 600;">Medical Response</div>
               <strong style="color: #0284c7; font-size: 16px; font-weight: 700;">108</strong>
             </div>
           </div>
@@ -252,7 +323,7 @@
         <section class="card" style="margin-top: 14px;">
           <div class="card-header">
             <div class="header-with-tag">
-              <h3>Ground Hazard Reports</h3>
+              <h3>Citizen Air Incident Reports</h3>
               <span class="source-tag" style="background: rgba(2, 132, 199, 0.2); color: #38bdf8;">FIELD INTEL</span>
             </div>
             <button type="button" onclick="window.clearAllCitizenReports()"
@@ -273,7 +344,7 @@
             <div class="header-with-tag" style="display: flex; justify-content: space-between; align-items: center;">
               <h3
                 style="color: #0f172a; font-size: 13px; font-weight: 799; letter-spacing: 0.3px; margin: 0; text-transform: uppercase;">
-                Broadcast Regional Alert</h3>
+                Broadcast Environmental Alert</h3>
               <span class="source-tag"
                 style="background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">EMERGENCY
                 DISPATCH</span>
@@ -281,27 +352,23 @@
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 10px;">
-            <input id="alert-title" placeholder="Advisory Headline / Slope Notice..."
+            <input id="alert-title" placeholder="Advisory Headline / AQI Alert Notice..."
               style="width: 100%; box-sizing: border-box; padding: 9px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #1e293b; font-size: 12px; outline: none;">
 
             <div style="display: flex; gap: 8px;">
               <select id="alert-region"
                 style="flex: 1.2; padding: 8px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font-size: 12px; font-weight: 600; outline: none; cursor: pointer;">
-                <option value="All NER States">All 8 NER States</option>
+                <option value="All States">National Target</option>
+                <option value="Delhi NCR">Delhi NCR</option>
                 <option value="Mizoram">Mizoram</option>
-                <option value="Nagaland">Nagaland</option>
-                <option value="Sikkim">Sikkim</option>
                 <option value="Assam">Assam</option>
-                <option value="Meghalaya">Meghalaya</option>
-                <option value="Manipur">Manipur</option>
-                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                <option value="Tripura">Tripura</option>
+                <option value="Punjab">Punjab</option>
               </select>
 
               <select id="alert-severity"
                 style="flex: 1; padding: 8px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font-size: 12px; font-weight: 600; outline: none; cursor: pointer;">
-                <option value="Warning">Warning (Orange)</option>
-                <option value="Critical">Critical (Red)</option>
+                <option value="Warning">AQI Warning (Orange)</option>
+                <option value="Critical">AQI Severe (Red)</option>
               </select>
             </div>
 
@@ -311,11 +378,12 @@
             </button>
           </div>
         </section>
+
         <!-- ACTIVE OPERATIONAL ALERTS FEED -->
         <section class="card" id="alerts-card">
           <div class="card-header">
             <div class="header-with-tag">
-              <h3>Active Operational Alerts</h3>
+              <h3>Active Operational Advisories</h3>
               <span class="source-tag" id="user-role-badge">OFFICIAL FEED</span>
             </div>
             <span class="badge blue" id="active-alert-count">0 ACTIVE</span>
@@ -326,19 +394,18 @@
           </div>
         </section>
 
-        <!-- GEOTECHNICAL SITUATION BRIEF -->
+        <!-- ENVIRONMENTAL & AQI SITUATION BRIEF -->
         <section class="card" id="district-alert-box" style="margin-top: 14px; border-left: 4px solid #0284c7;">
           <div class="card-header">
             <div class="header-with-tag">
-              <h3>Geotechnical Situation Brief</h3>
-              <span class="source-tag" id="data-source-tag">REGIONAL MODEL</span>
+              <h3>Environmental Situation Brief</h3>
+              <span class="source-tag" id="data-source-tag">NATIONAL MODEL</span>
             </div>
             <span class="badge blue" id="risk-badge">OVERVIEW</span>
           </div>
-          <h4 id="district-alert-title" style="margin: 6px 0; font-size: 13px; color: #f8fafc;">North Eastern Region
-            (NER)</h4>
+          <h4 id="district-alert-title" style="margin: 6px 0; font-size: 13px; color: #f8fafc;">National Climate Surveillance</h4>
           <p id="district-alert-body" style="font-size: 12px; color: #94a3b8; line-height: 1.4; margin: 0;">
-            Surveillance active across 8 NER states. Select Aizawl to inspect physical ESP32 telemetry.
+            Real-time monitoring active across all monitoring stations. Select Aizawl to inspect physical ESP32 telemetry nodes.
           </p>
         </section>
 
@@ -346,24 +413,23 @@
         <section class="card" id="telemetry-card" style="margin-top: 14px;">
           <div class="card-header">
             <div>
-              <h3 id="telemetry-card-title">IoT Edge Telemetry</h3>
-              <div id="telemetry-source-desc" style="font-size: 11px; color: #64748b;">Data Source: Regional
-                Meteorological Model</div>
+              <h3 id="telemetry-card-title">IoT Edge Air Telemetry</h3>
+              <div id="telemetry-source-desc" style="font-size: 11px; color: #64748b;">Data Source: Regional Environmental Sensor Array</div>
             </div>
             <span class="badge gray" id="hardware-badge">MODEL DATA</span>
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0;">
             <div style="background: #0f172a; padding: 8px 4px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 10px; color: #94a3b8;">Tilt Angle</div>
+              <div style="font-size: 10px; color: #94a3b8;">PM2.5 (µg/m³)</div>
               <strong id="val-tilt" style="font-size: 14px; color: #ea580c;">—</strong>
             </div>
             <div style="background: #0f172a; padding: 8px 4px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 10px; color: #94a3b8;">Soil Moisture</div>
+              <div style="font-size: 10px; color: #94a3b8;">PM10 (µg/m³)</div>
               <strong id="val-moisture" style="font-size: 14px; color: #0284c7;">—</strong>
             </div>
             <div style="background: #0f172a; padding: 8px 4px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 10px; color: #94a3b8;">Precipitation</div>
+              <div style="font-size: 10px; color: #94a3b8;">NO2 Conc. (ppb)</div>
               <strong id="val-rain" style="font-size: 14px; color: #10b981;">—</strong>
             </div>
           </div>
@@ -371,259 +437,86 @@
           <div style="height: 120px; position: relative;">
             <canvas id="telemetryChart"></canvas>
           </div>
-        
-<!-- GIRI_RAKSHAK_FULL_ESP32_TELEMETRY_V4 -->
 
-<div
-  id="full-esp32-telemetry"
-  style="
-    margin-top:10px;
-    padding:10px;
-    border-radius:8px;
-    background:#0f172a;
-    color:#f8fafc;
-  "
->
+          <!-- FULL_ESP32_TELEMETRY -->
+          <div id="full-esp32-telemetry" style="margin-top:10px; padding:10px; border-radius:8px; background:#0f172a; color:#f8fafc;">
 
-  <div
-    style="
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      margin-bottom:8px;
-    "
-  >
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px;">
+              <div>
+                <div style="font-size:11px; font-weight:800; letter-spacing:.4px;">
+                  FULL ESP32 EDGE AIR TELEMETRY
+                </div>
+                <div id="full-esp32-status" style="margin-top:2px; font-size:9px; color:#94a3b8;">
+                  Waiting for live sensor data...
+                </div>
+              </div>
 
-    <div>
+              <span id="full-esp32-live-badge" style="padding:4px 7px; border-radius:5px; background:#14532d; color:#86efac; font-size:8px; font-weight:800; white-space:nowrap;">
+                LIVE
+              </span>
+            </div>
 
-      <div
-        style="
-          font-size:11px;
-          font-weight:800;
-          letter-spacing:.4px;
-        "
-      >
-        FULL ESP32 EDGE TELEMETRY
-      </div>
+            <div id="full-esp32-grid" style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px;">
 
-      <div
-        id="full-esp32-status"
-        style="
-          margin-top:2px;
-          font-size:9px;
-          color:#94a3b8;
-        "
-      >
-        Waiting for live hardware data...
-      </div>
+              <!-- STATE -->
+              <div class="esp32-full-cell"><span>Sensor ID</span><strong id="full-sensor-id">—</strong></div>
+              <div class="esp32-full-cell"><span>Alert Level</span><strong id="full-alert-level">—</strong></div>
+              <div class="esp32-full-cell"><span>System State</span><strong id="full-system-state">—</strong></div>
 
-    </div>
+              <!-- LOCATION -->
+              <div class="esp32-full-cell"><span>Latitude</span><strong id="full-lat">—</strong></div>
+              <div class="esp32-full-cell"><span>Longitude</span><strong id="full-lon">—</strong></div>
+              <div class="esp32-full-cell"><span>Updated</span><strong id="full-updated">—</strong></div>
 
-    <span
-      id="full-esp32-live-badge"
-      style="
-        padding:4px 7px;
-        border-radius:5px;
-        background:#14532d;
-        color:#86efac;
-        font-size:8px;
-        font-weight:800;
-        white-space:nowrap;
-      "
-    >
-      LIVE
-    </span>
+              <!-- PARTICULATE METRICS -->
+              <div class="esp32-full-cell"><span>PM2.5 Conc.</span><strong id="full-tilt">—</strong></div>
+              <div class="esp32-full-cell"><span>PM2.5 Delta</span><strong id="full-tilt-change">—</strong></div>
+              <div class="esp32-full-cell"><span>PM2.5 Rate</span><strong id="full-tilt-rate">—</strong></div>
+              <div class="esp32-full-cell"><span>PM2.5 10s Avg</span><strong id="full-tilt-10s">—</strong></div>
 
-  </div>
+              <!-- GAS & SENSOR DATA -->
+              <div class="esp32-full-cell"><span>NO2 Density</span><strong id="full-accel-x">—</strong></div>
+              <div class="esp32-full-cell"><span>CO Level</span><strong id="full-accel-y">—</strong></div>
+              <div class="esp32-full-cell"><span>O3 Conc.</span><strong id="full-accel-z">—</strong></div>
+              <div class="esp32-full-cell"><span>AQI Index</span><strong id="full-accel-mag">—</strong></div>
+              <div class="esp32-full-cell"><span>Spike Jump</span><strong id="full-accel-jump">—</strong></div>
+              <div class="esp32-full-cell"><span>Particulate RMS</span><strong id="full-vibration">—</strong></div>
+              <div class="esp32-full-cell"><span>Air Flow Ratio</span><strong id="full-movement">—</strong></div>
 
+              <!-- METEOROLOGICAL -->
+              <div class="esp32-full-cell"><span>VOC Index</span><strong id="full-soil">—</strong></div>
+              <div class="esp32-full-cell"><span>VOC Delta</span><strong id="full-soil-change">—</strong></div>
+              <div class="esp32-full-cell"><span>VOC Rate</span><strong id="full-soil-rate">—</strong></div>
 
-  <div
-    id="full-esp32-grid"
-    style="
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:5px;
-    "
-  >
+              <!-- OPTICAL / LASER COUNTER -->
+              <div class="esp32-full-cell"><span>Laser Counter</span><strong id="full-distance">—</strong></div>
+              <div class="esp32-full-cell"><span>Particle Change</span><strong id="full-distance-change">—</strong></div>
+              <div class="esp32-full-cell"><span>Flow Rate</span><strong id="full-distance-rate">—</strong></div>
+              <div class="esp32-full-cell"><span>Displacement</span><strong id="full-displacement">—</strong></div>
 
-    <!-- STATE -->
+              <!-- ENVIRONMENT -->
+              <div class="esp32-full-cell"><span>BMP Pressure</span><strong id="full-pressure">—</strong></div>
+              <div class="esp32-full-cell"><span>Ambient Temp</span><strong id="full-temperature">—</strong></div>
+              <div class="esp32-full-cell"><span>Humidity</span><strong id="full-humidity">—</strong></div>
+              <div class="esp32-full-cell"><span>Rainfall</span><strong id="full-rainfall">—</strong></div>
 
-    <div class="esp32-full-cell">
-      <span>Sensor ID</span>
-      <strong id="full-sensor-id">—</strong>
-    </div>
+            </div>
 
-    <div class="esp32-full-cell">
-      <span>Alert Level</span>
-      <strong id="full-alert-level">—</strong>
-    </div>
+          </div>
 
-    <div class="esp32-full-cell">
-      <span>System State</span>
-      <strong id="full-system-state">—</strong>
-    </div>
-
-
-    <!-- LOCATION -->
-
-    <div class="esp32-full-cell">
-      <span>Latitude</span>
-      <strong id="full-lat">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Longitude</span>
-      <strong id="full-lon">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Updated</span>
-      <strong id="full-updated">—</strong>
-    </div>
-
-
-    <!-- TILT -->
-
-    <div class="esp32-full-cell">
-      <span>Tilt Angle</span>
-      <strong id="full-tilt">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Tilt Change</span>
-      <strong id="full-tilt-change">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Tilt Rate</span>
-      <strong id="full-tilt-rate">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Tilt 10s Change</span>
-      <strong id="full-tilt-10s">—</strong>
-    </div>
-
-
-    <!-- ACCEL -->
-
-    <div class="esp32-full-cell">
-      <span>Accel X</span>
-      <strong id="full-accel-x">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Accel Y</span>
-      <strong id="full-accel-y">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Accel Z</span>
-      <strong id="full-accel-z">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Accel Magnitude</span>
-      <strong id="full-accel-mag">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Accel Jump</span>
-      <strong id="full-accel-jump">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Vibration RMS</span>
-      <strong id="full-vibration">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Movement Ratio</span>
-      <strong id="full-movement">—</strong>
-    </div>
-
-
-    <!-- SOIL -->
-
-    <div class="esp32-full-cell">
-      <span>Soil Moisture</span>
-      <strong id="full-soil">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Soil Change</span>
-      <strong id="full-soil-change">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Soil Rate</span>
-      <strong id="full-soil-rate">—</strong>
-    </div>
-
-
-    <!-- DISTANCE -->
-
-    <div class="esp32-full-cell">
-      <span>Distance</span>
-      <strong id="full-distance">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Distance Change</span>
-      <strong id="full-distance-change">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Distance Rate</span>
-      <strong id="full-distance-rate">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Displacement</span>
-      <strong id="full-displacement">—</strong>
-    </div>
-
-
-    <!-- ENVIRONMENT -->
-
-    <div class="esp32-full-cell">
-      <span>BMP Pressure</span>
-      <strong id="full-pressure">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>DHT Temperature</span>
-      <strong id="full-temperature">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Humidity</span>
-      <strong id="full-humidity">—</strong>
-    </div>
-
-    <div class="esp32-full-cell">
-      <span>Rainfall</span>
-      <strong id="full-rainfall">—</strong>
-    </div>
-
-  </div>
-
-</div>
-
-</section>
+        </section>
 
         <!-- ================= SHAP / RISK INFERENCE CARD ================= -->
         <section class="card" style="margin-top: 14px;">
           <div class="card-header">
-            <h3 id="selected-zone-name">AIZAWL: LAIPUITLANG URBAN SLOPE CUT</h3>
+            <h3 id="selected-zone-name">AIZAWL: URBAN AIR MONITORING CORRIDOR</h3>
             <span class="badge blue">Model Inference</span>
           </div>
 
           <div style="margin-top: 8px;">
             <div
               style="color: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">
-              Calculated Failure Probability
+              Calculated AQI Hazard Probability
             </div>
 
             <!-- Scaled Probability Display -->
@@ -633,23 +526,23 @@
               </span>
               <span
                 style="font-size: 12px; font-weight: 700; color: #dc2626; background: rgba(220, 38, 38, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(220, 38, 38, 0.2);">
-                EXTREME RISK
+                SEVERE AQI
               </span>
             </div>
 
             <span class="badge blue" style="font-size: 11px; padding: 2px 6px;">Model: RF + SHAP + XGBoost</span>
 
             <div style="margin-top: 10px;">
-              <strong style="font-size: 12px; color: #0f172a;">Why is this slope at risk?</strong>
+              <strong style="font-size: 12px; color: #0f172a;">Why is this area elevated?</strong>
               <p style="font-size: 12px; color: #475569; margin: 3px 0 10px 0; line-height: 1.4;">
-                Steep excavated cut angle (39°) in Surma sandstone with high pore pressure undercutting the slope toe.
+                Heavy vehicle exhaust combined with low atmospheric boundary layer and stagnant wind speeds.
               </p>
 
               <!-- Factor Weight Bars -->
               <div style="display: flex; flex-direction: column; gap: 7px; font-size: 12px;">
                 <div>
                   <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                    <span>Antecedent Rain (24h)</span>
+                    <span>Vehicular Exhaust (PM2.5)</span>
                     <strong style="color: #991b1b;">+45%</strong>
                   </div>
                   <div style="height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
@@ -659,7 +552,7 @@
 
                 <div>
                   <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                    <span>Slope Incline (39°)</span>
+                    <span>Industrial NO2 Density</span>
                     <strong style="color: #991b1b;">+32%</strong>
                   </div>
                   <div style="height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
@@ -669,7 +562,7 @@
 
                 <div>
                   <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                    <span>Soil Saturation (FC-28)</span>
+                    <span>Stagnant Wind Velocity</span>
                     <strong style="color: #991b1b;">+22%</strong>
                   </div>
                   <div style="height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
@@ -679,7 +572,7 @@
 
                 <div>
                   <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                    <span>Structural Overburden</span>
+                    <span>Urban Thermal Inversion</span>
                     <strong style="color: #991b1b;">+14%</strong>
                   </div>
                   <div style="height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
@@ -698,21 +591,21 @@
           <div style="margin-top: 8px;">
             <select id="lang-select" class="custom-select"
               style="width: 100%; margin-bottom: 8px; padding: 7px 10px; font-size: 12px;">
-              <option value="mz">Mizo (Duhlian)</option>
               <option value="en">English Broadcast</option>
+              <option value="mz">Mizo (Duhlian)</option>
               <option value="as">Assamese (অসমীয়া)</option>
               <option value="bn">Bengali (বাংলা)</option>
+              <option value="hi">Hindi (हिन्दी)</option>
             </select>
 
             <div id="alert-preview-text"
               style="font-size: 11px; color: #64748b; font-style: italic; margin-bottom: 12px; line-height: 1.4; padding: 6px 8px; background: #f8fafc; border-radius: 4px; border-left: 2px solid #cbd5e1;">
-              "Fimkhurna: He laiah hian leimin hlauhawm a awm. Kham bul atangin inthiarfihlim vat rawh u."
+              "Air Quality Warning: Severe PM2.5 levels detected. Limit outdoor activity and use N95 masks."
             </div>
 
-            <!-- Restyled Broadcast Button (Clean Crimson Gradient with Smooth Elevation) -->
             <button id="btn-trigger-alert" class="submit-btn"
               style="width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #ffffff; background: linear-gradient(135deg, #e11d48, #be123c); border: none; border-radius: 6px; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;">
-              <span></span> Transmit Cell Broadcast
+              <span>📢</span> Transmit Cell Broadcast
             </button>
           </div>
         </section>
@@ -726,10 +619,8 @@
     style="display: flex; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 16px;">
     <div
       style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; width: 100%; max-width: 380px; padding: 24px; color: #f8fafc; position: relative; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); font-family: system-ui, -apple-system, sans-serif;">
-      <button type="button" onclick="closeLoginModal()"
-        style="position: absolute; right: 14px; top: 12px; background: transparent; border: none; color: #94a3b8; font-size: 22px; line-height: 1; cursor: pointer; padding: 4px;">&times;</button>
 
-      <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 700;">Giri Rakshak Log In </h3>
+      <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 700;">AeroTrace Log In </h3>
       <p style="margin: 0 0 16px 0; color: #94a3b8; font-size: 13px;">Select account type</p>
 
       <div style="display: flex; background: #0f172a; padding: 4px; border-radius: 8px; margin-bottom: 16px;">
@@ -757,15 +648,13 @@
   </div>
 
   <script src="susceptibility_cell_click.js"></script>
-<script src="dashboard.js"></script>
+  <script src="dashboard.js"></script>
   <script src="susceptibility.js"></script>
 </body>
 
 </html>
 
 <style>
-/* GIRI_RAKSHAK_FULL_ESP32_TELEMETRY_STYLE */
-
 #full-esp32-telemetry .esp32-full-cell {
   min-width:0;
   padding:6px 7px;
@@ -792,11 +681,8 @@
 }
 
 @media (max-width:700px) {
-
   #full-esp32-grid {
     grid-template-columns:repeat(2,minmax(0,1fr)) !important;
   }
-
 }
-
 </style>

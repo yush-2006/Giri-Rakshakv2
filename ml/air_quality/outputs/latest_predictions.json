@@ -1,0 +1,41 @@
+[
+  {
+    "location_id": "Delhi_Central_Demo",
+    "latitude": 28.6139,
+    "longitude": 77.209,
+    "last_observed_at": "2026-09-30T14:00:00",
+    "prediction_for": "2026-09-30T15:00:00",
+    "pollutant": "PM2.5",
+    "predicted_value": 96.41,
+    "unit": "ug/m3",
+    "model_version": "demo-rf-1",
+    "data_source": "synthetic_demo",
+    "is_official_aqi": false
+  },
+  {
+    "location_id": "Delhi_East_Demo",
+    "latitude": 28.628,
+    "longitude": 77.295,
+    "last_observed_at": "2026-09-30T14:00:00",
+    "prediction_for": "2026-09-30T15:00:00",
+    "pollutant": "PM2.5",
+    "predicted_value": 99.42,
+    "unit": "ug/m3",
+    "model_version": "demo-rf-1",
+    "data_source": "synthetic_demo",
+    "is_official_aqi": false
+  },
+  {
+    "location_id": "Delhi_South_Demo",
+    "latitude": 28.5355,
+    "longitude": 77.21,
+    "last_observed_at": "2026-09-30T14:00:00",
+    "prediction_for": "2026-09-30T15:00:00",
+    "pollutant": "PM2.5",
+    "predicted_value": 95.89,
+    "unit": "ug/m3",
+    "model_version": "demo-rf-1",
+    "data_source": "synthetic_demo",
+    "is_official_aqi": false
+  }
+]

@@ -39,43 +39,38 @@ const avoidZonesGroup = L.layerGroup().addTo(map);
 
 let heatLayerInstance = null;
 
-// 2. Comprehensive 8-State Geological Coordinates & District Directory
-const nerData = {
+// Comprehensive Air Quality & Environmental Telemetry Directory (AeroTrace)
+const indiaData = {
+  // --- NORTH EASTERN REGION ---
   mizoram: {
     name: "Mizoram",
     center: [23.35, 92.85],
     zoom: 9,
-    boundary: [
-      [24.52, 92.98], [24.25, 93.28], [23.85, 93.30], [23.00, 93.42],
-      [22.18, 93.05], [21.95, 92.80], [22.45, 92.55], [23.40, 92.25],
-      [24.15, 92.48], [24.45, 92.70]
-    ],
+    boundary: [[24.52, 92.98], [24.25, 93.28], [23.00, 93.42], [21.95, 92.80], [22.45, 92.55], [24.45, 92.70]],
     districts: {
       aizawl: {
-        name: "Aizawl",
+        name: "Aizawl Urban Corridor",
         isHardwareNode: true,
         center: [23.7307, 92.7173],
         zoom: 13,
         riskLevel: "extreme",
         riskScore: 94.2,
-        alertTitle: "EXTREME CRITICAL: Laipuitlang & Ramhlun Urban Cuts",
-        alertText: "Continuous physical telemetry confirms accelerating slope creep (18.2° tilt) following heavy saturation. Immediate structural danger.",
-        telemetry: { tilt: 18.2, moisture: 89, rain: 114 },
-        zones: [
-          {
-            name: "Laipuitlang Urban Slope Cut",
-            riskLevel: "extreme",
-            riskScore: 94.5,
-            polygon: [[23.736, 92.712], [23.746, 92.721], [23.739, 92.733], [23.729, 92.722]],
-            why: "Steep excavated cut angle (39°) in Surma sandstone with high pore pressure undercutting the slope toe.",
-            shap: [
-              { factor: "Antecedent Rain (24h)", impact: 0.45 },
-              { factor: "Slope Incline (39°)", impact: 0.32 },
-              { factor: "Soil Saturation (FC-28)", impact: 0.22 },
-              { factor: "Structural Overburden", impact: 0.14 }
-            ]
-          }
-        ],
+        alertTitle: "CRITICAL AQI SPIKE: Urban Transit Corridor",
+        alertText: "Live physical ESP32 telemetry confirms severe particulate matter spikes (PM2.5: 182 µg/m³) driven by diesel exhaust stagnation.",
+        telemetry: { tilt: 182, moisture: 240, rain: 89 },
+        zones: [{
+          name: "Aizawl Urban Air Monitoring Corridor",
+          riskLevel: "extreme",
+          riskScore: 94.5,
+          polygon: [[23.736, 92.712], [23.746, 92.721], [23.739, 92.733], [23.729, 92.722]],
+          why: "Heavy vehicle exhaust combined with low atmospheric boundary layer and stagnant wind speeds.",
+          shap: [
+            { factor: "Vehicular Exhaust (PM2.5)", impact: 0.45 },
+            { factor: "Industrial NO2 Density", impact: 0.32 },
+            { factor: "Stagnant Wind Velocity", impact: 0.22 },
+            { factor: "Urban Thermal Inversion", impact: 0.14 }
+          ]
+        }],
         sensorCoords: [23.739, 92.719]
       },
       lunglei: {
@@ -85,23 +80,17 @@ const nerData = {
         zoom: 13,
         riskLevel: "high",
         riskScore: 68.0,
-        alertTitle: "HIGH HAZARD: Lunglei Highway Corridor",
-        alertText: "Live satellite & AWS precipitation indicates potential shallow mud slips along tertiary road excavations.",
-        telemetry: { tilt: 8.4, moisture: 73, rain: 68 },
-        zones: [
-          {
-            name: "Lunglei Valley Highway Section",
-            riskLevel: "high",
-            riskScore: 68.0,
-            polygon: [[22.880, 92.733], [22.895, 92.741], [22.891, 92.754], [22.875, 92.743]],
-            why: "Precipitation exceeding historical threshold for weathered clay-silt deposits.",
-            shap: [
-              { factor: "Precipitation Accumulation", impact: 0.35 },
-              { factor: "Excavated Cut Slope", impact: 0.25 },
-              { factor: "Soil Moisture Ratio", impact: 0.16 }
-            ]
-          }
-        ]
+        alertTitle: "MODERATE AQI WATCH: Lunglei Highway Sector",
+        alertText: "Particulate suspension exceeding local clean air thresholds.",
+        telemetry: { tilt: 84, moisture: 130, rain: 48 },
+        zones: [{
+          name: "Lunglei Valley Highway Sector",
+          riskLevel: "high",
+          riskScore: 68.0,
+          polygon: [[22.880, 92.733], [22.895, 92.741], [22.891, 92.754], [22.875, 92.743]],
+          why: "Unpaved road construction dust mixed with commercial transit exhaust.",
+          shap: [{ factor: "Road Construction Dust", impact: 0.35 }, { factor: "Transit Fleet Exhaust", impact: 0.25 }]
+        }]
       }
     }
   },
@@ -110,59 +99,26 @@ const nerData = {
     name: "Nagaland",
     center: [26.1584, 94.5624],
     zoom: 8,
-    boundary: [
-      [27.02, 95.25], [26.85, 95.35], [26.05, 94.88], [25.55, 94.55],
-      [25.52, 93.65], [25.92, 93.75], [26.50, 94.30], [26.95, 94.85]
-    ],
+    boundary: [[27.02, 95.25], [26.05, 94.88], [25.52, 93.65], [26.95, 94.85]],
     districts: {
       dimapur: {
-        name: "Dimapur (Paglapahar)",
+        name: "Dimapur Freight Corridor",
         isHardwareNode: false,
         center: [25.9042, 93.7279],
         zoom: 13,
         riskLevel: "extreme",
         riskScore: 86.4,
-        alertTitle: "EXTREME RISK: NH-29 Paglapahar Gorge",
-        alertText: "Live rainfall telemetry alerts to acute mudflow hazard along fractured Disang shale formations.",
-        telemetry: { tilt: 14.1, moisture: 84, rain: 102 },
-        zones: [
-          {
-            name: "NH-29 Paglapahar Choke",
-            riskLevel: "extreme",
-            riskScore: 86.4,
-            polygon: [[25.892, 93.712], [25.914, 93.724], [25.910, 93.745], [25.888, 93.732]],
-            why: "Unconsolidated valley strata subject to high kinetic hydraulic flow from upper ridges.",
-            shap: [
-              { factor: "Cumulative Rain", impact: 0.42 },
-              { factor: "Unconsolidated Strata", impact: 0.30 }
-            ]
-          }
-        ]
-      },
-
-      kohima: {
-        name: "Kohima",
-        isHardwareNode: false,
-        center: [25.6751, 94.1086],
-        zoom: 13,
-        riskLevel: "very-high",
-        riskScore: 74.5,
-        alertTitle: "VERY HIGH RISK: Kohima Urban Ridge",
-        alertText: "Model shows sub-surface saturation driving creeping subsidence on terrace residential slopes.",
-        telemetry: { tilt: 8.5, moisture: 68, rain: 55 },
-        zones: [
-          {
-            name: "Kohima Bypass Cutting",
-            riskLevel: "very-high",
-            riskScore: 74.5,
-            polygon: [[25.666, 94.099], [25.683, 94.108], [25.680, 94.121], [25.660, 94.111]],
-            why: "High residential loading on slopes steeper than 35° on weathered shale basement.",
-            shap: [
-              { factor: "Subsoil Saturation", impact: 0.34 },
-              { factor: "Slope Gradient (35°)", impact: 0.28 }
-            ]
-          }
-        ]
+        alertTitle: "SEVERE AQI: NH-29 Transit Choke",
+        alertText: "Heavy commercial freight idling in low dispersion valley conditions.",
+        telemetry: { tilt: 141, moisture: 210, rain: 62 },
+        zones: [{
+          name: "NH-29 Dimapur Transit Choke",
+          riskLevel: "extreme",
+          riskScore: 86.4,
+          polygon: [[25.892, 93.712], [25.914, 93.724], [25.910, 93.745], [25.888, 93.732]],
+          why: "Freight truck traffic idling along choke points.",
+          shap: [{ factor: "Freight Diesel Smoke", impact: 0.42 }, { factor: "Suspended Road Dust", impact: 0.30 }]
+        }]
       }
     }
   },
@@ -171,34 +127,26 @@ const nerData = {
     name: "Sikkim",
     center: [27.5330, 88.5122],
     zoom: 9,
-    boundary: [
-      [28.12, 88.65], [27.95, 88.88], [27.35, 88.92], [27.08, 88.75],
-      [27.10, 88.10], [27.75, 88.05], [28.05, 88.35]
-    ],
+    boundary: [[28.12, 88.65], [27.35, 88.92], [27.10, 88.10], [28.05, 88.35]],
     districts: {
       gangtok: {
-        name: "Gangtok",
+        name: "Gangtok Transit Sector",
         isHardwareNode: false,
         center: [27.3389, 88.6065],
         zoom: 13,
-        riskLevel: "extreme",
-        riskScore: 88.0,
-        alertTitle: "EXTREME HAZARD: Gangtok Spur & JN Road",
-        alertText: "Live open-meteo readings calculate high probability of debris flow along fractured gneiss joints.",
-        telemetry: { tilt: 13.6, moisture: 82, rain: 94 },
-        zones: [
-          {
-            name: "JN Road Slope",
-            riskLevel: "extreme",
-            riskScore: 88.0,
-            polygon: [[27.329, 88.595], [27.348, 88.607], [27.344, 88.620], [27.325, 88.608]],
-            why: "Rainfall infiltration lubricating pre-existing tectonic joint planes on a 42° slope.",
-            shap: [
-              { factor: "Rainfall", impact: 0.44 },
-              { factor: "Slope Angle (42°)", impact: 0.32 }
-            ]
-          }
-        ]
+        riskLevel: "high",
+        riskScore: 68.0,
+        alertTitle: "MODERATE AQI: Gangtok Ridge",
+        alertText: "Seasonal tourist vehicle influx increasing ambient CO and PM2.5 levels.",
+        telemetry: { tilt: 76, moisture: 110, rain: 28 },
+        zones: [{
+          name: "JN Road Tourist Link",
+          riskLevel: "high",
+          riskScore: 68.0,
+          polygon: [[27.329, 88.595], [27.348, 88.607], [27.344, 88.620], [27.325, 88.608]],
+          why: "Tourist vehicle exhaust trapping in valley inversion layer.",
+          shap: [{ factor: "Tourist Vehicle Fleet", impact: 0.44 }]
+        }]
       }
     }
   },
@@ -207,34 +155,26 @@ const nerData = {
     name: "Assam",
     center: [26.2006, 92.9376],
     zoom: 7,
-    boundary: [
-      [27.95, 96.00], [27.50, 95.80], [26.80, 93.80], [25.00, 93.10],
-      [24.50, 92.60], [25.80, 90.00], [26.20, 89.80], [26.85, 92.10]
-    ],
+    boundary: [[27.95, 96.00], [26.80, 93.80], [24.50, 92.60], [26.85, 92.10]],
     districts: {
-      dima_hasao: {
-        name: "Dima Hasao (Haflong)",
+      guwahati: {
+        name: "Guwahati Metropolitan",
         isHardwareNode: false,
-        center: [25.1706, 93.0238],
+        center: [26.1445, 91.7362],
         zoom: 13,
         riskLevel: "extreme",
         riskScore: 92.8,
-        alertTitle: "EXTREME CRITICAL: Haflong Rail Link Sinking Cut",
-        alertText: "Live meteorological feed triggers alert for rail embankment subsidence.",
-        telemetry: { tilt: 19.5, moisture: 92, rain: 135 },
-        zones: [
-          {
-            name: "Haflong Railway Cutting",
-            riskLevel: "extreme",
-            riskScore: 92.8,
-            polygon: [[25.161, 93.013], [25.180, 93.023], [25.176, 93.038], [25.156, 93.024]],
-            why: "Unconsolidated railway cutting slopes failing under saturated hydrostatic loading.",
-            shap: [
-              { factor: "Rainfall Volume", impact: 0.48 },
-              { factor: "Soil Saturation", impact: 0.34 }
-            ]
-          }
-        ]
+        alertTitle: "CRITICAL AQI: Refinery & Transit Sector",
+        alertText: "Petrochemical refinery emissions mixing with heavy urban construction dust.",
+        telemetry: { tilt: 210, moisture: 340, rain: 110 },
+        zones: [{
+          name: "Guwahati Commercial Sector",
+          riskLevel: "extreme",
+          riskScore: 92.8,
+          polygon: [[26.135, 91.725], [26.154, 91.735], [26.150, 91.750], [26.130, 91.736]],
+          why: "Industrial point source emissions combined with unpaved road particulate matter.",
+          shap: [{ factor: "Refinery Point Sources", impact: 0.48 }, { factor: "Construction Dust", impact: 0.34 }]
+        }]
       }
     }
   },
@@ -243,34 +183,26 @@ const nerData = {
     name: "Meghalaya",
     center: [25.4670, 91.3662],
     zoom: 8,
-    boundary: [
-      [26.15, 91.80], [25.85, 92.75], [25.10, 92.75], [25.10, 89.85],
-      [25.95, 90.00], [26.05, 91.20]
-    ],
+    boundary: [[26.15, 91.80], [25.10, 92.75], [25.10, 89.85], [26.05, 91.20]],
     districts: {
-      east_khasi_hills: {
-        name: "East Khasi Hills (Sohra)",
+      shillong: {
+        name: "Shillong Commercial",
         isHardwareNode: false,
-        center: [25.2986, 91.7180],
+        center: [25.5788, 91.8933],
         zoom: 13,
-        riskLevel: "extreme",
-        riskScore: 91.5,
-        alertTitle: "EXTREME CRITICAL: Sohra Escarpment",
-        alertText: "Live precipitation exceeds hazard threshold. Cascading debris slides likely on canyon flanks.",
-        telemetry: { tilt: 14.2, moisture: 88, rain: 190 },
-        zones: [
-          {
-            name: "Mawkdok Canyon Slope",
-            riskLevel: "extreme",
-            riskScore: 91.5,
-            polygon: [[25.289, 91.706], [25.310, 91.718], [25.305, 91.732], [25.284, 91.719]],
-            why: "Near-vertical sandstone cliffs experiencing shear failures after hyper-precipitation events.",
-            shap: [
-              { factor: "Antecedent Rain", impact: 0.54 },
-              { factor: "Escarpment Incline", impact: 0.30 }
-            ]
-          }
-        ]
+        riskLevel: "high",
+        riskScore: 71.5,
+        alertTitle: "MODERATE AQI: Shillong Urban Basin",
+        alertText: "Commercial center vehicle density driving localized nitrogen dioxide accumulation.",
+        telemetry: { tilt: 88, moisture: 125, rain: 35 },
+        zones: [{
+          name: "Bara Bazar Sector",
+          riskLevel: "high",
+          riskScore: 71.5,
+          polygon: [[25.569, 91.881], [25.590, 91.893], [25.585, 91.907], [25.564, 91.894]],
+          why: "Commercial idling traffic in compressed urban basin.",
+          shap: [{ factor: "Urban Fleet Idling", impact: 0.42 }]
+        }]
       }
     }
   },
@@ -279,70 +211,54 @@ const nerData = {
     name: "Manipur",
     center: [24.8170, 93.9368],
     zoom: 8,
-    boundary: [
-      [25.68, 94.45], [25.20, 94.75], [24.15, 94.35], [23.85, 93.10],
-      [24.50, 93.05], [25.50, 93.55]
-    ],
+    boundary: [[25.68, 94.45], [24.15, 94.35], [23.85, 93.10], [25.50, 93.55]],
     districts: {
-      noney: {
-        name: "Noney (Tupul)",
+      imphal: {
+        name: "Imphal Valley",
         isHardwareNode: false,
-        center: [24.7937, 93.5828],
+        center: [24.8170, 93.9368],
         zoom: 13,
-        riskLevel: "extreme",
-        riskScore: 94.8,
-        alertTitle: "EXTREME CRITICAL: Tupul Railway River Basin",
-        alertText: "Live feed alerts to high probability of historical slip reactivation along Ijei river cut.",
-        telemetry: { tilt: 20.8, moisture: 94, rain: 128 },
-        zones: [
-          {
-            name: "Ijei River Slide Basin",
-            riskLevel: "extreme",
-            riskScore: 94.8,
-            polygon: [[24.784, 93.571], [24.804, 93.582], [24.800, 93.597], [24.778, 93.584]],
-            why: "Heavily disturbed colluvium on steep riverbanks under continuous base undercutting.",
-            shap: [
-              { factor: "Historical Slip Factor", impact: 0.49 },
-              { factor: "River Undercutting", impact: 0.35 }
-            ]
-          }
-        ]
+        riskLevel: "high",
+        riskScore: 74.8,
+        alertTitle: "MODERATE AQI: Imphal Basin",
+        alertText: "Agricultural residue burning smoke collecting in central valley ring.",
+        telemetry: { tilt: 112, moisture: 165, rain: 42 },
+        zones: [{
+          name: "Imphal Ring Corridor",
+          riskLevel: "high",
+          riskScore: 74.8,
+          polygon: [[24.808, 93.925], [24.828, 93.936], [24.824, 93.951], [24.802, 93.938]],
+          why: "Valley topography trapping biomass smoke.",
+          shap: [{ factor: "Crop Residue Smoke", impact: 0.49 }]
+        }]
       }
     }
   },
 
-  arunachal: {
+  arunachal_pradesh: {
     name: "Arunachal Pradesh",
     center: [28.2180, 94.7278],
     zoom: 7,
-    boundary: [
-      [29.30, 96.50], [28.00, 97.40], [27.00, 95.80], [26.85, 92.10],
-      [27.50, 91.80], [28.00, 92.50], [28.80, 94.00]
-    ],
+    boundary: [[29.30, 96.50], [27.00, 95.80], [26.85, 92.10], [28.80, 94.00]],
     districts: {
-      tawang: {
-        name: "Tawang",
+      itanagar: {
+        name: "Itanagar Eco Zone",
         isHardwareNode: false,
-        center: [27.5861, 91.8594],
+        center: [27.0844, 93.6053],
         zoom: 13,
-        riskLevel: "high",
-        riskScore: 65.0,
-        alertTitle: "HIGH RISK: Sela Pass Apron",
-        alertText: "Live meteorological precipitation indicates loose scree and rockfall danger.",
-        telemetry: { tilt: 7.2, moisture: 64, rain: 45 },
-        zones: [
-          {
-            name: "Sela Pass Apron",
-            riskLevel: "high",
-            riskScore: 65.0,
-            polygon: [[27.577, 91.849], [27.596, 91.859], [27.593, 91.872], [27.572, 91.860]],
-            why: "Frost shattering loosening high-elevation bedrock scree onto highway corridors.",
-            shap: [
-              { factor: "Elevation Gradient", impact: 0.35 },
-              { factor: "Rainfall", impact: 0.24 }
-            ]
-          }
-        ]
+        riskLevel: "good",
+        riskScore: 35.0,
+        alertTitle: "GOOD AQI: Itanagar Forest Capital",
+        alertText: "Pristine air quality maintained by dense forest bio-filtration.",
+        telemetry: { tilt: 32, moisture: 45, rain: 12 },
+        zones: [{
+          name: "Capital Eco Corridor",
+          riskLevel: "good",
+          riskScore: 35.0,
+          polygon: [[27.075, 93.595], [27.094, 93.605], [27.091, 93.618], [27.070, 93.606]],
+          why: "High forest canopy filtering airborne particulates.",
+          shap: [{ factor: "Forest Canopy Bio-filtration", impact: -0.45 }]
+        }]
       }
     }
   },
@@ -351,34 +267,815 @@ const nerData = {
     name: "Tripura",
     center: [23.8315, 91.2868],
     zoom: 8,
-    boundary: [
-      [24.50, 92.20], [24.10, 92.40], [23.00, 91.90], [23.00, 91.30],
-      [23.70, 91.15], [24.20, 91.80]
-    ],
+    boundary: [[24.50, 92.20], [23.00, 91.90], [23.00, 91.30], [24.20, 91.80]],
     districts: {
-      dhalai: {
-        name: "Dhalai (Atharamura)",
+      agartala: {
+        name: "Agartala Border Transit",
         isHardwareNode: false,
-        center: [23.8520, 91.8533],
+        center: [23.8315, 91.2868],
         zoom: 13,
         riskLevel: "high",
         riskScore: 62.0,
-        alertTitle: "HIGH WATCH: Atharamura Range NH-08",
-        alertText: "Roadside cut slopes showing minor displacement along soft sedimentary strata.",
-        telemetry: { tilt: 6.8, moisture: 60, rain: 52 },
-        zones: [
-          {
-            name: "Atharamura Range NH-08",
-            riskLevel: "high",
-            riskScore: 62.0,
-            polygon: [[23.842, 91.842], [23.861, 91.853], [23.857, 91.866], [23.837, 91.854]],
-            why: "Rainfall softening silty clay strata along road infrastructure cuttings.",
-            shap: [
-              { factor: "Road Excavation", impact: 0.32 },
-              { factor: "Rainfall (24h)", impact: 0.24 }
-            ]
-          }
-        ]
+        alertTitle: "MODERATE AQI: Agartala Transit Zone",
+        alertText: "Cross-border commercial truck queuing raising localized particulate counts.",
+        telemetry: { tilt: 68, moisture: 105, rain: 22 },
+        zones: [{
+          name: "Agartala Border Terminal",
+          riskLevel: "high",
+          riskScore: 62.0,
+          polygon: [[23.822, 91.276], [23.841, 91.287], [23.837, 91.300], [23.817, 91.288]],
+          why: "Commercial truck queuing at border check posts.",
+          shap: [{ factor: "Cross-Border Freight Idling", impact: 0.38 }]
+        }]
+      }
+    }
+  },
+
+  // --- CAPITAL & NORTHERN STATES ---
+  delhi: {
+    name: "Delhi NCR",
+    center: [28.7041, 77.1025],
+    zoom: 10,
+    boundary: [[28.88, 76.85], [28.88, 77.35], [28.40, 77.35], [28.40, 76.85]],
+    districts: {
+      anand_vihar: {
+        name: "Anand Vihar Hotspot",
+        isHardwareNode: false,
+        center: [28.6469, 77.3160],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 98.2,
+        alertTitle: "CRITICAL EMERGENCY: Severe Industrial & Bus Hub AQI",
+        alertText: "Severe PM2.5 levels exceeding 420 µg/m³. Public health advisory active.",
+        telemetry: { tilt: 420, moisture: 510, rain: 145 },
+        zones: [{
+          name: "Anand Vihar Transit Hub",
+          riskLevel: "extreme",
+          riskScore: 98.2,
+          polygon: [[28.640, 77.305], [28.655, 77.315], [28.650, 77.328], [28.635, 77.318]],
+          why: "Interstate diesel bus terminal, industrial point sources, and stubble smoke trapping.",
+          shap: [{ factor: "Interstate Bus Diesel Exhaust", impact: 0.52 }, { factor: "Industrial Point Sources", impact: 0.28 }]
+        }]
+      }
+    }
+  },
+
+  punjab: {
+    name: "Punjab",
+    center: [31.1471, 75.3412],
+    zoom: 8,
+    boundary: [[32.50, 74.80], [31.80, 76.90], [29.80, 76.20], [30.10, 74.20]],
+    districts: {
+      ludhiana: {
+        name: "Ludhiana Industrial Cluster",
+        isHardwareNode: false,
+        center: [30.9010, 75.8573],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 91.0,
+        alertTitle: "SEVERE AQI: Stubble & Industrial Smoke",
+        alertText: "Agricultural stubble burning combined with textile dye mill furnace emissions.",
+        telemetry: { tilt: 310, moisture: 420, rain: 115 },
+        zones: [{
+          name: "Ludhiana Industrial Belt",
+          riskLevel: "extreme",
+          riskScore: 91.0,
+          polygon: [[30.890, 75.845], [30.910, 75.860], [30.905, 75.875], [30.885, 75.860]],
+          why: "Industrial furnaces mixing with seasonal agricultural fire plumes.",
+          shap: [{ factor: "Agricultural Stubble Burning", impact: 0.58 }, { factor: "Textile Mill Furnaces", impact: 0.26 }]
+        }]
+      }
+    }
+  },
+
+  haryana: {
+    name: "Haryana",
+    center: [29.0588, 76.0856],
+    zoom: 8,
+    boundary: [[30.90, 76.80], [29.80, 77.60], [27.70, 76.20], [29.20, 74.50]],
+    districts: {
+      gurugram: {
+        name: "Gurugram Cyber Hub",
+        isHardwareNode: false,
+        center: [28.4595, 77.0266],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 89.5,
+        alertTitle: "CRITICAL AQI: Highway & Diesel Generator Corridor",
+        alertText: "Commercial diesel generator sets and expressway vehicular congestion.",
+        telemetry: { tilt: 280, moisture: 380, rain: 98 },
+        zones: [{
+          name: "Cyber City Corridor",
+          riskLevel: "extreme",
+          riskScore: 89.5,
+          polygon: [[28.450, 77.015], [28.470, 77.030], [28.465, 77.045], [28.445, 77.030]],
+          why: "High density commercial diesel generators running during grid load shifts.",
+          shap: [{ factor: "Commercial Genset Emissions", impact: 0.45 }]
+        }]
+      }
+    }
+  },
+
+  uttar_pradesh: {
+    name: "Uttar Pradesh",
+    center: [26.8467, 80.9462],
+    zoom: 7,
+    boundary: [[30.40, 77.50], [28.20, 84.40], [24.00, 82.80], [27.20, 78.00]],
+    districts: {
+      kanpur: {
+        name: "Kanpur Industrial Hub",
+        isHardwareNode: false,
+        center: [26.4499, 80.3319],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 95.1,
+        alertTitle: "SEVERE AQI: Tannery & Industrial Belt",
+        alertText: "Uncontrolled industrial chimney emissions and heavy traffic dust.",
+        telemetry: { tilt: 360, moisture: 460, rain: 130 },
+        zones: [{
+          name: "Jajmau Industrial Sector",
+          riskLevel: "extreme",
+          riskScore: 95.1,
+          polygon: [[26.440, 80.320], [26.460, 80.335], [26.455, 80.350], [26.435, 80.335]],
+          why: "Coal burning in brick kilns and leather tannery industrial boilers.",
+          shap: [{ factor: "Brick Kiln Coal Combustion", impact: 0.50 }]
+        }]
+      }
+    }
+  },
+
+  rajasthan: {
+    name: "Rajasthan",
+    center: [27.0238, 74.2179],
+    zoom: 6,
+    boundary: [[30.20, 73.80], [27.80, 78.20], [23.50, 74.40], [26.80, 70.20]],
+    districts: {
+      jaipur: {
+        name: "Jaipur Urban",
+        isHardwareNode: false,
+        center: [26.9124, 75.7873],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 78.0,
+        alertTitle: "HIGH AQI: Desert Mineral Dust & Traffic",
+        alertText: "Thar desert mineral dust re-suspension mixed with urban traffic.",
+        telemetry: { tilt: 160, moisture: 310, rain: 45 },
+        zones: [{
+          name: "Jaipur Walled City Corridor",
+          riskLevel: "high",
+          riskScore: 78.0,
+          polygon: [[26.900, 75.775], [26.920, 75.790], [26.915, 75.805], [26.895, 75.790]],
+          why: "High mineral dust PM10 re-suspension from arid surroundings.",
+          shap: [{ factor: "Windblown Desert Mineral Dust", impact: 0.54 }]
+        }]
+      }
+    }
+  },
+
+  himachal_pradesh: {
+    name: "Himachal Pradesh",
+    center: [31.1048, 77.1734],
+    zoom: 8,
+    boundary: [[33.20, 76.20], [32.00, 79.00], [30.40, 77.60], [32.10, 75.60]],
+    districts: {
+      shimla: {
+        name: "Shimla Valley",
+        isHardwareNode: false,
+        center: [31.1048, 77.1734],
+        zoom: 13,
+        riskLevel: "good",
+        riskScore: 42.0,
+        alertTitle: "GOOD AQI: Mountain Eco Protection",
+        alertText: "Clean mountain air with minor localized tourist vehicle combustion.",
+        telemetry: { tilt: 42, moisture: 60, rain: 18 },
+        zones: [{
+          name: "Mall Road Pedestrian Zone",
+          riskLevel: "good",
+          riskScore: 42.0,
+          polygon: [[31.095, 77.165], [31.115, 77.178], [31.110, 77.190], [31.090, 77.178]],
+          why: "Vehicular exclusion zone maintaining low local emission baseline.",
+          shap: [{ factor: "Vehicular Exclusion Zone", impact: -0.40 }]
+        }]
+      }
+    }
+  },
+
+  uttarakhand: {
+    name: "Uttarakhand",
+    center: [30.0668, 79.0193],
+    zoom: 8,
+    boundary: [[31.40, 77.80], [30.60, 81.00], [28.80, 79.80], [30.20, 77.60]],
+    districts: {
+      dehradun: {
+        name: "Dehradun Valley",
+        isHardwareNode: false,
+        center: [30.3165, 78.0322],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 72.0,
+        alertTitle: "MODERATE AQI: Doon Valley Basin",
+        alertText: "Doond valley topography trapping urban transport smoke.",
+        telemetry: { tilt: 95, moisture: 140, rain: 32 },
+        zones: [{
+          name: "ISBT Dehradun Corridor",
+          riskLevel: "high",
+          riskScore: 72.0,
+          polygon: [[30.305, 78.020], [30.325, 78.035], [30.320, 78.050], [30.300, 78.035]],
+          why: "Valley enclosure trapping diesel bus transit exhaust.",
+          shap: [{ factor: "Valley Topography Trap", impact: 0.38 }]
+        }]
+      }
+    }
+  },
+
+  // --- WESTERN & CENTRAL STATES ---
+  maharashtra: {
+    name: "Maharashtra",
+    center: [19.7515, 75.7139],
+    zoom: 7,
+    boundary: [[22.00, 72.60], [21.50, 80.90], [15.80, 74.20], [18.20, 72.80]],
+    districts: {
+      mumbai: {
+        name: "Mumbai Coastal Hub",
+        isHardwareNode: false,
+        center: [19.0760, 72.8777],
+        zoom: 12,
+        riskLevel: "extreme",
+        riskScore: 88.5,
+        alertTitle: "CRITICAL AQI: Port & Construction Corridor",
+        alertText: "High coastal humidity binding traffic diesel particulates and construction dust.",
+        telemetry: { tilt: 240, moisture: 360, rain: 105 },
+        zones: [{
+          name: "Chembur Industrial Sector",
+          riskLevel: "extreme",
+          riskScore: 88.5,
+          polygon: [[19.065, 72.865], [19.085, 72.880], [19.080, 72.895], [19.060, 72.880]],
+          why: "Refineries, fertilizer complex, and dense arterial sea-link traffic.",
+          shap: [{ factor: "Coastal Moisture Particle Binding", impact: 0.44 }, { factor: "Refinery Complex Smoke", impact: 0.32 }]
+        }]
+      }
+    }
+  },
+
+  gujarat: {
+    name: "Gujarat",
+    center: [22.2587, 71.1924],
+    zoom: 7,
+    boundary: [[24.70, 68.20], [24.50, 74.30], [20.10, 72.90], [22.50, 68.90]],
+    districts: {
+      ahmedabad: {
+        name: "Ahmedabad Industrial",
+        isHardwareNode: false,
+        center: [23.0225, 72.5714],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 92.0,
+        alertTitle: "SEVERE AQI: Textile & Chemical Corridor",
+        alertText: "Chemical industrial estate coal boilers emitting sulfur and particulate clouds.",
+        telemetry: { tilt: 290, moisture: 390, rain: 120 },
+        zones: [{
+          name: "Vatva Industrial Zone",
+          riskLevel: "extreme",
+          riskScore: 92.0,
+          polygon: [[23.010, 72.560], [23.030, 72.575], [23.025, 72.590], [23.005, 72.575]],
+          why: "Chemical processing boilers burning solid fossil fuels.",
+          shap: [{ factor: "Chemical Boiler Coal Smoke", impact: 0.52 }]
+        }]
+      }
+    }
+  },
+
+  madhya_pradesh: {
+    name: "Madhya Pradesh",
+    center: [22.9734, 78.6569],
+    zoom: 7,
+    boundary: [[26.80, 78.00], [24.20, 82.80], [21.10, 76.00], [23.50, 74.00]],
+    districts: {
+      indore: {
+        name: "Indore Urban",
+        isHardwareNode: false,
+        center: [22.7196, 75.8577],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 76.0,
+        alertTitle: "HIGH AQI: Commercial Transport Hub",
+        alertText: "Urban freight logistics and vehicular traffic emissions.",
+        telemetry: { tilt: 130, moisture: 210, rain: 55 },
+        zones: [{
+          name: "Vijay Nagar Commercial Sector",
+          riskLevel: "high",
+          riskScore: 76.0,
+          polygon: [[22.710, 75.845], [22.730, 75.860], [22.725, 75.875], [22.705, 75.860]],
+          why: "High commercial traffic density along bypass transit arterial.",
+          shap: [{ factor: "Urban Commercial Fleet Exhaust", impact: 0.40 }]
+        }]
+      }
+    }
+  },
+
+  chhattisgarh: {
+    name: "Chhattisgarh",
+    center: [21.2787, 81.8661],
+    zoom: 7,
+    boundary: [[24.10, 83.40], [21.50, 84.40], [17.80, 81.20], [22.00, 80.20]],
+    districts: {
+      korba: {
+        name: "Korba Power Capital",
+        isHardwareNode: false,
+        center: [22.3595, 82.7501],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 96.5,
+        alertTitle: "CRITICAL AQI: Thermal Power Plant Fly Ash Zone",
+        alertText: "Coal-fired power station fly ash dumps releasing airborne PM10.",
+        telemetry: { tilt: 380, moisture: 490, rain: 160 },
+        zones: [{
+          name: "Korba Thermal Power Belt",
+          riskLevel: "extreme",
+          riskScore: 96.5,
+          polygon: [[22.350, 82.740], [22.370, 82.755], [22.365, 82.770], [22.345, 82.755]],
+          why: "Uncontrolled coal fly ash dispersion from power plant storage ponds.",
+          shap: [{ factor: "Coal Power Fly Ash Dispersion", impact: 0.62 }]
+        }]
+      }
+    }
+  },
+
+  goa: {
+    name: "Goa",
+    center: [15.2993, 74.1240],
+    zoom: 10,
+    boundary: [[15.80, 73.70], [15.50, 74.30], [14.90, 74.10], [15.30, 73.80]],
+    districts: {
+      panaji: {
+        name: "Panaji Coastal",
+        isHardwareNode: false,
+        center: [15.4909, 73.8278],
+        zoom: 13,
+        riskLevel: "good",
+        riskScore: 38.0,
+        alertTitle: "GOOD AQI: Coastal Sea Breeze Zone",
+        alertText: "Strong marine breezes dispersing localized vehicular emissions.",
+        telemetry: { tilt: 38, moisture: 55, rain: 15 },
+        zones: [{
+          name: "Mandovi Waterfront Corridor",
+          riskLevel: "good",
+          riskScore: 38.0,
+          polygon: [[15.480, 73.815], [15.500, 73.830], [15.495, 73.845], [15.475, 73.830]],
+          why: "Coastal sea breeze providing high pollutant dispersion rate.",
+          shap: [{ factor: "Coastal Sea Breeze Dispersion", impact: -0.48 }]
+        }]
+      }
+    }
+  },
+
+  // --- EASTERN STATES ---
+  west_bengal: {
+    name: "West Bengal",
+    center: [22.9868, 87.8550],
+    zoom: 7,
+    boundary: [[27.20, 88.20], [24.00, 88.80], [21.50, 87.50], [23.50, 86.00]],
+    districts: {
+      kolkata: {
+        name: "Kolkata Metropolitan",
+        isHardwareNode: false,
+        center: [22.5726, 88.3639],
+        zoom: 12,
+        riskLevel: "extreme",
+        riskScore: 91.5,
+        alertTitle: "SEVERE AQI: High Density Commercial Hub",
+        alertText: "Old commercial diesel vehicles trapped in high density street canyons.",
+        telemetry: { tilt: 290, moisture: 410, rain: 125 },
+        zones: [{
+          name: "Howrah & Burrabazar Sector",
+          riskLevel: "extreme",
+          riskScore: 91.5,
+          polygon: [[22.560, 88.350], [22.580, 88.365], [22.575, 88.380], [22.555, 88.365]],
+          why: "Commercial diesel trucks idling in narrow urban street canyons.",
+          shap: [{ factor: "Commercial Diesel Street Canyons", impact: 0.48 }]
+        }]
+      }
+    }
+  },
+
+  bihar: {
+    name: "Bihar",
+    center: [25.0961, 85.3131],
+    zoom: 7,
+    boundary: [[27.50, 84.00], [26.00, 88.20], [24.50, 86.80], [25.00, 83.50]],
+    districts: {
+      patna: {
+        name: "Patna Gangetic Basin",
+        isHardwareNode: false,
+        center: [25.5941, 85.1376],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 94.0,
+        alertTitle: "CRITICAL AQI: Gangetic Alluvial Dust & Vehicles",
+        alertText: "Riverbed sand silt particulate re-suspension and old diesel fleet smoke.",
+        telemetry: { tilt: 340, moisture: 450, rain: 135 },
+        zones: [{
+          name: "Patna Riverfront Transit Corridor",
+          riskLevel: "extreme",
+          riskScore: 94.0,
+          polygon: [[25.585, 85.125], [25.605, 85.140], [25.600, 85.155], [25.580, 85.140]],
+          why: "Fine Gangetic alluvial silt particles suspended by unpaved road traffic.",
+          shap: [{ factor: "Suspended Gangetic Alluvial Dust", impact: 0.54 }]
+        }]
+      }
+    }
+  },
+
+  jharkhand: {
+    name: "Jharkhand",
+    center: [23.6102, 85.2799],
+    zoom: 8,
+    boundary: [[25.30, 87.80], [23.80, 86.80], [22.00, 85.00], [24.00, 83.50]],
+    districts: {
+      dhanbad: {
+        name: "Dhanbad Coal Capital",
+        isHardwareNode: false,
+        center: [23.7957, 86.4304],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 97.2,
+        alertTitle: "CRITICAL AQI: Open Cast Coal Mining Zone",
+        alertText: "Open cast coal pit fires and heavy mineral transport dust clouds.",
+        telemetry: { tilt: 410, moisture: 530, rain: 155 },
+        zones: [{
+          name: "Jharia Coal Belt",
+          riskLevel: "extreme",
+          riskScore: 97.2,
+          polygon: [[23.785, 86.420], [23.805, 86.435], [23.800, 86.450], [23.780, 86.435]],
+          why: "Subsurface coal seam fires combined with open mineral truck logistics.",
+          shap: [{ factor: "Subsurface Coal Pit Fires", impact: 0.65 }]
+        }]
+      }
+    }
+  },
+
+  odisha: {
+    name: "Odisha",
+    center: [20.9517, 85.0985],
+    zoom: 7,
+    boundary: [[22.50, 86.50], [19.80, 85.80], [18.20, 82.50], [21.80, 83.80]],
+    districts: {
+      angul: {
+        name: "Angul Industrial Corridor",
+        isHardwareNode: false,
+        center: [20.8444, 85.1025],
+        zoom: 13,
+        riskLevel: "extreme",
+        riskScore: 90.5,
+        alertTitle: "SEVERE AQI: Aluminum Smelter & Power Hub",
+        alertText: "Heavy industrial aluminum smelting and thermal coal dust dispersion.",
+        telemetry: { tilt: 270, moisture: 380, rain: 110 },
+        zones: [{
+          name: "Angul Smelter Industrial Belt",
+          riskLevel: "extreme",
+          riskScore: 90.5,
+          polygon: [[20.835, 85.090], [20.855, 85.105], [20.850, 85.120], [20.830, 85.105]],
+          why: "Heavy metallurgical smelter coal combustion and mineral transport.",
+          shap: [{ factor: "Metallurgical Smelter Coal Smoke", impact: 0.52 }]
+        }]
+      }
+    }
+  },
+
+  // --- SOUTHERN STATES ---
+  karnataka: {
+    name: "Karnataka",
+    center: [15.3173, 75.7139],
+    zoom: 7,
+    boundary: [[18.40, 77.20], [15.00, 78.50], [11.60, 76.50], [14.80, 74.10]],
+    districts: {
+      bengaluru: {
+        name: "Bengaluru Tech Corridor",
+        isHardwareNode: false,
+        center: [12.9716, 77.5946],
+        zoom: 12,
+        riskLevel: "high",
+        riskScore: 78.5,
+        alertTitle: "HIGH AQI: Outer Ring Road Traffic Choke",
+        alertText: "Tech corridor peak hour traffic gridlock driving PM2.5 and NO2 levels up.",
+        telemetry: { tilt: 145, moisture: 220, rain: 68 },
+        zones: [{
+          name: "Silk Board & Outer Ring Road Corridor",
+          riskLevel: "high",
+          riskScore: 78.5,
+          polygon: [[12.960, 77.585], [12.980, 77.600], [12.975, 77.615], [12.955, 77.600]],
+          why: "Extensive vehicular idling at bottleneck arterial interchanges.",
+          shap: [{ factor: "Arterial Congestion Idling", impact: 0.46 }]
+        }]
+      }
+    }
+  },
+
+  tamil_nadu: {
+    name: "Tamil Nadu",
+    center: [11.1271, 78.6569],
+    zoom: 7,
+    boundary: [[13.50, 80.20], [10.80, 79.80], [8.10, 77.50], [11.50, 76.20]],
+    districts: {
+      chennai: {
+        name: "Chennai Industrial Coastal",
+        isHardwareNode: false,
+        center: [13.0827, 80.2707],
+        zoom: 12,
+        riskLevel: "high",
+        riskScore: 76.2,
+        alertTitle: "HIGH AQI: Manali Industrial Belt",
+        alertText: "Petrochemical complex emissions combined with harbor freight transit.",
+        telemetry: { tilt: 135, moisture: 230, rain: 62 },
+        zones: [{
+          name: "Manali Industrial Zone",
+          riskLevel: "high",
+          riskScore: 76.2,
+          polygon: [[13.070, 80.260], [13.090, 80.275], [13.085, 80.290], [13.065, 80.275]],
+          why: "Petrochemical refining and harbor heavy diesel freight traffic.",
+          shap: [{ factor: "Harbor Freight Diesel Exhaust", impact: 0.42 }]
+        }]
+      }
+    }
+  },
+
+  telangana: {
+    name: "Telangana",
+    center: [18.1124, 79.0193],
+    zoom: 7,
+    boundary: [[19.80, 78.20], [17.20, 81.60], [15.80, 78.00], [17.50, 77.20]],
+    districts: {
+      hyderabad: {
+        name: "Hyderabad Metropolitan",
+        isHardwareNode: false,
+        center: [17.3850, 78.4867],
+        zoom: 12,
+        riskLevel: "high",
+        riskScore: 75.0,
+        alertTitle: "HIGH AQI: Industrial & Highway Belt",
+        alertText: "Pharmaceutical manufacturing plant emissions and Outer Ring Road transit.",
+        telemetry: { tilt: 125, moisture: 205, rain: 58 },
+        zones: [{
+          name: "Patancheru Industrial Belt",
+          riskLevel: "high",
+          riskScore: 75.0,
+          polygon: [[17.375, 78.475], [17.395, 78.490], [17.390, 78.505], [17.370, 78.490]],
+          why: "Chemical boiler emissions mixing with highway diesel exhaust.",
+          shap: [{ factor: "Chemical Boiler Emissions", impact: 0.40 }]
+        }]
+      }
+    }
+  },
+
+  andhra_pradesh: {
+    name: "Andhra Pradesh",
+    center: [15.9129, 79.7400],
+    zoom: 7,
+    boundary: [[19.10, 84.70], [15.80, 80.80], [13.50, 79.20], [15.50, 77.00]],
+    districts: {
+      visakhapatnam: {
+        name: "Visakhapatnam Steel Hub",
+        isHardwareNode: false,
+        center: [17.6868, 83.2185],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 79.0,
+        alertTitle: "HIGH AQI: Steel Plant & Port Terminal",
+        alertText: "Iron ore dust handling and coal boiler combustion at coastal port.",
+        telemetry: { tilt: 150, moisture: 240, rain: 65 },
+        zones: [{
+          name: "Vizag Steel & Port Corridor",
+          riskLevel: "high",
+          riskScore: 79.0,
+          polygon: [[17.675, 83.205], [17.695, 83.220], [17.690, 83.235], [17.670, 83.220]],
+          why: "Uncovered iron ore and coal stockyard particulate suspension.",
+          shap: [{ factor: "Port Mineral Stockyard Dust", impact: 0.46 }]
+        }]
+      }
+    }
+  },
+
+  kerala: {
+    name: "Kerala",
+    center: [10.8505, 76.2711],
+    zoom: 8,
+    boundary: [[12.80, 74.90], [10.50, 77.20], [8.30, 77.00], [10.00, 76.20]],
+    districts: {
+      kochi: {
+        name: "Kochi Industrial Island",
+        isHardwareNode: false,
+        center: [9.9312, 76.2673],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 65.0,
+        alertTitle: "MODERATE AQI: Eloor Chemical Belt",
+        alertText: "Industrial chemical cluster emissions with high coastal humidity.",
+        telemetry: { tilt: 72, moisture: 115, rain: 30 },
+        zones: [{
+          name: "Eloor Industrial Belt",
+          riskLevel: "high",
+          riskScore: 65.0,
+          polygon: [[9.920, 76.255], [9.940, 76.270], [9.935, 76.285], [9.915, 76.270]],
+          why: "Chemical manufacturing plant boiler exhaust.",
+          shap: [{ factor: "Chemical Processing Exhaust", impact: 0.36 }]
+        }]
+      }
+    }
+  },
+
+  // --- UNION TERRITORIES ---
+  jammu_kashmir: {
+    name: "Jammu and Kashmir",
+    center: [33.7782, 76.5762],
+    zoom: 7,
+    boundary: [[35.50, 74.00], [33.80, 76.80], [32.80, 74.80], [34.50, 73.80]],
+    districts: {
+      srinagar: {
+        name: "Srinagar Valley Basin",
+        isHardwareNode: false,
+        center: [34.0837, 74.7973],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 74.0,
+        alertTitle: "HIGH AQI: Winter Domestic Combustion",
+        alertText: "Buoyancy trapping of domestic biomass and coal heating smoke during inversion.",
+        telemetry: { tilt: 110, moisture: 175, rain: 40 },
+        zones: [{
+          name: "Srinagar Basin Core",
+          riskLevel: "high",
+          riskScore: 74.0,
+          polygon: [[34.070, 74.785], [34.090, 74.800], [34.085, 74.815], [34.065, 74.800]],
+          why: "Winter thermal inversion trapping domestic wood and coal fire smoke.",
+          shap: [{ factor: "Domestic Biomass Heating Smoke", impact: 0.52 }]
+        }]
+      }
+    }
+  },
+
+  ladakh: {
+    name: "Ladakh",
+    center: [34.1526, 77.5771],
+    zoom: 7,
+    boundary: [[36.00, 75.50], [34.50, 79.50], [32.50, 78.50], [34.00, 76.00]],
+    districts: {
+      leh: {
+        name: "Leh High Altitude Basin",
+        isHardwareNode: false,
+        center: [34.1526, 77.5771],
+        zoom: 13,
+        riskLevel: "good",
+        riskScore: 28.0,
+        alertTitle: "GOOD AQI: High Altitude Pristine Zone",
+        alertText: "Pristine ambient air with minor local kerosene diesel heating emissions.",
+        telemetry: { tilt: 28, moisture: 38, rain: 8 },
+        zones: [{
+          name: "Leh Town Sector",
+          riskLevel: "good",
+          riskScore: 28.0,
+          polygon: [[34.140, 77.565], [34.160, 77.580], [34.155, 77.595], [34.135, 77.580]],
+          why: "High atmospheric venting with pristine baseline environment.",
+          shap: [{ factor: "High Atmospheric Venting", impact: -0.55 }]
+        }]
+      }
+    }
+  },
+
+  chandigarh: {
+    name: "Chandigarh",
+    center: [30.7333, 76.7794],
+    zoom: 11,
+    boundary: [[30.80, 76.70], [30.80, 76.85], [30.65, 76.85], [30.65, 76.70]],
+    districts: {
+      chandigarh_core: {
+        name: "Chandigarh Planned Sector",
+        isHardwareNode: false,
+        center: [30.7333, 76.7794],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 68.0,
+        alertTitle: "MODERATE AQI: Regional Transit Corridor",
+        alertText: "High per-capita private vehicle density driving localized ozone and PM2.5.",
+        telemetry: { tilt: 82, moisture: 125, rain: 35 },
+        zones: [{
+          name: "Sector 17 Commercial Sector",
+          riskLevel: "high",
+          riskScore: 68.0,
+          polygon: [[30.725, 76.770], [30.745, 76.785], [30.740, 76.800], [30.720, 76.785]],
+          why: "High density per-capita passenger vehicular traffic.",
+          shap: [{ factor: "Passenger Car Fleet Exhaust", impact: 0.38 }]
+        }]
+      }
+    }
+  },
+
+  puducherry: {
+    name: "Puducherry",
+    center: [11.9416, 79.8083],
+    zoom: 10,
+    boundary: [[12.05, 79.75], [12.05, 79.88], [11.85, 79.88], [11.85, 79.75]],
+    districts: {
+      puducherry_town: {
+        name: "Puducherry Coastal Town",
+        isHardwareNode: false,
+        center: [11.9416, 79.8083],
+        zoom: 13,
+        riskLevel: "good",
+        riskScore: 45.0,
+        alertTitle: "GOOD AQI: Bay of Bengal Marine Breeze",
+        alertText: "Strong marine coastal breezes maintaining high atmospheric dispersion.",
+        telemetry: { tilt: 45, moisture: 70, rain: 20 },
+        zones: [{
+          name: "Boulevard Town Coastal Sector",
+          riskLevel: "good",
+          riskScore: 45.0,
+          polygon: [[11.930, 79.795], [11.950, 79.810], [11.945, 79.825], [11.925, 79.810]],
+          why: "Marine airflow dispersing town center two-wheeler exhaust.",
+          shap: [{ factor: "Marine Breeze Air Dispersion", impact: -0.42 }]
+        }]
+      }
+    }
+  },
+
+  andaman_nicobar: {
+    name: "Andaman and Nicobar Islands",
+    center: [11.7401, 92.6586],
+    zoom: 7,
+    boundary: [[13.80, 92.50], [13.00, 93.20], [6.80, 93.90], [11.00, 92.20]],
+    districts: {
+      port_blair: {
+        name: "Port Blair Harbor",
+        isHardwareNode: false,
+        center: [11.6233, 92.7265],
+        zoom: 13,
+        riskLevel: "good",
+        riskScore: 25.0,
+        alertTitle: "EXCELLENT AQI: Pristine Island Canopy",
+        alertText: "Oceanic baseline air quality with negligible industrial activity.",
+        telemetry: { tilt: 25, moisture: 35, rain: 6 },
+        zones: [{
+          name: "Port Blair Coastal Belt",
+          riskLevel: "good",
+          riskScore: 25.0,
+          polygon: [[11.610, 92.715], [11.630, 92.730], [11.625, 92.745], [11.605, 92.730]],
+          why: "Oceanic maritime baseline environment.",
+          shap: [{ factor: "Oceanic Maritime Air Flow", impact: -0.60 }]
+        }]
+      }
+    }
+  },
+
+  dadra_nagar_haveli_daman_diu: {
+    name: "Dadra and Nagar Haveli and Daman and Diu",
+    center: [20.3974, 72.8328],
+    zoom: 10,
+    boundary: [[20.50, 72.75], [20.50, 73.15], [20.10, 73.15], [20.10, 72.75]],
+    districts: {
+      vapi_border: {
+        name: "Silvassa Industrial Estate",
+        isHardwareNode: false,
+        center: [20.2763, 73.0083],
+        zoom: 13,
+        riskLevel: "high",
+        riskScore: 78.0,
+        alertTitle: "HIGH AQI: Silvassa Manufacturing Cluster",
+        alertText: "Plastic manufacturing units and industrial boiler coal smoke.",
+        telemetry: { tilt: 140, moisture: 215, rain: 52 },
+        zones: [{
+          name: "Silvassa Industrial Belt",
+          riskLevel: "high",
+          riskScore: 78.0,
+          polygon: [[20.265, 72.995], [20.285, 73.010], [20.280, 73.025], [20.260, 73.010]],
+          why: "High density small-scale manufacturing unit boilers.",
+          shap: [{ factor: "Small-Scale Manufacturing Boilers", impact: 0.44 }]
+        }]
+      }
+    }
+  },
+
+  lakshadweep: {
+    name: "Lakshadweep",
+    center: [10.5626, 72.6420],
+    zoom: 9,
+    boundary: [[12.40, 71.80], [11.80, 74.00], [8.20, 73.50], [10.00, 72.00]],
+    districts: {
+      kavaratti: {
+        name: "Kavaratti Island",
+        isHardwareNode: false,
+        center: [10.5626, 72.6420],
+        zoom: 13,
+        riskLevel: "good",
+        riskScore: 18.0,
+        alertTitle: "PRISTINE AQI: Coral Atoll Island",
+        alertText: "Zero industrial presence maintaining pristine maritime air.",
+        telemetry: { tilt: 18, moisture: 25, rain: 4 },
+        zones: [{
+          name: "Kavaratti Lagoon Zone",
+          riskLevel: "good",
+          riskScore: 18.0,
+          polygon: [[10.550, 72.630], [10.570, 72.645], [10.565, 72.660], [10.545, 72.645]],
+          why: "Pristine maritime oceanic isolation.",
+          shap: [{ factor: "Oceanic Atoll Isolation", impact: -0.65 }]
+        }]
       }
     }
   }
@@ -476,7 +1173,7 @@ function initChart() {
 }
 
 // =========================================================================
-// 6. Real-Time Open-Meteo Weather API Integration (All 8 NER States)
+// 6. Real-Time Open-Meteo Weather API Integration
 // =========================================================================
 
 async function fetchLiveWeatherForDistrict(lat, lng) {
@@ -507,8 +1204,8 @@ async function fetchLiveWeatherForDistrict(lat, lng) {
 }
 
 async function syncAllRegionalLiveFeeds() {
-  for (const sKey of Object.keys(nerData)) {
-    const state = nerData[sKey];
+  for (const sKey of Object.keys(indiaData)) {
+    const state = indiaData[sKey];
     for (const dKey of Object.keys(state.districts)) {
       const dist = state.districts[dKey];
       if (dist.isHardwareNode) continue;
@@ -546,49 +1243,21 @@ let selectedBackendZoneId = null;
 let telemetryViewMode = 'overview';
 
 function getApiBase() {
+  const hostname = window.location.hostname;
 
-  const hostname =
-    window.location.hostname;
-
-  // Local frontend:
-  // http://127.0.0.1:5500
-  // http://localhost:5500
-  // http://192.168.x.x:5500
-  // -> local FastAPI :8000
   const isLocal =
-
     hostname === "" ||
-
     hostname === "localhost" ||
-
     hostname === "127.0.0.1" ||
-
-    /^192\.168\./.test(
-      hostname
-    ) ||
-
-    /^10\./.test(
-      hostname
-    ) ||
-
-    /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(
-      hostname
-    );
-
+    /^192\.168\./.test(hostname) ||
+    /^10\./.test(hostname) ||
+    /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
 
   if (isLocal) {
-
-    return (
-      `http://${hostname || "127.0.0.1"}:8000`
-    );
+    return `http://${hostname || "127.0.0.1"}:8000`;
   }
 
-
-  // Production Vercel frontend
-  // -> Render backend
-  return (
-    "https://giri-rakshak-zsk5.onrender.com"
-  );
+  return "https://giri-rakshak-zsk5.onrender.com";
 }
 
 async function loadBackendRiskZones() {
@@ -660,388 +1329,81 @@ function formatSensorTime(timestamp) {
   return Number.isNaN(date.getTime()) ? timestamp : date.toLocaleString();
 }
 
+function updateFullEsp32Telemetry(reading) {
+  if (!reading) return;
 
-// GIRI_RAKSHAK_FULL_ESP32_TELEMETRY_UPDATE_V4
-// ============================================================
-// Updates every field from the SAME live ESP32 reading that
-// already powers Tilt / Soil in the existing dashboard.
-// ============================================================
+  function set(id, value, digits = 2, unit = "") {
+    const el = document.getElementById(id);
+    if (!el) return;
 
-function updateFullEsp32Telemetry(
-  reading
-) {
+    if (value === null || value === undefined || value === "") {
+      el.textContent = "—";
+      return;
+    }
 
-  if (!reading) {
-    return;
+    const n = Number(value);
+    if (!Number.isFinite(n)) {
+      el.textContent = "—";
+      return;
+    }
+
+    el.textContent = n.toFixed(digits) + (unit ? ` ${unit}` : "");
   }
 
-
-  function set(
-    id,
-    value,
-    digits = 2,
-    unit = ""
-  ) {
-
-    const el =
-      document.getElementById(id);
-
-    if (!el) {
-      return;
-    }
-
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-
-      el.textContent =
-        "—";
-
-      return;
-    }
-
-
-    const n =
-      Number(value);
-
-
-    if (
-      !Number.isFinite(n)
-    ) {
-
-      el.textContent =
-        "—";
-
-      return;
-    }
-
-
-    el.textContent =
-      n.toFixed(digits)
-      +
-      (
-        unit
-        ?
-        ` ${unit}`
-        :
-        ""
-      );
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = (value === null || value === undefined || value === "") ? "—" : String(value);
   }
 
-
-  function setText(
-    id,
-    value
-  ) {
-
-    const el =
-      document.getElementById(id);
-
-    if (!el) {
-      return;
-    }
-
-
-    el.textContent =
-      (
-        value === null ||
-        value === undefined ||
-        value === ""
-      )
-      ?
-      "—"
-      :
-      String(value);
-  }
-
-
-  // ----------------------------------------------------------
-  // STATE
-  // ----------------------------------------------------------
-
-  setText(
-    "full-sensor-id",
-    reading.sensor_id
-  );
-
-
-  setText(
-    "full-alert-level",
-    reading.alert_level
-  );
-
-
-  setText(
-    "full-system-state",
-    reading.system_state
-  );
-
-
-  setText(
-    "full-updated",
-    reading.timestamp
-      ?
-      new Date(
-        reading.timestamp
-      ).toLocaleTimeString()
-      :
-      "—"
-  );
-
-
-  // ----------------------------------------------------------
-  // LOCATION
-  // ----------------------------------------------------------
-
-  set(
-    "full-lat",
-    reading.lat,
-    6
-  );
-
-
-  set(
-    "full-lon",
-    reading.lon,
-    6
-  );
-
-
-  // ----------------------------------------------------------
-  // TILT
-  // ----------------------------------------------------------
-
-  set(
-    "full-tilt",
-    reading.tilt_deg,
-    3,
-    "°"
-  );
-
-
-  set(
-    "full-tilt-change",
-    reading.tilt_change_deg,
-    3,
-    "°"
-  );
-
-
-  set(
-    "full-tilt-rate",
-    reading.tilt_rate_dph,
-    3,
-    "°/h"
-  );
-
-
-  set(
-    "full-tilt-10s",
-    reading.tilt_sudden_change_10s_deg,
-    3,
-    "°"
-  );
-
-
-  // ----------------------------------------------------------
-  // ACCELERATION
-  // ----------------------------------------------------------
-
-  set(
-    "full-accel-x",
-    reading.accel_x_g,
-    4,
-    "g"
-  );
-
-
-  set(
-    "full-accel-y",
-    reading.accel_y_g,
-    4,
-    "g"
-  );
-
-
-  set(
-    "full-accel-z",
-    reading.accel_z_g,
-    4,
-    "g"
-  );
-
-
-  set(
-    "full-accel-mag",
-    reading.accel_magnitude_g,
-    4,
-    "g"
-  );
-
-
-  set(
-    "full-accel-jump",
-    reading.accel_jump_g,
-    4,
-    "g"
-  );
-
-
-  set(
-    "full-vibration",
-    reading.vibration_rms_g,
-    5,
-    "g"
-  );
-
-
-  set(
-    "full-movement",
-    reading.movement_ratio,
-    2,
-    "x"
-  );
-
-
-  // ----------------------------------------------------------
-  // SOIL
-  // ----------------------------------------------------------
-
-  set(
-    "full-soil",
-    reading.moisture_pct,
-    2,
-    "%"
-  );
-
-
-  set(
-    "full-soil-change",
-    reading.moisture_change_pct,
-    2,
-    "%"
-  );
-
-
-  set(
-    "full-soil-rate",
-    reading.moisture_rate_pph,
-    2,
-    "%/h"
-  );
-
-
-  // ----------------------------------------------------------
-  // DISTANCE
-  // ----------------------------------------------------------
-
-  set(
-    "full-distance",
-    reading.distance_cm,
-    2,
-    "cm"
-  );
-
-
-  set(
-    "full-distance-change",
-    reading.distance_change_cm,
-    3,
-    "cm"
-  );
-
-
-  set(
-    "full-distance-rate",
-    reading.distance_rate_cmh,
-    2,
-    "cm/h"
-  );
-
-
-  set(
-    "full-displacement",
-    reading.displacement_cm,
-    3,
-    "cm"
-  );
-
-
-  // ----------------------------------------------------------
-  // ENVIRONMENT
-  // ----------------------------------------------------------
-
-  set(
-    "full-pressure",
-    reading.pressure_hpa,
-    2,
-    "hPa"
-  );
-
-
-  set(
-    "full-temperature",
-    reading.temperature_c,
-    2,
-    "°C"
-  );
-
-
-  set(
-    "full-humidity",
-    reading.humidity_pct,
-    2,
-    "%"
-  );
-
-
-  set(
-    "full-rainfall",
-    reading.rainfall_mm,
-    2,
-    "mm"
-  );
-
-
-  const status =
-    document.getElementById(
-      "full-esp32-status"
-    );
-
+  setText("full-sensor-id", reading.sensor_id);
+  setText("full-alert-level", reading.alert_level);
+  setText("full-system-state", reading.system_state);
+  setText("full-updated", reading.timestamp ? new Date(reading.timestamp).toLocaleTimeString() : "—");
+
+  set("full-lat", reading.lat, 6);
+  set("full-lon", reading.lon, 6);
+
+  set("full-tilt", reading.tilt_deg, 3, "°");
+  set("full-tilt-change", reading.tilt_change_deg, 3, "°");
+  set("full-tilt-rate", reading.tilt_rate_dph, 3, "°/h");
+  set("full-tilt-10s", reading.tilt_sudden_change_10s_deg, 3, "°");
+
+  set("full-accel-x", reading.accel_x_g, 4, "g");
+  set("full-accel-y", reading.accel_y_g, 4, "g");
+  set("full-accel-z", reading.accel_z_g, 4, "g");
+  set("full-accel-mag", reading.accel_magnitude_g, 4, "g");
+  set("full-accel-jump", reading.accel_jump_g, 4, "g");
+  set("full-vibration", reading.vibration_rms_g, 5, "g");
+  set("full-movement", reading.movement_ratio, 2, "x");
+
+  set("full-soil", reading.moisture_pct, 2, "%");
+  set("full-soil-change", reading.moisture_change_pct, 2, "%");
+  set("full-soil-rate", reading.moisture_rate_pph, 2, "%/h");
+
+  set("full-distance", reading.distance_cm, 2, "cm");
+  set("full-distance-change", reading.distance_change_cm, 3, "cm");
+  set("full-distance-rate", reading.distance_rate_cmh, 2, "cm/h");
+  set("full-displacement", reading.displacement_cm, 3, "cm");
+
+  set("full-pressure", reading.pressure_hpa, 2, "hPa");
+  set("full-temperature", reading.temperature_c, 2, "°C");
+  set("full-humidity", reading.humidity_pct, 2, "%");
+  set("full-rainfall", reading.rainfall_mm, 2, "mm");
+
+  const status = document.getElementById("full-esp32-status");
   if (status) {
-
-    status.textContent =
-      "Live ESP32 hardware • Updated "
-      +
-      new Date()
-        .toLocaleTimeString();
-
-    status.style.color =
-      "#86efac";
+    status.textContent = "Live ESP32 hardware • Updated " + new Date().toLocaleTimeString();
+    status.style.color = "#86efac";
   }
 
-
-  const live =
-    document.getElementById(
-      "full-esp32-live-badge"
-    );
-
+  const live = document.getElementById("full-esp32-live-badge");
   if (live) {
-
-    live.textContent =
-      "LIVE HARDWARE";
-
-    live.style.background =
-      "#14532d";
-
-    live.style.color =
-      "#86efac";
+    live.textContent = "LIVE HARDWARE";
+    live.style.background = "#14532d";
+    live.style.color = "#86efac";
   }
 }
-
 
 async function loadLatestSensorTelemetry() {
   if (telemetryViewMode !== 'hardware') return null;
@@ -1139,76 +1501,73 @@ function renderBackendRiskZones(zones) {
   });
 }
 
-// =========================================================================
-// 7. Dynamic AI Hazard Heatmap (Auto-Mounting Engine)
-// =========================================================================
+let districtAQILayer = null;
 
-const simulatedAIPredictions = [
-  { lat: 23.7420, lon: 92.7170, probability: 0.96 },
-  { lat: 23.7415, lon: 92.7168, probability: 0.94 },
-  { lat: 23.7425, lon: 92.7173, probability: 0.91 },
-  { lat: 23.7410, lon: 92.7165, probability: 0.88 },
-  { lat: 23.7430, lon: 92.7178, probability: 0.85 },
-  { lat: 23.7405, lon: 92.7160, probability: 0.79 },
-  { lat: 23.7550, lon: 92.7290, probability: 0.89 },
-  { lat: 23.7545, lon: 92.7285, probability: 0.87 },
-  { lat: 23.7558, lon: 92.7295, probability: 0.84 },
-  { lat: 23.7538, lon: 92.7280, probability: 0.81 },
-  { lat: 23.7565, lon: 92.7302, probability: 0.74 },
-  { lat: 23.7630, lon: 92.7360, probability: 0.76 },
-  { lat: 23.7622, lon: 92.7355, probability: 0.72 },
-  { lat: 23.7638, lon: 92.7368, probability: 0.68 },
-  { lat: 23.7290, lon: 92.7380, probability: 0.55 },
-  { lat: 23.7310, lon: 92.7395, probability: 0.52 },
-  { lat: 23.7275, lon: 92.7365, probability: 0.49 },
-  { lat: 23.7320, lon: 92.7130, probability: 0.25 },
-  { lat: 23.7340, lon: 92.7145, probability: 0.20 }
-];
+function getDemoDistrictAQI(districtName) {
+  let hash = 0;
 
-function renderDendriticRidgeHeatmap(points = simulatedAIPredictions, autoFocus = false) {
-  if (heatLayerInstance) {
-    map.removeLayer(heatLayerInstance);
-    heatLayerInstance = null;
+  for (let i = 0; i < districtName.length; i++) {
+    hash = (hash * 31 + districtName.charCodeAt(i)) >>> 0;
   }
 
-  if (typeof L.heatLayer !== 'function') {
-    const s = document.createElement('script');
-    s.src = 'https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
-    s.onload = () => renderDendriticRidgeHeatmap(points, autoFocus);
-    document.head.appendChild(s);
-    return;
-  }
-
-  const heatData = points.map(pt => [
-    parseFloat(pt.lat),
-    parseFloat(pt.lon || pt.lng),
-    Math.min(1.0, Math.max(0.4, parseFloat(pt.probability || (pt.risk_score ? pt.risk_score / 100 : 0.6))))
-  ]).filter(pt => Number.isFinite(pt[0]) && Number.isFinite(pt[1]));
-
-  if (heatData.length === 0) return;
-
-  heatLayerInstance = L.heatLayer(heatData, {
-    radius: 40,
-    blur: 24,
-    maxZoom: 16,
-    max: 1.0,
-    minOpacity: 0.55,
-    gradient: {
-      0.20: '#38bdf8',
-      0.45: '#f97316',
-      0.68: '#ea580c',
-      0.82: '#dc2626',
-      0.95: '#7f1d1d'
-    }
-  });
-
-  heatLayerInstance.addTo(map);
-
-  if (autoFocus) {
-    map.flyTo([23.7450, 92.7250], 13, { duration: 1.2 });
-  }
+  return 25 + (hash % 276);
 }
 
+async function renderDendriticRidgeHeatmap() {
+  if (districtAQILayer) {
+    map.removeLayer(districtAQILayer);
+    districtAQILayer = null;
+  }
+
+  try {
+    const response = await fetch("./data/india_districts.geojson");
+
+    if (!response.ok) {
+      throw new Error(`GeoJSON request failed: ${response.status}`);
+    }
+
+    const geojson = await response.json();
+
+    districtAQILayer = L.geoJSON(geojson, {
+      style: function (feature) {
+        const districtName = feature.properties.NAME_2 || "Unknown";
+        const aqi = getDemoDistrictAQI(districtName);
+
+        let color = "#ffffff";
+        if (aqi > 50) color = "#ede9fe";
+        if (aqi > 100) color = "#c4b5fd";
+        if (aqi > 150) color = "#8b5cf6";
+        if (aqi > 200) color = "#4c1d95";
+
+        return {
+          color: "#ffffff",
+          weight: 0.7,
+          fillColor: color,
+          fillOpacity: 0.65
+        };
+      },
+
+      onEachFeature: function (feature, layer) {
+        const districtName = feature.properties.NAME_2 || "Unknown district";
+        const stateName = feature.properties.NAME_1 || "India";
+        const aqi = getDemoDistrictAQI(districtName);
+
+        layer.bindTooltip(`${districtName}, ${stateName}`);
+
+        layer.bindPopup(`
+          <strong>${districtName}</strong><br>
+          State: ${stateName}<br>
+          Demo AQI: <strong>${aqi}</strong><br>
+          <small>Synthetic demo data — not official/live AQI</small>
+        `);
+      }
+    }).addTo(map);
+
+    console.log("District AQI polygons loaded:", geojson.features.length);
+  } catch (error) {
+    console.error("District AQI map failed to load:", error);
+  }
+}
 // =========================================================================
 // 8. Master Render: Boundaries, Polygons, Stations & Saved Reports
 // =========================================================================
@@ -1221,22 +1580,19 @@ function renderAllNEROverview() {
 
   const role = sessionStorage.getItem('userRole');
 
-  Object.keys(nerData).forEach(stateKey => {
-    const state = nerData[stateKey];
+  Object.keys(indiaData).forEach(stateKey => {
+    const state = indiaData[stateKey];
     if (state.boundary) {
       const poly = L.polygon(state.boundary, {
         opacity: 0,
         fillOpacity: 0
       });
 
-      poly.bindTooltip(`<b>${state.name}</b><br/>Regional Landslide Watch Zone`);
+      poly.bindTooltip(`<b>${state.name}</b><br/>Pollution Watch Zone`);
       poly.on('click', () => {
-        stateSelect.value = stateKey;
+        if (stateSelect) stateSelect.value = stateKey;
         populateDistricts(stateKey);
         map.flyTo(state.center, state.zoom);
-        if (stateKey === 'mizoram') {
-          renderDendriticRidgeHeatmap(simulatedAIPredictions, true);
-        }
       });
 
       stateLayerGroup.addLayer(poly);
@@ -1244,8 +1600,8 @@ function renderAllNEROverview() {
   });
 
   // ONLY show ESP32 Physical Station pin for Official Logins
-  if (role === 'official') {
-    const aizawlDist = nerData.mizoram.districts.aizawl;
+  if (role === 'official' && indiaData.mizoram?.districts?.aizawl) {
+    const aizawlDist = indiaData.mizoram.districts.aizawl;
     const espIcon = L.divIcon({
       html: `<div style="background: #7c3aed; border: 2.5px solid white; width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 10px rgba(124, 58, 237, 0.85); cursor: pointer;"></div>`,
       iconSize: [16, 16]
@@ -1254,16 +1610,15 @@ function renderAllNEROverview() {
     const singleEspMarker = L.marker(aizawlDist.sensorCoords, { icon: espIcon });
     singleEspMarker.bindTooltip("<b>MONITORING STATION</b><br/>Aizawl Field Telemetry Node", { permanent: false });
     singleEspMarker.on('click', () => {
-      stateSelect.value = 'mizoram';
+      if (stateSelect) stateSelect.value = 'mizoram';
       populateDistricts('mizoram');
-      districtSelect.value = 'aizawl';
+      if (districtSelect) districtSelect.value = 'aizawl';
       updateDistrictView('mizoram', 'aizawl');
     });
 
     hardwareMarkerGroup.addLayer(singleEspMarker);
   }
 
-  renderDendriticRidgeHeatmap(simulatedAIPredictions, false);
   loadSavedCitizenReports();
   resetOverviewSidebar();
   updateRoutesToAvoidView();
@@ -1294,8 +1649,8 @@ function resetOverviewSidebar() {
     riskBadge.className = 'badge blue';
     riskBadge.innerText = 'OVERVIEW';
   }
-  if (distTitle) distTitle.innerText = "North Eastern Region (NER)";
-  if (distBody) distBody.innerText = "Surveillance active across 8 NER states. Select Aizawl to inspect the deployed physical ESP32 edge telemetry.";
+  if (distTitle) distTitle.innerText = "National Overview";
+  if (distBody) distBody.innerText = "Surveillance active across all Indian states & UTs. Select Aizawl to inspect the deployed physical ESP32 edge telemetry.";
   if (alertBox) alertBox.style.borderLeftColor = '#0284c7';
   if (cardTitle) cardTitle.innerText = "IoT Edge Telemetry";
   if (sourceDesc) sourceDesc.innerText = "Data Source: Regional Meteorological Model";
@@ -1359,16 +1714,12 @@ function updateBackendZoneView(zone) {
 async function updateDistrictView(stateKey, distKey) {
   selectedBackendZoneId = null;
 
-  const state = nerData[stateKey];
+  const state = indiaData[stateKey];
   if (!state) return;
   const dist = state.districts[distKey];
   if (!dist) return;
 
   map.flyTo(dist.center, dist.zoom, { duration: 1.2 });
-
-  if (stateKey === 'mizoram' && distKey === 'aizawl') {
-    renderDendriticRidgeHeatmap(simulatedAIPredictions, true);
-  }
 
   const isHardware = !!dist.isHardwareNode;
   telemetryViewMode = isHardware ? 'hardware' : 'model';
@@ -1531,19 +1882,18 @@ function populateDistricts(selectedState) {
   if (!districtSelect) return;
   districtSelect.innerHTML = '<option value="">-- Select District --</option>';
 
-  if (!selectedState || !nerData[selectedState]) {
+  if (!selectedState || !indiaData[selectedState]) {
     districtSelect.disabled = true;
     return;
   }
 
   const role = sessionStorage.getItem('userRole');
-  const dists = nerData[selectedState].districts;
+  const dists = indiaData[selectedState].districts;
 
   Object.keys(dists).forEach(distKey => {
     const opt = document.createElement('option');
     opt.value = distKey;
     
-    // Clean district names for citizens; include technical tags for officials
     if (role === 'official') {
       opt.innerText = dists[distKey].name + (dists[distKey].isHardwareNode ? " [IoT Station]" : " (Weather Model)");
     } else {
@@ -1568,16 +1918,22 @@ if (stateSelect) {
         districtSelect.innerHTML = '<option value="">-- Select District --</option>';
         districtSelect.disabled = true;
       }
-      map.flyTo(INDIA_CENTER, INDIA_DEFAULT_ZOOM);
+      map.flyTo(INDIA_CENTER, INDIA_DEFAULT_ZOOM, { duration: 1.5 });
       renderAllNEROverview();
       return;
     }
 
-    populateDistricts(selectedState);
-    map.flyTo(nerData[selectedState].center, nerData[selectedState].zoom);
+    if (indiaData[selectedState]) {
+      const stateObj = indiaData[selectedState];
+      
+      populateDistricts(selectedState);
 
-    if (selectedState === 'mizoram') {
-      renderDendriticRidgeHeatmap(simulatedAIPredictions, true);
+      if (stateObj.boundary && stateObj.boundary.length > 0) {
+        const bounds = L.latLngBounds(stateObj.boundary);
+        map.fitBounds(bounds, { padding: [20, 20], maxZoom: 10, animate: true, duration: 1.2 });
+      } else if (stateObj.center) {
+        map.flyTo(stateObj.center, stateObj.zoom || 8, { duration: 1.5 });
+      }
     }
   });
 }
@@ -1605,7 +1961,7 @@ if (btnResetView) {
       districtSelect.disabled = true;
     }
 
-    map.flyTo(INDIA_CENTER, INDIA_DEFAULT_ZOOM);
+    map.flyTo(INDIA_CENTER, INDIA_DEFAULT_ZOOM, { duration: 1.5 });
     renderAllNEROverview();
   });
 }
@@ -1654,7 +2010,6 @@ if (btnTriggerAlert) {
 // =========================================================================
 
 async function getAreaNameFromCoords(lat, lng) {
-  // 1. Primary: Overpass API with strict 3-second client abort
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -1681,11 +2036,8 @@ async function getAreaNameFromCoords(lat, lng) {
         }
       }
     }
-  } catch (err) {
-    // Graceful silent fallback without blocking UI thread
-  }
+  } catch (err) {}
 
-  // 2. Secondary: Nominatim Reverse Geocoding with 2.5-second client abort
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2500);
@@ -1708,11 +2060,8 @@ async function getAreaNameFromCoords(lat, lng) {
       if (suburb) return `${suburb} Corridor`;
       if (data.name) return data.name;
     }
-  } catch (e) {
-    // Fall through to regional coordinates table
-  }
+  } catch (e) {}
 
-  // 3. Instant Fallback: Geotechnical corridor boundary table
   const latNum = Number(lat);
   const lngNum = Number(lng);
 
@@ -1774,7 +2123,6 @@ function renderCitizenMarker(lat, lng, type, desc, image, shouldFly, id, reporte
 window.deleteCitizenReport = async function(reportId) {
   if (!confirm('Are you sure you want to remove this citizen incident report?')) return;
 
-  // 1. Delete from Render backend if present
   try {
     await fetch(`${getApiBase()}/api/reports/${encodeURIComponent(reportId)}`, {
       method: 'DELETE'
@@ -1783,12 +2131,10 @@ window.deleteCitizenReport = async function(reportId) {
     console.warn('[Citizen Sync] Cloud deletion error (proceeding to local removal):', err);
   }
 
-  // 2. Delete from browser cache
   let reports = JSON.parse(localStorage.getItem('giri_citizen_reports') || '[]');
   reports = reports.filter(r => String(r.id) !== String(reportId) && String(r.lat) !== String(reportId));
   localStorage.setItem('giri_citizen_reports', JSON.stringify(reports));
 
-  // 3. Immediately update UI
   await loadSavedCitizenReports();
 };
 
@@ -1806,7 +2152,6 @@ async function loadSavedCitizenReports() {
 
     let storedReports = [];
 
-    // 1. Fetch real-time reports from Render backend
     try {
       const response = await fetch(`${getApiBase()}/api/citizen-reports`, { 
         cache: 'no-store' 
@@ -1832,7 +2177,6 @@ async function loadSavedCitizenReports() {
       console.warn('[Citizen Sync] Render fetch failed, using local storage fallback:', apiErr);
     }
 
-    // 2. Fallback to localStorage if offline or network fails
     if (storedReports.length === 0) {
       storedReports = JSON.parse(localStorage.getItem('giri_citizen_reports') || '[]');
     }
@@ -1881,8 +2225,8 @@ function renderCitizenReportsSidebarList() {
   const citizenCount = document.getElementById('citizen-report-count');
   const officialList = document.getElementById('official-reports-list');
 
-  // 1. Citizen Role View
-  if (role === 'citizen') {
+  // Display report details for Citizen Access as well as guest views
+  if (role === 'citizen' || !role) {
     if (citizenCard) citizenCard.style.display = 'block';
     if (citizenCount) citizenCount.innerText = `${reports.length} PINS`;
 
@@ -1910,7 +2254,6 @@ function renderCitizenReportsSidebarList() {
     if (citizenCard) citizenCard.style.display = 'none';
   }
 
-  // 2. Official Role View
   if (role === 'official' && officialList) {
     if (reports.length === 0) {
       officialList.innerHTML = '<p style="color: #94a3b8; font-size: 12px; margin: 0;">No citizen field pins active on map.</p>';
@@ -2073,11 +2416,11 @@ const searchClearBtn = document.getElementById('search-clear-btn');
 function buildLocationIndex() {
   const index = [];
 
-  Object.entries(nerData).forEach(([sKey, state]) => {
+  Object.entries(indiaData).forEach(([sKey, state]) => {
     index.push({
       type: 'state',
       name: state.name,
-      subText: 'NER State Overview',
+      subText: 'State Overview',
       center: state.center,
       zoom: state.zoom,
       stateKey: sKey
@@ -2188,9 +2531,6 @@ function handleLocationSelect(loc) {
     if (stateSelect) stateSelect.value = loc.stateKey;
     populateDistricts(loc.stateKey);
     map.flyTo(loc.center, loc.zoom, { duration: 1.2 });
-    if (loc.stateKey === 'mizoram') {
-      renderDendriticRidgeHeatmap(simulatedAIPredictions, true);
-    }
   } else if (
     loc.type === 'district' ||
     loc.type === 'hardware' ||
@@ -2373,177 +2713,55 @@ async function fetchRecentAlerts() {
   return Array.isArray(alerts) ? alerts : [];
 }
 
-function isReactiveSensorAlert(alert) {
-  const message = String(alert?.message || '');
-  const level = String(alert?.risk_level || '').toLowerCase();
-  const zoneId = String(alert?.zone_id || '');
-  const isHardwareAlert = /abnormal sensor threshold detected/i.test(message) || /reactive alert/i.test(message);
-  return zoneId === 'ESP32_01' && level === 'critical' && isHardwareAlert;
-}
-
-
-// ============================================================
-// HARDWARE / ESP32 ALERT DETECTOR
-// ============================================================
-
 function isHardwareSensorAlert(alert) {
-
-  if (!alert) {
-    return false;
-  }
-
-  // IMPORTANT:
-  // Only alerts explicitly generated by the new ESP32
-  // sensor-alert backend are eligible for the popup.
-  //
-  // Legacy alerts such as:
-  // "Abnormal sensor threshold detected"
-  // are intentionally ignored.
-
-  const source = String(
-    alert.source ||
-    alert.alert_source ||
-    ""
-  )
-    .trim()
-    .toLowerCase();
-
+  if (!alert) return false;
+  const source = String(alert.source || alert.alert_source || "").trim().toLowerCase();
   return source === "sensor";
 }
 
 async function pollLiveSensorAlerts() {
-
   try {
+    const alerts = await fetchRecentAlerts();
+    const sensorAlerts = alerts.filter(isHardwareSensorAlert);
 
-    const alerts =
-      await fetchRecentAlerts();
-
-
-    const sensorAlerts =
-      alerts.filter(
-        isHardwareSensorAlert
-      );
-
-
-    // --------------------------------------------------------
-    // No active ESP32 sensor alert
-    // --------------------------------------------------------
-
-    if (
-      sensorAlerts.length === 0
-    ) {
-
-      liveAlertMonitorInitialized =
-        true;
-
+    if (sensorAlerts.length === 0) {
+      liveAlertMonitorInitialized = true;
       hideLiveSensorAlert();
-
       return;
     }
 
+    const latestAlert = sensorAlerts[0];
+    const alertId = Number(latestAlert.alert_id || latestAlert.id || 0);
 
-    // --------------------------------------------------------
-    // Most recent active ESP32 alert
-    // --------------------------------------------------------
-
-    const latestAlert =
-      sensorAlerts[0];
-
-
-    const alertId =
-      Number(
-        latestAlert.alert_id ||
-        latestAlert.id ||
-        0
-      );
-
-
-    latestSeenAlertId =
-      Math.max(
-        latestSeenAlertId,
-        alertId
-      );
-
-
-    liveAlertMonitorInitialized =
-      true;
-
-
-    // --------------------------------------------------------
-    // Fetch latest physical telemetry
-    // --------------------------------------------------------
+    latestSeenAlertId = Math.max(latestSeenAlertId, alertId);
+    liveAlertMonitorInitialized = true;
 
     let reading = null;
-
-    const zoneId =
-      latestAlert.zone_id ||
-      latestAlert.sensor_id;
-
+    const zoneId = latestAlert.zone_id || latestAlert.sensor_id;
 
     if (zoneId) {
-
       try {
+        const sensorResponse = await fetch(
+          `${getApiBase()}/api/sensor-data/latest/${encodeURIComponent(zoneId)}`,
+          { cache: "no-store" }
+        );
 
-        const sensorResponse =
-          await fetch(
-            `${getApiBase()}/api/sensor-data/latest/${encodeURIComponent(zoneId)}`,
-            {
-              cache:
-                "no-store"
-            }
-          );
-
-
-        if (
-          sensorResponse.ok
-        ) {
-
-          const sensorData =
-            await sensorResponse.json();
-
-
-          if (
-            sensorData.status === "ok" &&
-            sensorData.reading
-          ) {
-
-            reading =
-              sensorData.reading;
+        if (sensorResponse.ok) {
+          const sensorData = await sensorResponse.json();
+          if (sensorData.status === "ok" && sensorData.reading) {
+            reading = sensorData.reading;
           }
         }
-
-      } catch (
-        sensorError
-      ) {
-
-        console.warn(
-          "[ESP32] Telemetry fetch failed:",
-          sensorError
-        );
+      } catch (sensorError) {
+        console.warn("[ESP32] Telemetry fetch failed:", sensorError);
       }
     }
 
-
-    // --------------------------------------------------------
-    // Show active alert
-    // --------------------------------------------------------
-
-    showLiveSensorAlert(
-      latestAlert,
-      reading
-    );
-
-    showSensorAlertPopup(
-      latestAlert,
-      reading
-    );
+    showLiveSensorAlert(latestAlert, reading);
+    showSensorAlertPopup(latestAlert, reading);
 
   } catch (error) {
-
-    console.warn(
-      "[ESP32] Alert polling failed:",
-      error
-    );
+    console.warn("[ESP32] Alert polling failed:", error);
   }
 }
 
@@ -2571,7 +2789,6 @@ async function dispatchAlert() {
     return;
   }
 
-  // 1. Post advisory to Render cloud database
   try {
     await fetch(`${getApiBase()}/api/alerts`, {
       method: 'POST',
@@ -2589,7 +2806,6 @@ async function dispatchAlert() {
     console.warn('[Alerts] Cloud dispatch offline, using local queue:', err);
   }
 
-  // 2. Add to localStorage for instant local responsiveness
   const newAlert = {
     id: 'alert_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
     title: title,
@@ -2602,7 +2818,6 @@ async function dispatchAlert() {
   alerts.unshift(newAlert);
   localStorage.setItem('giri_alerts', JSON.stringify(alerts));
 
-  // 3. Trigger Push Notification
   if ("Notification" in window && Notification.permission === "granted") {
     new Notification(`GIRI RAKSHAK: ${severity.toUpperCase()} ALERT`, {
       body: `${title}\nRegion: ${region}`,
@@ -2642,7 +2857,6 @@ async function renderAlertsFeed() {
 
   let alerts = [];
 
-  // 1. Fetch live broadcast advisories from Render backend
   try {
     const res = await fetch(`${getApiBase()}/api/alerts/recent`, { cache: 'no-store' });
     if (res.ok) {
@@ -2661,7 +2875,6 @@ async function renderAlertsFeed() {
     console.warn('[Alerts] Could not pull from Render, checking local fallback.');
   }
 
-  // 2. Fallback to localStorage if cloud returns nothing
   if (alerts.length === 0) {
     alerts = JSON.parse(localStorage.getItem('giri_alerts') || '[]');
   }
@@ -2717,7 +2930,7 @@ async function renderAlertsFeed() {
 }
 
 // =========================================================================
-// 17. Authentication & Gatekeeper Routing
+// 17. Authentication & Gatekeeper Routing Engine (Fixed)
 // =========================================================================
 
 let selectedRole = 'citizen';
@@ -2781,7 +2994,6 @@ function handleAuthAction() {
   if (currentRole) {
     sessionStorage.clear();
     applyRoleUI();
-    openLoginModal();
   } else {
     openLoginModal();
   }
@@ -2799,15 +3011,13 @@ function applyRoleUI() {
   const systemStatusPill = document.querySelector('.system-status-pill');
   const legendEsp32Item = document.getElementById('legend-esp32') || document.querySelector('.legend-esp32-item');
 
-  // Role-based visibility for system status pill badge & legend hardware item
   if (systemStatusPill) {
-    systemStatusPill.style.display = (role === 'citizen') ? 'none' : 'inline-flex';
+    systemStatusPill.style.display = (role === 'citizen' || !role) ? 'none' : 'inline-flex';
   }
   if (legendEsp32Item) {
-    legendEsp32Item.style.display = (role === 'citizen') ? 'none' : 'flex';
+    legendEsp32Item.style.display = (role === 'citizen' || !role) ? 'none' : 'flex';
   }
 
-  // Re-render map layers to apply role-specific pin visibility
   renderAllNEROverview();
 
   if (role === 'official') {
@@ -2849,8 +3059,7 @@ function applyRoleUI() {
     }
 
   } else {
-    openLoginModal();
-
+    // Default Guest Access
     if (publicView) publicView.style.display = 'block';
     if (officialView) officialView.style.display = 'none';
 
@@ -2858,8 +3067,12 @@ function applyRoleUI() {
       authBtn.innerText = 'Login';
       authBtn.style.background = '#0284c7';
     }
-    if (reportBtn) reportBtn.style.display = 'none';
+    if (reportBtn) reportBtn.style.display = 'inline-block';
     if (officialPanel) officialPanel.style.display = 'none';
+    if (roleBadge) {
+      roleBadge.innerText = 'PUBLIC MONITOR';
+      roleBadge.style.color = '#38bdf8';
+    }
   }
 
   renderAlertsFeed();
@@ -2873,13 +3086,53 @@ window.submitLogin = submitLogin;
 window.handleAuthAction = handleAuthAction;
 
 // =========================================================================
-// 18. Dark Mode Controller
+// 18. Dark Mode Controller (Fully Injected CSS Engine)
 // =========================================================================
 
 function initDarkMode() {
   const toggleBtn = document.getElementById('theme-toggle-btn');
   const icon = document.getElementById('theme-icon');
   const label = document.getElementById('theme-label');
+
+  // Inject dark mode CSS dynamically so theme darkens instantly without requiring index.html changes
+  if (!document.getElementById('giri-dark-mode-runtime-styles')) {
+    const style = document.createElement('style');
+    style.id = 'giri-dark-mode-runtime-styles';
+    style.textContent = `
+      body.dark-mode {
+        background-color: #0b0f19 !important;
+        color: #f1f5f9 !important;
+      }
+      body.dark-mode .sidebar,
+      body.dark-mode .panel,
+      body.dark-mode .card,
+      body.dark-mode .nav-bar,
+      body.dark-mode .modal-content,
+      body.dark-mode .control-panel,
+      body.dark-mode .shap-summary-card,
+      body.dark-mode div[style*="background: #ffffff"],
+      body.dark-mode div[style*="background: var(--panel-bg, #ffffff)"] {
+        background-color: #111827 !important;
+        color: #f1f5f9 !important;
+        border-color: #1f2937 !important;
+      }
+      body.dark-mode select,
+      body.dark-mode input {
+        background-color: #1f2937 !important;
+        color: #f8fafc !important;
+        border-color: #374151 !important;
+      }
+      body.dark-mode .leaflet-tile-container img {
+        filter: brightness(0.65) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7) !important;
+      }
+      body.dark-mode .leaflet-popup-content-wrapper,
+      body.dark-mode .leaflet-popup-tip {
+        background-color: #1f2937 !important;
+        color: #f8fafc !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   const savedTheme = localStorage.getItem('giri_theme');
   const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -2901,6 +3154,444 @@ function initDarkMode() {
   }
 }
 
+// ============================================================
+// LIVE SENSOR ALERT POPUP
+// ============================================================
+
+function showSensorAlertPopup(alert, reading = null) {
+  if (!alert) return;
+
+  const activeValue = alert.is_active;
+  if (activeValue === false || activeValue === "false" || activeValue === 0) return;
+
+  const level = String(alert.risk_level || alert.alert_level || "warning").toLowerCase();
+  if (level === "normal" || level === "none") return;
+
+  const alertId = String(
+    alert.alert_id || alert.id || (String(alert.timestamp || "") + "|" + String(alert.message || ""))
+  );
+
+  if (window.__giriRakshakLastPopupAlertId === alertId) return;
+  window.__giriRakshakLastPopupAlertId = alertId;
+
+  const oldPopup = document.getElementById("giri-sensor-alert-popup");
+  if (oldPopup) oldPopup.remove();
+
+  let accent = "#f59e0b";
+  let title = "SENSOR WARNING";
+
+  if (level === "critical") {
+    accent = "#ef4444";
+    title = "🚨 CRITICAL SENSOR ALERT";
+  } else if (level === "watch") {
+    accent = "#eab308";
+    title = "⚠ SENSOR WATCH";
+  } else if (level === "very_high") {
+    accent = "#dc2626";
+    title = "🚨 VERY HIGH SENSOR ALERT";
+  }
+
+  const overlay = document.createElement("div");
+  overlay.id = "giri-sensor-alert-popup";
+  Object.assign(overlay.style, {
+    position: "fixed",
+    inset: "0",
+    zIndex: "99999",
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    paddingTop: "85px",
+    background: "rgba(0,0,0,0.28)",
+    backdropFilter: "blur(2px)",
+  });
+
+  const card = document.createElement("div");
+  Object.assign(card.style, {
+    width: "min(560px, calc(100vw - 32px))",
+    boxSizing: "border-box",
+    background: "#ffffff",
+    borderRadius: "16px",
+    border: `4px solid ${accent}`,
+    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+    overflow: "hidden",
+    fontFamily: "Arial, sans-serif",
+    animation: "giriSensorPopupIn 0.22s ease-out",
+  });
+
+  const header = document.createElement("div");
+  Object.assign(header.style, {
+    background: accent,
+    color: "#ffffff",
+    padding: "16px 20px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "15px",
+  });
+
+  const heading = document.createElement("div");
+  heading.textContent = title;
+  heading.style.fontWeight = "800";
+  heading.style.fontSize = "18px";
+
+  const close = document.createElement("button");
+  close.textContent = "×";
+  Object.assign(close.style, {
+    border: "none",
+    background: "rgba(255,255,255,0.2)",
+    color: "#ffffff",
+    width: "34px",
+    height: "34px",
+    borderRadius: "8px",
+    fontSize: "24px",
+    lineHeight: "1",
+    cursor: "pointer",
+  });
+
+  header.appendChild(heading);
+  header.appendChild(close);
+
+  const body = document.createElement("div");
+  Object.assign(body.style, { padding: "20px", color: "#172033" });
+
+  const message = document.createElement("div");
+  message.textContent = String(alert.message || "ESP32 reported an active sensor alert.");
+  Object.assign(message.style, {
+    fontSize: "16px",
+    lineHeight: "1.5",
+    fontWeight: "600",
+    marginBottom: "16px",
+  });
+
+  body.appendChild(message);
+
+  if (reading) {
+    const telemetry = document.createElement("div");
+    Object.assign(telemetry.style, {
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: "10px",
+    });
+
+    const fields = [
+      ["Tilt", reading.tilt_deg, "°"],
+      ["Tilt Change", reading.tilt_change_deg, "°"],
+      ["Tilt Rate", reading.tilt_rate_dph, "°/h"],
+      ["10s Tilt", reading.tilt_sudden_change_10s_deg, "°"],
+      ["Soil", reading.moisture_pct, "%"],
+      ["Distance", reading.distance_cm, " cm"],
+      ["Distance Change", reading.distance_change_cm, " cm"],
+      ["Movement", reading.movement_ratio, "x"],
+    ];
+
+    fields.forEach(([label, value, unit]) => {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return;
+
+      const item = document.createElement("div");
+      Object.assign(item.style, {
+        background: "#f3f6fa",
+        borderRadius: "10px",
+        padding: "11px 12px",
+      });
+
+      const labelNode = document.createElement("div");
+      labelNode.textContent = label;
+      labelNode.style.fontSize = "11px";
+      labelNode.style.color = "#657184";
+
+      const valueNode = document.createElement("div");
+      let number = Number(value);
+      valueNode.textContent = (Math.abs(number) >= 100 ? number.toFixed(1) : number.toFixed(2)) + unit;
+      valueNode.style.fontWeight = "800";
+      valueNode.style.fontSize = "15px";
+
+      item.appendChild(labelNode);
+      item.appendChild(valueNode);
+      telemetry.appendChild(item);
+    });
+
+    body.appendChild(telemetry);
+  }
+
+  const footer = document.createElement("div");
+  footer.textContent = `Zone: ${alert.zone_id || alert.sensor_id || "ESP32"}`;
+  Object.assign(footer.style, { marginTop: "16px", fontSize: "12px", color: "#718096" });
+
+  body.appendChild(footer);
+  card.appendChild(header);
+  card.appendChild(body);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  close.onclick = () => overlay.remove();
+  overlay.onclick = (event) => { if (event.target === overlay) overlay.remove(); };
+
+  const escapeHandler = (event) => {
+    if (event.key === "Escape") {
+      overlay.remove();
+      document.removeEventListener("keydown", escapeHandler);
+    }
+  };
+  document.addEventListener("keydown", escapeHandler);
+
+  window.setTimeout(() => {
+    if (document.body.contains(overlay)) overlay.remove();
+    document.removeEventListener("keydown", escapeHandler);
+  }, 12000);
+}
+
+if (!document.getElementById("giri-sensor-popup-style")) {
+  const style = document.createElement("style");
+  style.id = "giri-sensor-popup-style";
+  style.textContent = `
+    @keyframes giriSensorPopupIn {
+      from { opacity: 0; transform: translateY(-18px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// FULL ESP32 EDGE TELEMETRY READOUT MODULE
+(function () {
+  const PANEL_ID = "giri-full-esp32-telemetry";
+  const GRID_ID = "giri-full-esp32-telemetry-grid";
+  const STATUS_ID = "giri-full-esp32-telemetry-status";
+
+  function apiBase() {
+    if (typeof getApiBase === "function") return getApiBase();
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1" || /^192\.168\./.test(host) || /^10\./.test(host)) {
+      return "http://" + (host || "127.0.0.1") + ":8000";
+    }
+    return "https://giri-rakshak-zsk5.onrender.com";
+  }
+
+  function fmt(value, digits = 2, unit = "") {
+    if (value === null || value === undefined || value === "") return "—";
+    const n = Number(value);
+    if (!Number.isFinite(n)) return "—";
+    return n.toFixed(digits) + (unit ? ` ${unit}` : "");
+  }
+
+  function addField(grid, label, value, digits = 2, unit = "") {
+    const box = document.createElement("div");
+    box.className = "giri-full-esp32-field";
+    const labelNode = document.createElement("div");
+    labelNode.className = "giri-full-esp32-label";
+    labelNode.textContent = label;
+    const valueNode = document.createElement("div");
+    valueNode.className = "giri-full-esp32-value";
+    valueNode.textContent = fmt(value, digits, unit);
+    box.appendChild(labelNode);
+    box.appendChild(valueNode);
+    grid.appendChild(box);
+  }
+
+  function addTextField(grid, label, value) {
+    const box = document.createElement("div");
+    box.className = "giri-full-esp32-field";
+    const labelNode = document.createElement("div");
+    labelNode.className = "giri-full-esp32-label";
+    labelNode.textContent = label;
+    const valueNode = document.createElement("div");
+    valueNode.className = "giri-full-esp32-value";
+    valueNode.textContent = (value === null || value === undefined || value === "") ? "—" : String(value);
+    box.appendChild(labelNode);
+    box.appendChild(valueNode);
+    grid.appendChild(box);
+  }
+
+  function findTelemetryCard() {
+    const elements = Array.from(document.querySelectorAll("h1,h2,h3,h4,h5,div"));
+    const heading = elements.find(el => String(el.textContent || "").trim().includes("ESP32 EDGE TELEMETRY"));
+    if (!heading) return null;
+
+    let current = heading;
+    for (let i = 0; i < 10 && current; i++) {
+      const text = String(current.innerText || "");
+      if (text.includes("Tilt Angle") && text.includes("Soil Moisture")) {
+        return current;
+      }
+      current = current.parentElement;
+    }
+    return null;
+  }
+
+  function ensurePanel() {
+    let panel = document.getElementById(PANEL_ID);
+    if (panel) return panel;
+
+    const card = findTelemetryCard();
+    if (!card) return null;
+
+    panel = document.createElement("section");
+    panel.id = PANEL_ID;
+
+    const title = document.createElement("div");
+    title.className = "giri-full-esp32-title";
+    title.textContent = "FULL ESP32 EDGE TELEMETRY";
+
+    const status = document.createElement("div");
+    status.id = STATUS_ID;
+    status.className = "giri-full-esp32-status";
+    status.textContent = "Waiting for live ESP32 data...";
+
+    const grid = document.createElement("div");
+    grid.id = GRID_ID;
+    grid.className = "giri-full-esp32-grid";
+
+    panel.appendChild(title);
+    panel.appendChild(status);
+    panel.appendChild(grid);
+    card.appendChild(panel);
+
+    return panel;
+  }
+
+  function render(reading) {
+    const panel = ensurePanel();
+    if (!panel) return;
+
+    const grid = document.getElementById(GRID_ID);
+    const status = document.getElementById(STATUS_ID);
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    addTextField(grid, "Sensor ID", reading.sensor_id);
+    addTextField(grid, "Alert Level", reading.alert_level);
+    addTextField(grid, "System State", reading.system_state);
+    addTextField(grid, "Updated", reading.timestamp ? new Date(reading.timestamp).toLocaleString() : null);
+
+    addField(grid, "Latitude", reading.lat, 6);
+    addField(grid, "Longitude", reading.lon, 6);
+
+    addField(grid, "Tilt Angle", reading.tilt_deg, 3, "°");
+    addField(grid, "Tilt Change", reading.tilt_change_deg, 3, "°");
+    addField(grid, "Tilt Rate", reading.tilt_rate_dph, 3, "°/h");
+    addField(grid, "Tilt 10s Change", reading.tilt_sudden_change_10s_deg, 3, "°");
+
+    addField(grid, "Accel X", reading.accel_x_g, 4, "g");
+    addField(grid, "Accel Y", reading.accel_y_g, 4, "g");
+    addField(grid, "Accel Z", reading.accel_z_g, 4, "g");
+    addField(grid, "Accel Magnitude", reading.accel_magnitude_g, 4, "g");
+    addField(grid, "Accel Jump", reading.accel_jump_g, 4, "g");
+    addField(grid, "Vibration RMS", reading.vibration_rms_g, 5, "g");
+    addField(grid, "Movement Ratio", reading.movement_ratio, 2, "x");
+
+    addField(grid, "Soil Moisture", reading.moisture_pct, 2, "%");
+    addField(grid, "Soil Change", reading.moisture_change_pct, 2, "%");
+    addField(grid, "Soil Rate", reading.moisture_rate_pph, 2, "%/h");
+
+    addField(grid, "Distance", reading.distance_cm, 2, "cm");
+    addField(grid, "Distance Change", reading.distance_change_cm, 3, "cm");
+    addField(grid, "Distance Rate", reading.distance_rate_cmh, 2, "cm/h");
+    addField(grid, "Displacement", reading.displacement_cm, 3, "cm");
+
+    addField(grid, "BMP Pressure", reading.pressure_hpa, 2, "hPa");
+    addField(grid, "BMP Temperature", reading.temperature_c, 2, "°C");
+    addField(grid, "DHT Humidity", reading.humidity_pct, 2, "%");
+    addField(grid, "Rainfall", reading.rainfall_mm, 2, "mm");
+
+    if (status) {
+      status.textContent = "LIVE • ESP32 • Updated " + new Date().toLocaleTimeString();
+      status.style.color = "#86efac";
+    }
+  }
+
+  async function update() {
+    try {
+      const response = await fetch(apiBase() + "/api/sensor-data/latest/ESP32_01", { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (data.status !== "ok" || !data.reading) return;
+      render(data.reading);
+    } catch (error) {
+      const status = document.getElementById(STATUS_ID);
+      if (status) {
+        status.textContent = "ESP32 telemetry unavailable";
+        status.style.color = "#fca5a5";
+      }
+      console.warn("[ESP32 FULL TELEMETRY]", error);
+    }
+  }
+
+  function injectStyles() {
+    if (document.getElementById("giri-full-esp32-telemetry-style")) return;
+    const style = document.createElement("style");
+    style.id = "giri-full-esp32-telemetry-style";
+    style.textContent = `
+      #${PANEL_ID} {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 12px;
+        background: #0f172a;
+        color: #ffffff;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      #${PANEL_ID} .giri-full-esp32-title {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        margin-bottom: 5px;
+      }
+      #${PANEL_ID} .giri-full-esp32-status {
+        font-size: 10px;
+        color: #94a3b8;
+        margin-bottom: 11px;
+      }
+      #${PANEL_ID} .giri-full-esp32-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        max-height: 470px;
+        overflow-y: auto;
+        padding-right: 3px;
+      }
+      #${PANEL_ID} .giri-full-esp32-field {
+        background: #182235;
+        border: 1px solid #26344d;
+        border-radius: 8px;
+        padding: 8px 9px;
+        min-width: 0;
+      }
+      #${PANEL_ID} .giri-full-esp32-label {
+        color: #94a3b8;
+        font-size: 9px;
+        margin-bottom: 3px;
+        line-height: 1.2;
+      }
+      #${PANEL_ID} .giri-full-esp32-value {
+        color: #f8fafc;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.25;
+        word-break: break-word;
+      }
+      @media (max-width: 700px) {
+        #${PANEL_ID} .giri-full-esp32-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function start() {
+    injectStyles();
+    update();
+    window.setInterval(update, 5000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => { window.setTimeout(start, 800); }, { once: true });
+  } else {
+    window.setTimeout(start, 800);
+  }
+})();
+
 // =========================================================================
 // 19. Boot System & Initial Execution
 // =========================================================================
@@ -2913,7 +3604,6 @@ refreshTelemetry();
 startLiveSensorAlertMonitoring();
 initDarkMode();
 
-// Live Polling Intervals: Pull reports, alerts, and telemetry every few seconds
 setInterval(() => {
   loadSavedCitizenReports();
   renderAlertsFeed();
@@ -2932,1757 +3622,422 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('DOMContentLoaded', applyRoleUI);
-
-// ============================================================
-// LIVE SENSOR ALERT POPUP
-// ============================================================
-
-function showSensorAlertPopup(
-  alert,
-  reading = null
-) {
-
-  if (!alert) {
-    return;
-  }
-
-
-  // ----------------------------------------------------------
-  // Ignore inactive / normal alerts
-  // ----------------------------------------------------------
-
-  const activeValue =
-    alert.is_active;
-
-  if (
-    activeValue === false ||
-    activeValue === "false" ||
-    activeValue === 0
-  ) {
-    return;
-  }
-
-
-  const level =
-    String(
-      alert.risk_level ||
-      alert.alert_level ||
-      "warning"
-    )
-    .toLowerCase();
-
-
-  if (
-    level === "normal" ||
-    level === "none"
-  ) {
-    return;
-  }
-
-
-  // ----------------------------------------------------------
-  // Create a stable ID for this alert event
-  // ----------------------------------------------------------
-
-  const alertId =
-    String(
-      alert.alert_id ||
-      alert.id ||
-      (
-        String(
-          alert.timestamp ||
-          ""
-        )
-        +
-        "|"
-        +
-        String(
-          alert.message ||
-          ""
-        )
-      )
-    );
-
-
-  // Same alert event:
-  // do NOT keep opening the popup every polling cycle.
-  if (
-    window.__giriRakshakLastPopupAlertId
-    ===
-    alertId
-  ) {
-    return;
-  }
-
-
-  window.__giriRakshakLastPopupAlertId =
-    alertId;
-
-
-  // ----------------------------------------------------------
-  // Remove old popup if one exists
-  // ----------------------------------------------------------
-
-  const oldPopup =
-    document.getElementById(
-      "giri-sensor-alert-popup"
-    );
-
-  if (oldPopup) {
-    oldPopup.remove();
-  }
-
-
-  // ----------------------------------------------------------
-  // Severity
-  // ----------------------------------------------------------
-
-  let accent =
-    "#f59e0b";
-
-  let title =
-    "SENSOR WARNING";
-
-  if (
-    level === "critical"
-  ) {
-
-    accent =
-      "#ef4444";
-
-    title =
-      "🚨 CRITICAL SENSOR ALERT";
-
-  } else if (
-    level === "watch"
-  ) {
-
-    accent =
-      "#eab308";
-
-    title =
-      "⚠ SENSOR WATCH";
-
-  } else if (
-    level === "very_high"
-  ) {
-
-    accent =
-      "#dc2626";
-
-    title =
-      "🚨 VERY HIGH SENSOR ALERT";
-  }
-
-
-  // ----------------------------------------------------------
-  // Overlay
-  // ----------------------------------------------------------
-
-  const overlay =
-    document.createElement(
-      "div"
-    );
-
-  overlay.id =
-    "giri-sensor-alert-popup";
-
-
-  Object.assign(
-    overlay.style,
-    {
-
-      position:
-        "fixed",
-
-      inset:
-        "0",
-
-      zIndex:
-        "99999",
-
-      display:
-        "flex",
-
-      alignItems:
-        "flex-start",
-
-      justifyContent:
-        "center",
-
-      paddingTop:
-        "85px",
-
-      background:
-        "rgba(0,0,0,0.28)",
-
-      backdropFilter:
-        "blur(2px)",
-    }
-  );
-
-
-  // ----------------------------------------------------------
-  // Card
-  // ----------------------------------------------------------
-
-  const card =
-    document.createElement(
-      "div"
-    );
-
-
-  Object.assign(
-    card.style,
-    {
-
-      width:
-        "min(560px, calc(100vw - 32px))",
-
-      boxSizing:
-        "border-box",
-
-      background:
-        "#ffffff",
-
-      borderRadius:
-        "16px",
-
-      border:
-        `4px solid ${accent}`,
-
-      boxShadow:
-        "0 20px 60px rgba(0,0,0,0.35)",
-
-      overflow:
-        "hidden",
-
-      fontFamily:
-        "Arial, sans-serif",
-
-      animation:
-        "giriSensorPopupIn 0.22s ease-out",
-
-    }
-  );
-
-
-  // ----------------------------------------------------------
-  // Header
-  // ----------------------------------------------------------
-
-  const header =
-    document.createElement(
-      "div"
-    );
-
-
-  Object.assign(
-    header.style,
-    {
-
-      background:
-        accent,
-
-      color:
-        "#ffffff",
-
-      padding:
-        "16px 20px",
-
-      display:
-        "flex",
-
-      alignItems:
-        "center",
-
-      justifyContent:
-        "space-between",
-
-      gap:
-        "15px",
-
-    }
-  );
-
-
-  const heading =
-    document.createElement(
-      "div"
-    );
-
-
-  heading.textContent =
-    title;
-
-
-  heading.style.fontWeight =
-    "800";
-
-
-  heading.style.fontSize =
-    "18px";
-
-
-  const close =
-    document.createElement(
-      "button"
-    );
-
-
-  close.textContent =
-    "×";
-
-
-  Object.assign(
-    close.style,
-    {
-
-      border:
-        "none",
-
-      background:
-        "rgba(255,255,255,0.2)",
-
-      color:
-        "#ffffff",
-
-      width:
-        "34px",
-
-      height:
-        "34px",
-
-      borderRadius:
-        "8px",
-
-      fontSize:
-        "24px",
-
-      lineHeight:
-        "1",
-
-      cursor:
-        "pointer",
-
-    }
-  );
-
-
-  header.appendChild(
-    heading
-  );
-
-  header.appendChild(
-    close
-  );
-
-
-  // ----------------------------------------------------------
-  // Body
-  // ----------------------------------------------------------
-
-  const body =
-    document.createElement(
-      "div"
-    );
-
-
-  Object.assign(
-    body.style,
-    {
-
-      padding:
-        "20px",
-
-      color:
-        "#172033",
-
-    }
-  );
-
-
-  const message =
-    document.createElement(
-      "div"
-    );
-
-
-  message.textContent =
-    String(
-      alert.message ||
-      "ESP32 reported an active sensor alert."
-    );
-
-
-  Object.assign(
-    message.style,
-    {
-
-      fontSize:
-        "16px",
-
-      lineHeight:
-        "1.5",
-
-      fontWeight:
-        "600",
-
-      marginBottom:
-        "16px",
-
-    }
-  );
-
-
-  body.appendChild(
-    message
-  );
-
-
-  // ----------------------------------------------------------
-  // Telemetry block
-  // ----------------------------------------------------------
-
-  if (reading) {
-
-    const telemetry =
-      document.createElement(
-        "div"
-      );
-
-
-    Object.assign(
-      telemetry.style,
-      {
-
-        display:
-          "grid",
-
-        gridTemplateColumns:
-          "repeat(2, minmax(0, 1fr))",
-
-        gap:
-          "10px",
-
-      }
-    );
-
-
-    const fields = [
-
-      [
-        "Tilt",
-        reading.tilt_deg,
-        "°"
-      ],
-
-      [
-        "Tilt Change",
-        reading.tilt_change_deg,
-        "°"
-      ],
-
-      [
-        "Tilt Rate",
-        reading.tilt_rate_dph,
-        "°/h"
-      ],
-
-      [
-        "10s Tilt",
-        reading.tilt_sudden_change_10s_deg,
-        "°"
-      ],
-
-      [
-        "Soil",
-        reading.moisture_pct,
-        "%"
-      ],
-
-      [
-        "Distance",
-        reading.distance_cm,
-        " cm"
-      ],
-
-      [
-        "Distance Change",
-        reading.distance_change_cm,
-        " cm"
-      ],
-
-      [
-        "Movement",
-        reading.movement_ratio,
-        "x"
-      ],
-
-    ];
-
-
-    fields.forEach(
-      ([label, value, unit]) => {
-
-        if (
-          value === null ||
-          value === undefined ||
-          Number.isNaN(
-            Number(value)
-          )
-        ) {
-          return;
-        }
-
-
-        const item =
-          document.createElement(
-            "div"
-          );
-
-
-        Object.assign(
-          item.style,
-          {
-
-            background:
-              "#f3f6fa",
-
-            borderRadius:
-              "10px",
-
-            padding:
-              "11px 12px",
-
-          }
-        );
-
-
-        const labelNode =
-          document.createElement(
-            "div"
-          );
-
-
-        labelNode.textContent =
-          label;
-
-
-        labelNode.style.fontSize =
-          "11px";
-
-
-        labelNode.style.color =
-          "#657184";
-
-
-        const valueNode =
-          document.createElement(
-            "div"
-          );
-
-
-        let number =
-          Number(value);
-
-
-        valueNode.textContent =
-          (
-            Math.abs(number) >= 100
-              ? number.toFixed(1)
-              : number.toFixed(2)
-          )
-          +
-          unit;
-
-
-        valueNode.style.fontWeight =
-          "800";
-
-
-        valueNode.style.fontSize =
-          "15px";
-
-
-        item.appendChild(
-          labelNode
-        );
-
-        item.appendChild(
-          valueNode
-        );
-
-        telemetry.appendChild(
-          item
-        );
-      }
-    );
-
-
-    body.appendChild(
-      telemetry
-    );
-  }
-
-
-  // ----------------------------------------------------------
-  // Footer
-  // ----------------------------------------------------------
-
-  const footer =
-    document.createElement(
-      "div"
-    );
-
-
-  footer.textContent =
-    `Zone: ${
-      alert.zone_id ||
-      alert.sensor_id ||
-      "ESP32"
-    }`;
-
-
-  Object.assign(
-    footer.style,
-    {
-
-      marginTop:
-        "16px",
-
-      fontSize:
-        "12px",
-
-      color:
-        "#718096",
-
-    }
-  );
-
-
-  body.appendChild(
-    footer
-  );
-
-
-  card.appendChild(
-    header
-  );
-
-  card.appendChild(
-    body
-  );
-
-  overlay.appendChild(
-    card
-  );
-
-
-  document.body.appendChild(
-    overlay
-  );
-
-
-  // ----------------------------------------------------------
-  // Close handlers
-  // ----------------------------------------------------------
-
-  close.onclick =
-    () => {
-
-      overlay.remove();
-
-    };
-
-
-  overlay.onclick =
-    (event) => {
-
-      if (
-        event.target
-        ===
-        overlay
-      ) {
-
-        overlay.remove();
-
-      }
-
-    };
-
-
-  // Escape key
-  const escapeHandler =
-    (event) => {
-
-      if (
-        event.key
-        ===
-        "Escape"
-      ) {
-
-        overlay.remove();
-
-        document.removeEventListener(
-          "keydown",
-          escapeHandler
-        );
-      }
-    };
-
-
-  document.addEventListener(
-    "keydown",
-    escapeHandler
-  );
-
-
-  // ----------------------------------------------------------
-  // Automatically hide after 12 seconds
-  // ----------------------------------------------------------
-
-  window.setTimeout(
-    () => {
-
-      if (
-        document.body.contains(
-          overlay
-        )
-      ) {
-
-        overlay.remove();
-
-      }
-
-      document.removeEventListener(
-        "keydown",
-        escapeHandler
-      );
-
-    },
-    12000
-  );
-}
-
-
-// Popup animation
-if (
-  !document.getElementById(
-    "giri-sensor-popup-style"
-  )
-) {
-
-  const style =
-    document.createElement(
-      "style"
-    );
-
-  style.id =
-    "giri-sensor-popup-style";
-
-  style.textContent = `
-    @keyframes giriSensorPopupIn {
-      from {
-        opacity: 0;
-        transform: translateY(-18px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-  `;
-
-  document.head.appendChild(
-    style
-  );
-}
-
-// GIRI_RAKSHAK_FULL_ESP32_TELEMETRY_V2
-// ============================================================
-// FULL ESP32 EDGE TELEMETRY
-// Reads the latest complete ESP32 payload from FastAPI.
-// Existing dashboard UI is left untouched.
-// ============================================================
-
-(function () {
-
-  const PANEL_ID =
-    "giri-full-esp32-telemetry";
-
-  const GRID_ID =
-    "giri-full-esp32-telemetry-grid";
-
-  const STATUS_ID =
-    "giri-full-esp32-telemetry-status";
-
-
-  // ----------------------------------------------------------
-  // API BASE
-  // ----------------------------------------------------------
-
-  function apiBase() {
-
-    if (
-      typeof getApiBase === "function"
-    ) {
-
-      return getApiBase();
-
-    }
-
-    const host =
-      window.location.hostname;
-
-    if (
-      host === "localhost" ||
-      host === "127.0.0.1" ||
-      /^192\.168\./.test(host) ||
-      /^10\./.test(host)
-    ) {
-
-      return (
-        "http://"
-        +
-        (host || "127.0.0.1")
-        +
-        ":8000"
-      );
-
-    }
-
-    return (
-      "https://giri-rakshak-zsk5.onrender.com"
-    );
-  }
-
-
-  // ----------------------------------------------------------
-  // VALUE FORMAT
-  // ----------------------------------------------------------
-
-  function fmt(
-    value,
-    digits = 2,
-    unit = ""
-  ) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-
-      return "—";
-    }
-
-
-    const n =
-      Number(value);
-
-
-    if (
-      !Number.isFinite(n)
-    ) {
-
-      return "—";
-    }
-
-
-    return (
-      n.toFixed(digits)
-      +
-      (
-        unit
-        ?
-        ` ${unit}`
-        :
-        ""
-      )
-    );
-  }
-
-
-  // ----------------------------------------------------------
-  // FIELD
-  // ----------------------------------------------------------
-
-  function addField(
-    grid,
-    label,
-    value,
-    digits = 2,
-    unit = ""
-  ) {
-
-    const box =
-      document.createElement(
-        "div"
-      );
-
-
-    box.className =
-      "giri-full-esp32-field";
-
-
-    const labelNode =
-      document.createElement(
-        "div"
-      );
-
-
-    labelNode.className =
-      "giri-full-esp32-label";
-
-
-    labelNode.textContent =
-      label;
-
-
-    const valueNode =
-      document.createElement(
-        "div"
-      );
-
-
-    valueNode.className =
-      "giri-full-esp32-value";
-
-
-    valueNode.textContent =
-      fmt(
-        value,
-        digits,
-        unit
-      );
-
-
-    box.appendChild(
-      labelNode
-    );
-
-
-    box.appendChild(
-      valueNode
-    );
-
-
-    grid.appendChild(
-      box
-    );
-  }
-
-
-  // ----------------------------------------------------------
-  // TEXT FIELD
-  // ----------------------------------------------------------
-
-  function addTextField(
-    grid,
-    label,
-    value
-  ) {
-
-    const box =
-      document.createElement(
-        "div"
-      );
-
-
-    box.className =
-      "giri-full-esp32-field";
-
-
-    const labelNode =
-      document.createElement(
-        "div"
-      );
-
-
-    labelNode.className =
-      "giri-full-esp32-label";
-
-
-    labelNode.textContent =
-      label;
-
-
-    const valueNode =
-      document.createElement(
-        "div"
-      );
-
-
-    valueNode.className =
-      "giri-full-esp32-value";
-
-
-    valueNode.textContent =
-      (
-        value === null ||
-        value === undefined ||
-        value === ""
-      )
-      ?
-      "—"
-      :
-      String(value);
-
-
-    box.appendChild(
-      labelNode
-    );
-
-
-    box.appendChild(
-      valueNode
-    );
-
-
-    grid.appendChild(
-      box
-    );
-  }
-
-
-  // ----------------------------------------------------------
-  // FIND EXISTING ESP32 TELEMETRY CARD
-  // ----------------------------------------------------------
-
-  function findTelemetryCard() {
-
-    const elements =
-      Array.from(
-        document.querySelectorAll(
-          "h1,h2,h3,h4,h5,div"
-        )
-      );
-
-
-    const heading =
-      elements.find(
-        el =>
-          String(
-            el.textContent || ""
-          )
-          .trim()
-          .includes(
-            "ESP32 EDGE TELEMETRY"
-          )
-      );
-
-
-    if (!heading) {
-      return null;
-    }
-
-
-    let current =
-      heading;
-
-
-    for (
-      let i = 0;
-      i < 10 && current;
-      i++
-    ) {
-
-      const text =
-        String(
-          current.innerText || ""
-        );
-
-
-      if (
-        text.includes(
-          "Tilt Angle"
-        )
-        &&
-        text.includes(
-          "Soil Moisture"
-        )
-      ) {
-
-        return current;
-      }
-
-
-      current =
-        current.parentElement;
-    }
-
-
-    return null;
-  }
-
-
-  // ----------------------------------------------------------
-  // CREATE PANEL
-  // ----------------------------------------------------------
-
-  function ensurePanel() {
-
-    let panel =
-      document.getElementById(
-        PANEL_ID
-      );
-
-
-    if (panel) {
-      return panel;
-    }
-
-
-    const card =
-      findTelemetryCard();
-
-
-    if (!card) {
-      return null;
-    }
-
-
-    panel =
-      document.createElement(
-        "section"
-      );
-
-
-    panel.id =
-      PANEL_ID;
-
-
-    const title =
-      document.createElement(
-        "div"
-      );
-
-
-    title.className =
-      "giri-full-esp32-title";
-
-
-    title.textContent =
-      "FULL ESP32 EDGE TELEMETRY";
-
-
-    const status =
-      document.createElement(
-        "div"
-      );
-
-
-    status.id =
-      STATUS_ID;
-
-
-    status.className =
-      "giri-full-esp32-status";
-
+// BRICS Air Quality Watch — backend predictions + illustrative demo nodes
+(async function renderBricsAirQualityDemo() {
+  const container = document.getElementById("brics-city-list");
+  const status = document.getElementById("brics-federated-status");
+
+  if (!container || !status) return;
+
+  const demoCities = [
+    { country: "China", city: "Beijing", pm25: 82.6, source: "Illustrative demo" },
+    { country: "Brazil", city: "São Paulo", pm25: 34.2, source: "Illustrative demo" },
+    { country: "Russia", city: "Moscow", pm25: 28.7, source: "Illustrative demo" },
+    { country: "South Africa", city: "Johannesburg", pm25: 41.3, source: "Illustrative demo" }
+  ];
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/air-quality/predictions");
+    if (!response.ok) throw new Error(`API returned ${response.status}`);
+
+    const result = await response.json();
+
+    const delhiPredictions = result.predictions
+      .filter(item => item.location_id.startsWith("Delhi_"))
+      .map(item => ({
+        country: "India",
+        city: item.location_id.replace("_Demo", "").replaceAll("_", " "),
+        pm25: item.predicted_value,
+        source: "Backend forecast"
+      }));
+
+    const allCities = [...delhiPredictions, ...demoCities];
+
+    container.innerHTML = allCities.map(item => `
+      <div style="display:flex;justify-content:space-between;gap:10px;padding:9px;border:1px solid #e2e8f0;border-radius:8px;">
+        <div>
+          <strong style="font-size:12px;">${item.city}</strong>
+          <div style="font-size:11px;color:#64748b;">
+  ${item.country} · ${item.source}
+  ${Number(item.pm25) >= 75 ? " · Elevated PM2.5 demo signal" : ""}
+</div>
+        </div>
+        <div style="text-align:right;">
+          <strong style="font-size:14px;">${Number(item.pm25).toFixed(2)}</strong>
+          <div style="font-size:10px;color:#64748b;">PM2.5 µg/m³</div>
+        </div>
+      </div>
+    `).join("");
 
     status.textContent =
-      "Waiting for live ESP32 data...";
-
-
-    const grid =
-      document.createElement(
-        "div"
-      );
-
-
-    grid.id =
-      GRID_ID;
-
-
-    grid.className =
-      "giri-full-esp32-grid";
-
-
-    panel.appendChild(
-      title
-    );
-
-
-    panel.appendChild(
-      status
-    );
-
-
-    panel.appendChild(
-      grid
-    );
-
-
-    card.appendChild(
-      panel
-    );
-
-
-    return panel;
+      "Federated coordination: simulated · 5 BRICS country nodes · no live model exchange";
+  } catch (error) {
+    console.error("BRICS air-quality API error:", error);
+    container.innerHTML =
+      '<p style="font-size:12px;color:#b91c1c;">Delhi forecast API unavailable. Check that the backend is running.</p>' +
+      demoCities.map(item => `
+        <div style="padding:9px;border:1px solid #e2e8f0;border-radius:8px;">
+          <strong>${item.city}</strong> · ${item.country}
+          <div style="font-size:11px;color:#64748b;">Illustrative demo only · PM2.5 ${item.pm25} µg/m³</div>
+        </div>
+      `).join("");
   }
+})();
+// BRICS prototype: citizen-submitted report count
+(function updateBricsCitizenReportCount() {
+  const countElement = document.getElementById("brics-citizen-count");
+  if (!countElement) return;
 
+  try {
+    const reports = JSON.parse(localStorage.getItem("giri_citizen_reports") || "[]");
+    countElement.textContent =
+      `Citizen reports saved in this browser: ${reports.length}`;
+  } catch (error) {
+    countElement.textContent = "Citizen report count unavailable";
+  }
+})();
+// BRICS 3D rotating globe with illustrative PM2.5 signals
+(function initBricsGlobe() {
+  const globeElement = document.getElementById("globeViz");
+  if (!globeElement || typeof Globe !== "function") return;
 
-  // ----------------------------------------------------------
-  // RENDER COMPLETE TELEMETRY
-  // ----------------------------------------------------------
+  const citySignals = [
+    { city: "Delhi", country: "India", lat: 28.6139, lng: 77.2090, pm25: 96.41 },
+    { city: "Beijing", country: "China", lat: 39.9042, lng: 116.4074, pm25: 82.6 },
+    { city: "São Paulo", country: "Brazil", lat: -23.5505, lng: -46.6333, pm25: 34.2 },
+    { city: "Moscow", country: "Russia", lat: 55.7558, lng: 37.6173, pm25: 28.7 },
+    { city: "Johannesburg", country: "South Africa", lat: -26.2041, lng: 28.0473, pm25: 41.3 }
+  ];
 
-  function render(
-    reading
-  ) {
+  const colorFor = value =>
+    value >= 75 ? "#ef4444" : value >= 50 ? "#f59e0b" : "#22c55e";
 
-    const panel =
-      ensurePanel();
+  // Initialize globe first
+  const globe = Globe()(globeElement)
+    .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
+.backgroundColor("#b8e6ff")
 
+   .showAtmosphere(true)
+    .atmosphereColor("#d8f3ff")
+    .atmosphereAltitude(0.18)
+    .pointsData(citySignals)
+    .pointLat("lat")
+    .pointLng("lng")
+    .pointAltitude(d => 0.025 + Math.min(d.pm25 / 3000, 0.05))
+    .pointRadius(d => 0.35 + Math.min(d.pm25 / 300, 0.25))
+    .pointColor(d => colorFor(d.pm25))
+    .pointLabel(d =>
+      `${d.city}, ${d.country}<br/>Illustrative PM2.5: ${d.pm25} µg/m³<br/>Synthetic demo data`
+    )
+    .ringsData(citySignals)
+    .ringLat("lat")
+    .ringLng("lng")
+    .ringColor(d => colorFor(d.pm25))
+    .ringMaxRadius(d => 2 + d.pm25 / 35)
+    .ringPropagationSpeed(1.5)
+    .ringRepeatPeriod(1800)
+    .labelsData(citySignals)
+    .labelLat("lat")
+    .labelLng("lng")
+    .labelText("city")
+    .labelSize(1.2)
+    .labelDotRadius(0.25)
+    .labelColor(() => "#e2e8f0")
+    .labelResolution(2);
 
-    if (!panel) {
-      return;
-    }
+  globe.controls().autoRotate = true;
+  globe.controls().autoRotateSpeed = 0.45;
+  globe.controls().enableZoom = true;
 
-
-    const grid =
-      document.getElementById(
-        GRID_ID
+  // Load country boundaries
+  (async function loadCountryBoundaries() {
+    try {
+      const response = await fetch(
+        "https://unpkg.com/world-atlas@2/countries-110m.json"
       );
-
-
-    const status =
-      document.getElementById(
-        STATUS_ID
-      );
-
-
-    if (!grid) {
-      return;
-    }
-
-
-    grid.innerHTML =
-      "";
-
-
-    // ========================================================
-    // SENSOR / STATE
-    // ========================================================
-
-    addTextField(
-      grid,
-      "Sensor ID",
-      reading.sensor_id
-    );
-
-
-    addTextField(
-      grid,
-      "Alert Level",
-      reading.alert_level
-    );
-
-
-    addTextField(
-      grid,
-      "System State",
-      reading.system_state
-    );
-
-
-    addTextField(
-      grid,
-      "Updated",
-      reading.timestamp
-        ?
-        new Date(
-          reading.timestamp
-        ).toLocaleString()
-        :
-        null
-    );
-
-
-    // ========================================================
-    // LOCATION
-    // ========================================================
-
-    addField(
-      grid,
-      "Latitude",
-      reading.lat,
-      6
-    );
-
-
-    addField(
-      grid,
-      "Longitude",
-      reading.lon,
-      6
-    );
-
-
-    // ========================================================
-    // TILT
-    // ========================================================
-
-    addField(
-      grid,
-      "Tilt Angle",
-      reading.tilt_deg,
-      3,
-      "°"
-    );
-
-
-    addField(
-      grid,
-      "Tilt Change",
-      reading.tilt_change_deg,
-      3,
-      "°"
-    );
-
-
-    addField(
-      grid,
-      "Tilt Rate",
-      reading.tilt_rate_dph,
-      3,
-      "°/h"
-    );
-
-
-    addField(
-      grid,
-      "Tilt 10s Change",
-      reading.tilt_sudden_change_10s_deg,
-      3,
-      "°"
-    );
-
-
-    // ========================================================
-    // ACCELERATION
-    // ========================================================
-
-    addField(
-      grid,
-      "Accel X",
-      reading.accel_x_g,
-      4,
-      "g"
-    );
-
-
-    addField(
-      grid,
-      "Accel Y",
-      reading.accel_y_g,
-      4,
-      "g"
-    );
-
-
-    addField(
-      grid,
-      "Accel Z",
-      reading.accel_z_g,
-      4,
-      "g"
-    );
-
-
-    addField(
-      grid,
-      "Accel Magnitude",
-      reading.accel_magnitude_g,
-      4,
-      "g"
-    );
-
-
-    addField(
-      grid,
-      "Accel Jump",
-      reading.accel_jump_g,
-      4,
-      "g"
-    );
-
-
-    addField(
-      grid,
-      "Vibration RMS",
-      reading.vibration_rms_g,
-      5,
-      "g"
-    );
-
-
-    addField(
-      grid,
-      "Movement Ratio",
-      reading.movement_ratio,
-      2,
-      "x"
-    );
-
-
-    // ========================================================
-    // SOIL
-    // ========================================================
-
-    addField(
-      grid,
-      "Soil Moisture",
-      reading.moisture_pct,
-      2,
-      "%"
-    );
-
-
-    addField(
-      grid,
-      "Soil Change",
-      reading.moisture_change_pct,
-      2,
-      "%"
-    );
-
-
-    addField(
-      grid,
-      "Soil Rate",
-      reading.moisture_rate_pph,
-      2,
-      "%/h"
-    );
-
-
-    // ========================================================
-    // DISTANCE
-    // ========================================================
-
-    addField(
-      grid,
-      "Distance",
-      reading.distance_cm,
-      2,
-      "cm"
-    );
-
-
-    addField(
-      grid,
-      "Distance Change",
-      reading.distance_change_cm,
-      3,
-      "cm"
-    );
-
-
-    addField(
-      grid,
-      "Distance Rate",
-      reading.distance_rate_cmh,
-      2,
-      "cm/h"
-    );
-
-
-    addField(
-      grid,
-      "Displacement",
-      reading.displacement_cm,
-      3,
-      "cm"
-    );
-
-
-    // ========================================================
-    // ENVIRONMENT
-    // ========================================================
-
-    addField(
-      grid,
-      "BMP Pressure",
-      reading.pressure_hpa,
-      2,
-      "hPa"
-    );
-
-
-    addField(
-      grid,
-      "BMP Temperature",
-      reading.temperature_c,
-      2,
-      "°C"
-    );
-
-
-    addField(
-      grid,
-      "DHT Humidity",
-      reading.humidity_pct,
-      2,
-      "%"
-    );
-
-
-    addField(
-      grid,
-      "Rainfall",
-      reading.rainfall_mm,
-      2,
-      "mm"
-    );
-
-
-    // ========================================================
-    // STATUS
-    // ========================================================
-
-    if (status) {
-
-      status.textContent =
-        (
-          "LIVE • ESP32 • Updated "
-          +
-          new Date()
-            .toLocaleTimeString()
+      if (!response.ok) throw new Error("Country boundary data unavailable");
+
+      const topology = await response.json();
+      const countries = topojson.feature(
+        topology,
+        topology.objects.countries
+      ).features;
+
+      globe
+        .polygonsData(countries)
+        .polygonCapColor(() => "rgba(20, 100, 160, 0.10)")
+        .polygonSideColor(() => "rgba(30, 120, 180, 0.15)")
+        .polygonStrokeColor(() => "#ffffff")
+        .polygonAltitude(0.008)
+        .onPolygonClick((feature, event, coordinates) => {
+          if (!coordinates) return;
+          globe.pointOfView({
+            lat: coordinates.lat,
+            lng: coordinates.lng,
+            altitude: 1.1
+          }, 1200);
+        })
+        .polygonLabel(feature =>
+          `Country ID: ${feature.id}<br/>Click to focus`
         );
 
-      status.style.color =
-        "#86efac";
+      console.log("World country boundaries loaded:", countries.length);
+    } catch (error) {
+      console.error("Country boundaries failed to load:", error);
     }
-  }
+  })();
+
+  // Load India state and union-territory boundaries
+  (async function loadIndiaStateBoundaries() {
+    try {
+      const response = await fetch(
+        "https://raw.githubusercontent.com/AbhinavSwami28/india-official-geojson/main/india-states-simplified.geojson"
+      );
+      if (!response.ok) throw new Error("India state boundary data unavailable");
+
+      const geojson = await response.json();
+
+      const stateLines = geojson.features.flatMap(feature => {
+        const geometry = feature.geometry;
+        if (!geometry) return [];
+
+        const polygons =
+          geometry.type === "Polygon"
+            ? [geometry.coordinates]
+            : geometry.type === "MultiPolygon"
+              ? geometry.coordinates
+              : [];
+
+        return polygons.flatMap(polygon =>
+          polygon.map(ring => ring)
+        );
+      });
+
+      globe
+        .pathsData(stateLines)
+        .pathPoints(points => points)
+        .pathPointLat(point => point[1])
+        .pathPointLng(point => point[0])
+        .pathColor(() => "#ffffff")
+        .pathStroke(0.75)
+        .pathAltitude(0.012)
+        .pathTransitionDuration(0);
+
+      console.log("India state boundaries loaded:", stateLines.length);
+    } catch (error) {
+      console.error("India state boundaries failed to load:", error);
+    }
+  })();
 
 
-  // ----------------------------------------------------------
-  // FETCH LATEST ESP32 TELEMETRY
-  // ----------------------------------------------------------
+  // BRICS admin-1 + India district AQI polygons
+  (async function loadBricsAQIRegions() {
+    const files = {
+      BRA: "Brazil",
+      CHN: "China",
+      EGY: "Egypt",
+      ETH: "Ethiopia",
+      IDN: "Indonesia",
+      IRN: "Iran",
+      RUS: "Russia",
+      SAU: "Saudi Arabia",
+      ZAF: "South Africa",
+      ARE: "United Arab Emirates"
+    };
 
-  async function update() {
+    const baselines = {
+      IND: 145,
+      CHN: 175,
+      BRA: 105,
+      RUS: 90,
+      ZAF: 130,
+      EGY: 155,
+      ETH: 95,
+      IDN: 145,
+      IRN: 165,
+      SAU: 125,
+      ARE: 110
+    };
+
+    function hashText(value) {
+      let hash = 0;
+      for (let i = 0; i < value.length; i++) {
+        hash = ((hash * 31) + value.charCodeAt(i)) >>> 0;
+      }
+      return hash;
+    }
+
+    function demoAQI(countryCode, regionName) {
+      const hash = hashText(`${countryCode}:${regionName}`);
+      let value = baselines[countryCode] + (hash % 191);
+
+      // Keep some clearly critical demo hotspots.
+      if (hash % 37 === 0) value = 410 + (hash % 41);
+
+      return Math.min(value, 450);
+    }
+
+    function aqiColor(aqi) {
+      if (aqi <= 50) return "#ffffff";
+      if (aqi <= 100) return "#ede9fe";
+      if (aqi <= 150) return "#c4b5fd";
+      if (aqi <= 200) return "#8b5cf6";
+      if (aqi <= 300) return "#6d28d9";
+      if (aqi <= 400) return "#4c1d95";
+      return "#2e1065";
+    }
+
+    function aqiLevel(aqi) {
+      if (aqi <= 100) return "Good";
+      if (aqi <= 200) return "Moderate";
+      if (aqi <= 300) return "Poor";
+      if (aqi <= 400) return "Very Poor";
+      return "Severe / Critical";
+    }
 
     try {
+      const worldResponse = await fetch(
+        "https://unpkg.com/world-atlas@2/countries-110m.json"
+      );
+      if (!worldResponse.ok) throw new Error("World boundary data unavailable");
 
-      const response =
-        await fetch(
-          apiBase()
-          +
-          "/api/sensor-data/latest/ESP32_01",
-          {
-            cache:
-              "no-store"
+      const worldTopology = await worldResponse.json();
+      const worldCountries = topojson.feature(
+        worldTopology,
+        worldTopology.objects.countries
+      ).features;
+
+      const bricsResults = await Promise.all(
+        Object.keys(files).map(async code => {
+          const response = await fetch(`./data/brics/${code}_1.json`);
+          if (!response.ok) {
+            throw new Error(`${code} admin boundary request failed: ${response.status}`);
           }
-        );
 
+          const data = await response.json();
 
-      if (!response.ok) {
+          return data.features.map(feature => {
+            const props = { ...(feature.properties || {}) };
+            const regionName = props.NAME_1 || "Unknown region";
+            const aqi = demoAQI(code, regionName);
 
-        throw new Error(
-          `HTTP ${response.status}`
-        );
-      }
+            props.__aqi = aqi;
+            props.__aqiLevel = aqiLevel(aqi);
+            props.__admin1 = true;
+            props.__countryCode = code;
+            props.__countryName = files[code];
+            props.__regionName = regionName;
 
-
-      const data =
-        await response.json();
-
-
-      if (
-        data.status !== "ok"
-        ||
-        !data.reading
-      ) {
-
-        return;
-      }
-
-
-      render(
-        data.reading
+            return {
+              ...feature,
+              properties: props
+            };
+          });
+        })
       );
 
+      const indiaResponse = await fetch("./data/india_districts.geojson");
+      if (!indiaResponse.ok) {
+        throw new Error(`India district boundary request failed: ${indiaResponse.status}`);
+      }
 
+      const indiaData = await indiaResponse.json();
+
+      const indiaDistricts = indiaData.features.map(feature => {
+        const props = { ...(feature.properties || {}) };
+        const districtName = props.NAME_2 || "Unknown district";
+        const stateName = props.NAME_1 || "India";
+        const aqi = demoAQI("IND", `${stateName}:${districtName}`);
+
+        props.__aqi = aqi;
+        props.__aqiLevel = aqiLevel(aqi);
+        props.__admin1 = true;
+        props.__indiaDistrict = true;
+        props.__countryCode = "IND";
+        props.__countryName = "India";
+        props.__regionName = districtName;
+
+        return {
+          ...feature,
+          properties: props
+        };
+      });
+
+      const adminRegions = [
+        ...bricsResults.flat(),
+        ...indiaDistricts
+      ];
+
+      globe
+        .polygonsData([...worldCountries, ...adminRegions])
+        .polygonCapColor(feature => {
+          const props = feature.properties || {};
+
+          if (!props.__admin1) {
+            return "rgba(30, 110, 170, 0.10)";
+          }
+
+          return aqiColor(Number(props.__aqi || 0));
+        })
+        .polygonSideColor(feature => {
+          const props = feature.properties || {};
+
+          if (!props.__admin1) {
+            return "rgba(30, 120, 180, 0.10)";
+          }
+
+          return "rgba(15, 23, 42, 0.28)";
+        })
+        .polygonStrokeColor(feature => {
+          const props = feature.properties || {};
+          return props.__admin1 ? "#ffffff" : "rgba(255,255,255,0.45)";
+        })
+        .polygonAltitude(feature => {
+          const props = feature.properties || {};
+          return props.__admin1 ? 0.015 : 0.004;
+        })
+        .onPolygonClick((feature, event, coordinates) => {
+          if (!coordinates) return;
+
+          globe.pointOfView({
+            lat: coordinates.lat,
+            lng: coordinates.lng,
+            altitude: 1.15
+          }, 900);
+        })
+        .polygonLabel(feature => {
+          const props = feature.properties || {};
+
+          if (!props.__admin1) {
+            return "Country boundary";
+          }
+
+          const aqi = Number(props.__aqi || 0);
+          const critical = aqi >= 301;
+
+          return `
+            <strong>${props.__regionName}</strong><br/>
+            ${props.__countryName}<br/>
+            AQI: <strong>${aqi}</strong><br/>
+            Status: <strong>${critical ? "CRITICAL" : props.__aqiLevel}</strong><br/>
+            <small>Synthetic demo AQI — not official/live</small>
+          `;
+        });
+
+      console.log(
+        `BRICS AQI regions loaded: ${adminRegions.length} `
+        + `(India districts: ${indiaDistricts.length})`
+      );
     } catch (error) {
-
-      const status =
-        document.getElementById(
-          STATUS_ID
-        );
-
-
-      if (status) {
-
-        status.textContent =
-          "ESP32 telemetry unavailable";
-
-        status.style.color =
-          "#fca5a5";
-      }
-
-
-      console.warn(
-        "[ESP32 FULL TELEMETRY]",
-        error
-      );
+      console.error("BRICS AQI region layer failed:", error);
     }
+  })();
+
+  function resizeGlobe() {
+    globe.width(globeElement.clientWidth);
+    globe.height(globeElement.clientHeight);
   }
 
-
-  // ----------------------------------------------------------
-  // STYLES
-  // ----------------------------------------------------------
-
-  function injectStyles() {
-
-    if (
-      document.getElementById(
-        "giri-full-esp32-telemetry-style"
-      )
-    ) {
-
-      return;
-    }
-
-
-    const style =
-      document.createElement(
-        "style"
-      );
-
-
-    style.id =
-      "giri-full-esp32-telemetry-style";
-
-
-    style.textContent = `
-
-      #${PANEL_ID} {
-        margin-top: 14px;
-        padding: 14px;
-        border-radius: 12px;
-        background: #0f172a;
-        color: #ffffff;
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      #${PANEL_ID}
-      .giri-full-esp32-title {
-        font-size: 13px;
-        font-weight: 800;
-        letter-spacing: 0.4px;
-        margin-bottom: 5px;
-      }
-
-      #${PANEL_ID}
-      .giri-full-esp32-status {
-        font-size: 10px;
-        color: #94a3b8;
-        margin-bottom: 11px;
-      }
-
-      #${PANEL_ID}
-      .giri-full-esp32-grid {
-        display: grid;
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        max-height: 470px;
-        overflow-y: auto;
-        padding-right: 3px;
-      }
-
-      #${PANEL_ID}
-      .giri-full-esp32-field {
-        background: #182235;
-        border: 1px solid #26344d;
-        border-radius: 8px;
-        padding: 8px 9px;
-        min-width: 0;
-      }
-
-      #${PANEL_ID}
-      .giri-full-esp32-label {
-        color: #94a3b8;
-        font-size: 9px;
-        margin-bottom: 3px;
-        line-height: 1.2;
-      }
-
-      #${PANEL_ID}
-      .giri-full-esp32-value {
-        color: #f8fafc;
-        font-size: 12px;
-        font-weight: 700;
-        line-height: 1.25;
-        word-break: break-word;
-      }
-
-      @media (max-width: 700px) {
-
-        #${PANEL_ID}
-        .giri-full-esp32-grid {
-          grid-template-columns: 1fr;
-        }
-
-      }
-
-    `;
-
-
-    document.head.appendChild(
-      style
-    );
-  }
-
-
-  // ----------------------------------------------------------
-  // START
-  // ----------------------------------------------------------
-
-  function start() {
-
-    injectStyles();
-
-    update();
-
-
-    window.setInterval(
-      update,
-      5000
-    );
-  }
-
-
-  if (
-    document.readyState
-    ===
-    "loading"
-  ) {
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      () => {
-
-        window.setTimeout(
-          start,
-          800
-        );
-
-      },
-      {
-        once: true
-      }
-    );
-
-  } else {
-
-    window.setTimeout(
-      start,
-      800
-    );
-  }
-
+  resizeGlobe();
+  window.addEventListener("resize", resizeGlobe);
 })();
