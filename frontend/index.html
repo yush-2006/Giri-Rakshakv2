@@ -144,7 +144,46 @@
 
       <!-- ================= PUBLIC / GUEST VIEW (Default) ================= -->
       <div id="public-view-container">
-
+        <!-- BRICS AIR QUALITY PROTOTYPE -->
+        <section class="card" id="brics-overview-card" style="margin-top:14px;">
+          <div class="card-header">
+            <div>
+              <h3>BRICS Air Quality Watch</h3>
+              <small>Cross-city pollution signals &amp; forecast</small>
+            </div>
+            <span class="source-tag">DEMO</span>
+          </div>
+          <p style="font-size:11px;color:#b45309;background:#fffbeb;padding:8px;border-radius:6px;">
+            Synthetic prototype data only — not live or official AQI.
+          </p>
+          <div id="brics-city-list" style="display:grid;gap:8px;">
+            <p style="font-size:12px;color:#64748b;">Loading demo city signals…</p>
+          </div>
+          <div style="margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px;">
+            <strong style="font-size:12px;">Illustrative Hotspot Signals</strong>
+            <div style="font-size:11px;color:#b45309;margin:4px 0 8px;">
+              Simulated scenarios — not verified detections
+            </div>
+            <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;margin-bottom:6px;">
+              <strong>Industrial corridor</strong><br>
+              Demo signal · Elevated particulate concentration
+            </div>
+            <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;margin-bottom:6px;">
+              <strong>Agricultural burning</strong><br>
+              Demo scenario · Potential regional smoke transport
+            </div>
+            <div style="font-size:12px;padding:8px;background:#fff7ed;border-radius:7px;">
+              <strong>Cross-border haze</strong><br>
+              Demo scenario · Coordinated monitoring needed
+            </div>
+          </div>
+          <div id="brics-federated-status" style="font-size:12px;margin-top:10px;">
+            Federated model coordination: simulated demo status
+          </div>
+<div id="brics-citizen-count" style="font-size:12px;margin-top:6px;">
+  Citizen reports saved in this browser: 0
+</div>
+        </section>
         <!-- HIGH-EMISSION CORRIDORS (PUBLIC & CITIZEN SAFETY) -->
         <section class="card" id="routes-avoid-card"
           style="border: 1px solid var(--panel-border); margin-top: 14px; margin-bottom: 14px;">

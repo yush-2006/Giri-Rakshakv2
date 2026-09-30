@@ -1501,15 +1501,73 @@ function renderBackendRiskZones(zones) {
   });
 }
 
-// Heatmap render safely disabled to prevent overlay artifacts
-function renderDendriticRidgeHeatmap(points = [], autoFocus = false) {
-  if (heatLayerInstance) {
-    map.removeLayer(heatLayerInstance);
-    heatLayerInstance = null;
+let districtAQILayer = null;
+
+function getDemoDistrictAQI(districtName) {
+  let hash = 0;
+
+  for (let i = 0; i < districtName.length; i++) {
+    hash = (hash * 31 + districtName.charCodeAt(i)) >>> 0;
   }
-  return;
+
+  return 25 + (hash % 276);
 }
 
+async function renderDendriticRidgeHeatmap() {
+  if (districtAQILayer) {
+    map.removeLayer(districtAQILayer);
+    districtAQILayer = null;
+  }
+
+  try {
+    const response = await fetch("./data/india_districts.geojson");
+
+    if (!response.ok) {
+      throw new Error(`GeoJSON request failed: ${response.status}`);
+    }
+
+    const geojson = await response.json();
+
+    districtAQILayer = L.geoJSON(geojson, {
+      style: function (feature) {
+        const districtName = feature.properties.NAME_2 || "Unknown";
+        const aqi = getDemoDistrictAQI(districtName);
+
+        let color = "#ffffff";
+        if (aqi > 50) color = "#ede9fe";
+        if (aqi > 100) color = "#c4b5fd";
+        if (aqi > 150) color = "#8b5cf6";
+        if (aqi > 200) color = "#4c1d95";
+
+        return {
+          color: "#ffffff",
+          weight: 0.7,
+          fillColor: color,
+          fillOpacity: 0.65
+        };
+      },
+
+      onEachFeature: function (feature, layer) {
+        const districtName = feature.properties.NAME_2 || "Unknown district";
+        const stateName = feature.properties.NAME_1 || "India";
+        const aqi = getDemoDistrictAQI(districtName);
+
+        layer.bindTooltip(`${districtName}, ${stateName}`);
+
+        layer.bindPopup(`
+          <strong>${districtName}</strong><br>
+          State: ${stateName}<br>
+          Demo AQI: <strong>${aqi}</strong><br>
+          <small>Synthetic demo data — not official/live AQI</small>
+        `);
+      }
+    }).addTo(map);
+
+    console.log("District AQI polygons loaded:", geojson.features.length);
+  } catch (error) {
+    console.error("District AQI map failed to load:", error);
+  }
+}
 // =========================================================================
 // 8. Master Render: Boundaries, Polygons, Stations & Saved Reports
 // =========================================================================
@@ -3564,3 +3622,77 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('DOMContentLoaded', applyRoleUI);
+// BRICS Air Quality Watch — backend predictions + illustrative demo nodes
+(async function renderBricsAirQualityDemo() {
+  const container = document.getElementById("brics-city-list");
+  const status = document.getElementById("brics-federated-status");
+
+  if (!container || !status) return;
+
+  const demoCities = [
+    { country: "China", city: "Beijing", pm25: 82.6, source: "Illustrative demo" },
+    { country: "Brazil", city: "São Paulo", pm25: 34.2, source: "Illustrative demo" },
+    { country: "Russia", city: "Moscow", pm25: 28.7, source: "Illustrative demo" },
+    { country: "South Africa", city: "Johannesburg", pm25: 41.3, source: "Illustrative demo" }
+  ];
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/air-quality/predictions");
+    if (!response.ok) throw new Error(`API returned ${response.status}`);
+
+    const result = await response.json();
+
+    const delhiPredictions = result.predictions
+      .filter(item => item.location_id.startsWith("Delhi_"))
+      .map(item => ({
+        country: "India",
+        city: item.location_id.replace("_Demo", "").replaceAll("_", " "),
+        pm25: item.predicted_value,
+        source: "Backend forecast"
+      }));
+
+    const allCities = [...delhiPredictions, ...demoCities];
+
+    container.innerHTML = allCities.map(item => `
+      <div style="display:flex;justify-content:space-between;gap:10px;padding:9px;border:1px solid #e2e8f0;border-radius:8px;">
+        <div>
+          <strong style="font-size:12px;">${item.city}</strong>
+          <div style="font-size:11px;color:#64748b;">
+  ${item.country} · ${item.source}
+  ${Number(item.pm25) >= 75 ? " · Elevated PM2.5 demo signal" : ""}
+</div>
+        </div>
+        <div style="text-align:right;">
+          <strong style="font-size:14px;">${Number(item.pm25).toFixed(2)}</strong>
+          <div style="font-size:10px;color:#64748b;">PM2.5 µg/m³</div>
+        </div>
+      </div>
+    `).join("");
+
+    status.textContent =
+      "Federated coordination: simulated · 5 BRICS country nodes · no live model exchange";
+  } catch (error) {
+    console.error("BRICS air-quality API error:", error);
+    container.innerHTML =
+      '<p style="font-size:12px;color:#b91c1c;">Delhi forecast API unavailable. Check that the backend is running.</p>' +
+      demoCities.map(item => `
+        <div style="padding:9px;border:1px solid #e2e8f0;border-radius:8px;">
+          <strong>${item.city}</strong> · ${item.country}
+          <div style="font-size:11px;color:#64748b;">Illustrative demo only · PM2.5 ${item.pm25} µg/m³</div>
+        </div>
+      `).join("");
+  }
+})();
+// BRICS prototype: citizen-submitted report count
+(function updateBricsCitizenReportCount() {
+  const countElement = document.getElementById("brics-citizen-count");
+  if (!countElement) return;
+
+  try {
+    const reports = JSON.parse(localStorage.getItem("giri_citizen_reports") || "[]");
+    countElement.textContent =
+      `Citizen reports saved in this browser: ${reports.length}`;
+  } catch (error) {
+    countElement.textContent = "Citizen report count unavailable";
+  }
+})();
