@@ -3696,3 +3696,144 @@ document.addEventListener('DOMContentLoaded', applyRoleUI);
     countElement.textContent = "Citizen report count unavailable";
   }
 })();
+// BRICS 3D rotating globe with illustrative PM2.5 signals
+(function initBricsGlobe() {
+  const globeElement = document.getElementById("globeViz");
+  if (!globeElement || typeof Globe !== "function") return;
+
+  const citySignals = [
+    { city: "Delhi", country: "India", lat: 28.6139, lng: 77.2090, pm25: 96.41 },
+    { city: "Beijing", country: "China", lat: 39.9042, lng: 116.4074, pm25: 82.6 },
+    { city: "São Paulo", country: "Brazil", lat: -23.5505, lng: -46.6333, pm25: 34.2 },
+    { city: "Moscow", country: "Russia", lat: 55.7558, lng: 37.6173, pm25: 28.7 },
+    { city: "Johannesburg", country: "South Africa", lat: -26.2041, lng: 28.0473, pm25: 41.3 }
+  ];
+
+  const colorFor = value =>
+    value >= 75 ? "#ef4444" : value >= 50 ? "#f59e0b" : "#22c55e";
+
+  // Initialize globe first
+  const globe = Globe()(globeElement)
+    .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
+.backgroundColor("#b8e6ff")
+
+   .showAtmosphere(true)
+    .atmosphereColor("#d8f3ff")
+    .atmosphereAltitude(0.18)
+    .pointsData(citySignals)
+    .pointLat("lat")
+    .pointLng("lng")
+    .pointAltitude(d => 0.025 + Math.min(d.pm25 / 3000, 0.05))
+    .pointRadius(d => 0.35 + Math.min(d.pm25 / 300, 0.25))
+    .pointColor(d => colorFor(d.pm25))
+    .pointLabel(d =>
+      `${d.city}, ${d.country}<br/>Illustrative PM2.5: ${d.pm25} µg/m³<br/>Synthetic demo data`
+    )
+    .ringsData(citySignals)
+    .ringLat("lat")
+    .ringLng("lng")
+    .ringColor(d => colorFor(d.pm25))
+    .ringMaxRadius(d => 2 + d.pm25 / 35)
+    .ringPropagationSpeed(1.5)
+    .ringRepeatPeriod(1800)
+    .labelsData(citySignals)
+    .labelLat("lat")
+    .labelLng("lng")
+    .labelText("city")
+    .labelSize(1.2)
+    .labelDotRadius(0.25)
+    .labelColor(() => "#e2e8f0")
+    .labelResolution(2);
+
+  globe.controls().autoRotate = true;
+  globe.controls().autoRotateSpeed = 0.45;
+  globe.controls().enableZoom = true;
+
+  // Load country boundaries
+  (async function loadCountryBoundaries() {
+    try {
+      const response = await fetch(
+        "https://unpkg.com/world-atlas@2/countries-110m.json"
+      );
+      if (!response.ok) throw new Error("Country boundary data unavailable");
+
+      const topology = await response.json();
+      const countries = topojson.feature(
+        topology,
+        topology.objects.countries
+      ).features;
+
+      globe
+        .polygonsData(countries)
+        .polygonCapColor(() => "rgba(20, 100, 160, 0.10)")
+        .polygonSideColor(() => "rgba(30, 120, 180, 0.15)")
+        .polygonStrokeColor(() => "#ffffff")
+        .polygonAltitude(0.008)
+        .onPolygonClick((feature, event, coordinates) => {
+          if (!coordinates) return;
+          globe.pointOfView({
+            lat: coordinates.lat,
+            lng: coordinates.lng,
+            altitude: 1.1
+          }, 1200);
+        })
+        .polygonLabel(feature =>
+          `Country ID: ${feature.id}<br/>Click to focus`
+        );
+
+      console.log("World country boundaries loaded:", countries.length);
+    } catch (error) {
+      console.error("Country boundaries failed to load:", error);
+    }
+  })();
+
+  // Load India state and union-territory boundaries
+  (async function loadIndiaStateBoundaries() {
+    try {
+      const response = await fetch(
+        "https://raw.githubusercontent.com/AbhinavSwami28/india-official-geojson/main/india-states-simplified.geojson"
+      );
+      if (!response.ok) throw new Error("India state boundary data unavailable");
+
+      const geojson = await response.json();
+
+      const stateLines = geojson.features.flatMap(feature => {
+        const geometry = feature.geometry;
+        if (!geometry) return [];
+
+        const polygons =
+          geometry.type === "Polygon"
+            ? [geometry.coordinates]
+            : geometry.type === "MultiPolygon"
+              ? geometry.coordinates
+              : [];
+
+        return polygons.flatMap(polygon =>
+          polygon.map(ring => ring)
+        );
+      });
+
+      globe
+        .pathsData(stateLines)
+        .pathPoints(points => points)
+        .pathPointLat(point => point[1])
+        .pathPointLng(point => point[0])
+        .pathColor(() => "#ffffff")
+        .pathStroke(0.75)
+        .pathAltitude(0.012)
+        .pathTransitionDuration(0);
+
+      console.log("India state boundaries loaded:", stateLines.length);
+    } catch (error) {
+      console.error("India state boundaries failed to load:", error);
+    }
+  })();
+
+  function resizeGlobe() {
+    globe.width(globeElement.clientWidth);
+    globe.height(globeElement.clientHeight);
+  }
+
+  resizeGlobe();
+  window.addEventListener("resize", resizeGlobe);
+})();
